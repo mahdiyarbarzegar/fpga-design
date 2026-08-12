@@ -1,4 +1,6 @@
-namespace eval ::project {
+namespace eval ::project {}
+
+namespace eval ::project::internal {
     variable db {}
     variable resolved_db {}
     variable loaded 0
@@ -18,17 +20,17 @@ namespace eval ::project {
 }
 
 proc ::project::resolve {path} {
-    variable db
-    variable resolved_db
-    variable resolved
-    variable PRJ_SRC_PATH
-    variable PRJ_BUILD_PATH
-    variable HDL_PATH
-    variable IP_PATH
+    variable internal::db
+    variable internal::resolved_db
+    variable internal::resolved
+    variable internal::PRJ_SRC_PATH
+    variable internal::PRJ_BUILD_PATH
+    variable internal::HDL_PATH
+    variable internal::IP_PATH
 
-    ::project::_load_prj $path
+    ::project::internal::load_prj $path
 
-    ::project::check_is_loaded
+    ::project::internal::check_is_loaded
 
     set resolved_db [dict create \
         project {} \
@@ -76,7 +78,7 @@ proc ::project::resolve {path} {
             ssn {} \
             ram_utilization {}]]
 
-    module::scan
+    ::module::scan
 
     puts "\nResolve the project information...\n"
 
@@ -151,18 +153,18 @@ proc ::project::resolve {path} {
 
         set abs_module_path [file join $HDL_PATH $module_name]
 
-        module::load $abs_module_path
+        ::module::load $abs_module_path
 
-        if {![module::is_loaded]} {
+        if {![::module::is_loaded]} {
             error "The module $module_name does not exist in $HDL_PATH"
         }
 
-        if {$module_version ne [module::version]} {
+        if {$module_version ne [::module::version]} {
             error "Module '$module_name' version '$module_version' is not available. \
-                    Found version '[module::version]'."
+                    Found version '[::module::version]'."
         }
 
-        set dependent_modules [dependency::resolve $abs_module_path "rtl"]
+        set dependent_modules [::dependency::resolve $abs_module_path "rtl"]
 
         foreach dep $dependent_modules {
             set dep_path [dict get $dep path]
@@ -171,13 +173,13 @@ proc ::project::resolve {path} {
 
             switch -- $dep_consume {
                 rtl {
-                    module::load $dep_path
+                    ::module::load $dep_path
 
-                    if {![module::is_loaded]} {
+                    if {![::module::is_loaded]} {
                         error "The dependent module does not exists: $dep_path"
                     }
 
-                    set dep_rtl [module::get rtl]
+                    set dep_rtl [::module::get rtl]
                     foreach rtl_file $dep_rtl {
                         set abs_rtl_file_path [file join $dep_path $rtl_file]
 
@@ -190,14 +192,14 @@ proc ::project::resolve {path} {
                 }
 
                 ip {
-                    module::load $dep_path
+                    ::module::load $dep_path
 
-                    if {![module::is_loaded]} {
+                    if {![::module::is_loaded]} {
                         error "The module $module_name does not exist in $HDL_PATH"
                     }
 
-                    set dep_name [module::name]
-                    set dep_version [module::version]
+                    set dep_name [::module::name]
+                    set dep_version [::module::version]
 
                     set dep_xci_path [file join \
                         $IP_PATH \
@@ -205,7 +207,7 @@ proc ::project::resolve {path} {
                         "$dep_variant" \
                         "$dep_variant.xci"]
 
-                    if {![module::variant_exists $dep_variant]} {
+                    if {![::module::variant_exists $dep_variant]} {
                         error "Variant '$dep_variant' does not exist for module '$dep_name'."
                     }
 
@@ -851,8 +853,8 @@ proc ::project::resolve {path} {
 
     set resolved 1
 
-    set prj_name [project::name]
-    set prj_ver [project::version]
+    set prj_name [::project::internal::name]
+    set prj_ver [::project::internal::version]
 
     puts ""
     puts "========================================"
@@ -862,7 +864,7 @@ proc ::project::resolve {path} {
     puts "========================================"
 }
 
-proc ::project::_load_prj {path} {
+proc ::project::internal::load_prj {path} {
     variable db {}
     variable resolved_db {}
     variable loaded 0
@@ -898,22 +900,22 @@ proc ::project::_load_prj {path} {
 }
 
 proc ::project::prepare {{log_mode "quiet"}} {
-    variable resolved_db
-    variable BUILD_PATH
-    variable PRJ_BUILD_PATH
-    variable PACKAGE_PATH
-    variable prepared
+    variable internal::resolved_db
+    variable internal::BUILD_PATH
+    variable internal::PRJ_BUILD_PATH
+    variable internal::PACKAGE_PATH
+    variable internal::prepared
 
-    ::project::check_is_resolved
+    ::project::internal::check_is_resolved
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Prepare build directories
     # ------------------------------------------------------------------
-    set prj_build_path [::project::get project.project_build_path]
+    set prj_build_path [::project::internal::get project.project_build_path]
 
     set bd_path [file join $prj_build_path bd]
     set dcp_path [file join $prj_build_path dcp]
@@ -927,9 +929,9 @@ proc ::project::prepare {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Prepare project target
     # ------------------------------------------------------------------
-    set target [project::target]
+    set target [::project::internal::target]
     set target_type [dict get $target type]
-    set target_lang_prj [project::language]
+    set target_lang_prj [::project::internal::language]
 
     switch -- $target_type {
         part {
@@ -977,7 +979,7 @@ proc ::project::prepare {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     puts "\nPrepare RTL sources...\n"
 
-    set rtl_files [::project::get resources.rtl]
+    set rtl_files [::project::internal::get resources.rtl]
 
     foreach rtl_file $rtl_files {
         set ext [string tolower [file extension $rtl_file]]
@@ -1012,7 +1014,7 @@ proc ::project::prepare {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     puts "\nPrepare IPs...\n"
 
-    set ips [::project::get resources.ip]
+    set ips [::project::internal::get resources.ip]
 
     foreach ip $ips {
         set ip_name [dict get $ip name]
@@ -1031,7 +1033,7 @@ proc ::project::prepare {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     puts "\nPrepare constraints...\n"
 
-    set constraints [::project::get resources.constraints]
+    set constraints [::project::internal::get resources.constraints]
 
     foreach constraint $constraints {
         puts "    read_xdc: $constraint"
@@ -1048,7 +1050,7 @@ proc ::project::prepare {{log_mode "quiet"}} {
     # At this stage the user may still want to open Vivado and
     # construct the BD interactively.
     # ------------------------------------------------------------------
-    set bd [::project::get resources.bd]
+    set bd [::project::internal::get resources.bd]
 
     if {[llength $bd] == 0} {
         puts "No block designs specified."
@@ -1068,8 +1070,8 @@ proc ::project::prepare {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     set prepared 1
 
-    set prj_name [project::name]
-    set prj_ver [project::version]
+    set prj_name [::project::internal::name]
+    set prj_ver [::project::internal::version]
 
     puts ""
     puts "========================================"
@@ -1080,16 +1082,16 @@ proc ::project::prepare {{log_mode "quiet"}} {
 }
 
 proc ::project::design {{log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
-    variable project_path
-    variable resolved_db
-    variable designed
+    variable internal::PRJ_BUILD_PATH
+    variable internal::project_path
+    variable internal::resolved_db
+    variable internal::designed
 
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     puts ""
     puts "========================================"
@@ -1104,7 +1106,7 @@ proc ::project::design {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
 
     if {[dict exists $resolved_db resources bd]} {
-        set bd [::project::get resources.bd]
+        set bd [::project::internal::get resources.bd]
 
         set bd_name [dict get $bd name]
         set bd_path [dict get $bd path]
@@ -1127,7 +1129,7 @@ proc ::project::design {{log_mode "quiet"}} {
         puts ""
 
         # Clean the build generated block-design
-        set build_bd_path [file join [::project::build_path] \
+        set build_bd_path [file join [::project::internal::build_path] \
             [format "bd/%s" $bd_name]]
 
         if {[file exists $build_bd_path]} {
@@ -1167,7 +1169,7 @@ proc ::project::design {{log_mode "quiet"}} {
         error "Error: No top design specified."
     }
 
-    set top [::project::get resources.top]
+    set top [::project::internal::get resources.top]
     set top_name [dict get $top name]
     set top_path [dict get $top path]
 
@@ -1230,8 +1232,8 @@ proc ::project::design {{log_mode "quiet"}} {
 
     set designed 1
 
-    set prj_name [project::name]
-    set prj_ver [project::version]
+    set prj_name [::project::internal::name]
+    set prj_ver [::project::internal::version]
 
     puts ""
     puts "========================================"
@@ -1243,15 +1245,15 @@ proc ::project::design {{log_mode "quiet"}} {
 }
 
 proc ::project::synth {{log_mode "quiet"}} {
-    variable synthesized
-    variable PRJ_BUILD_PATH
-    variable resolved_db
+    variable internal::synthesized
+    variable internal::PRJ_BUILD_PATH
+    variable internal::resolved_db
 
-    ::project::check_is_designed
+    ::project::internal::check_is_designed
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Reset synthesis state
@@ -1261,7 +1263,7 @@ proc ::project::synth {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Prepare output directories
     # ------------------------------------------------------------------
-    set prj_build_path [::project::build_path]
+    set prj_build_path [::project::internal::build_path]
 
     set synth_path [file join $prj_build_path synth]
     set generateds_path [file join $synth_path generateds]
@@ -1284,7 +1286,7 @@ proc ::project::synth {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Top
     # ------------------------------------------------------------------
-    set top [::project::get resources.top]
+    set top [::project::internal::get resources.top]
 
     set top_path [::common::dict_get_default $top path ""]
     set top_name [::common::dict_get_required $top name \
@@ -1297,9 +1299,9 @@ proc ::project::synth {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Synthesis configuration
     # ------------------------------------------------------------------
-    set strategy [project::get_default configuration.synth.strategy ""]
-    set directive [project::get_default configuration.synth.directive ""]
-    set opts [project::get_default configuration.synth.opts {}]
+    set strategy [::project::internal::get_default configuration.synth.strategy ""]
+    set directive [::project::internal::get_default configuration.synth.directive ""]
+    set opts [::project::internal::get_default configuration.synth.opts {}]
 
     # ------------------------------------------------------------------
     # Configure synthesis strategy
@@ -1368,7 +1370,7 @@ proc ::project::synth {{log_mode "quiet"}} {
     puts ""
     puts "Generate synthesis related files..."
 
-    ::project::_generate_results synth $generateds_path $log_mode
+    ::project::internal::generate_results synth $generateds_path $log_mode
 
     # ------------------------------------------------------------------
     # Reports
@@ -1376,7 +1378,7 @@ proc ::project::synth {{log_mode "quiet"}} {
     puts ""
     puts "Generate synthesis reports..."
 
-    ::project::_reports synth $report_path $log_mode
+    ::project::internal::generate_reports synth $report_path $log_mode
 
     ::common::set_working_dir $init_path
 
@@ -1385,14 +1387,14 @@ proc ::project::synth {{log_mode "quiet"}} {
 }
 
 proc ::project::impl {{log_mode "quiet"}} {
-    variable implemented
-    variable PRJ_BUILD_PATH
+    variable internal::implemented
+    variable internal::PRJ_BUILD_PATH
 
-    ::project::check_is_synthesized
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Reset implementation state
@@ -1402,7 +1404,7 @@ proc ::project::impl {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Prepare output directories
     # ------------------------------------------------------------------
-    set prj_build_path [::project::build_path]
+    set prj_build_path [::project::internal::build_path]
 
     set impl_path [file join $prj_build_path impl]
     set generateds_path [file join $impl_path generateds]
@@ -1417,16 +1419,16 @@ proc ::project::impl {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Implementation configuration
     # ------------------------------------------------------------------
-    set strategy [project::get_default configuration.impl.strategy ""]
+    set strategy [::project::internal::get_default configuration.impl.strategy ""]
 
-    set optimize_directive [project::get_default configuration.impl.optimize.directive ""]
-    set place_directive [project::get_default configuration.impl.place.directive ""]
-    set route_directive [project::get_default configuration.impl.route.directive ""]
-    set optimize_opts [project::get_default configuration.impl.optimize.opts {}]
-    set place_opts [project::get_default configuration.impl.place.opts {}]
-    set route_opts [project::get_default configuration.impl.route.opts {}]
-    set power_optimize_cfg [project::get_default configuration.impl.power_optimize ""]
-    set physical_optimize_cfg [project::get_default configuration.impl.physical_optimize ""]
+    set optimize_directive [::project::internal::get_default configuration.impl.optimize.directive ""]
+    set place_directive [::project::internal::get_default configuration.impl.place.directive ""]
+    set route_directive [::project::internal::get_default configuration.impl.route.directive ""]
+    set optimize_opts [::project::internal::get_default configuration.impl.optimize.opts {}]
+    set place_opts [::project::internal::get_default configuration.impl.place.opts {}]
+    set route_opts [::project::internal::get_default configuration.impl.route.opts {}]
+    set power_optimize_cfg [::project::internal::get_default configuration.impl.power_optimize ""]
+    set physical_optimize_cfg [::project::internal::get_default configuration.impl.physical_optimize ""]
     set power_optimize_enabled [dict get $power_optimize_cfg enabled]
     set power_optimize_opts [dict get $power_optimize_cfg opts]
     set physical_optimize_enabled [dict get $physical_optimize_cfg enabled]
@@ -1548,7 +1550,7 @@ proc ::project::impl {{log_mode "quiet"}} {
     puts ""
     puts "Generate synthesis related files..."
 
-    ::project::_generate_results impl $generateds_path $log_mode
+    ::project::internal::generate_results impl $generateds_path $log_mode
 
     # ------------------------------------------------------------------
     # Reports
@@ -1556,7 +1558,7 @@ proc ::project::impl {{log_mode "quiet"}} {
     puts ""
     puts "Generate synthesis reports..."
 
-    ::project::_reports impl $report_path $log_mode
+    ::project::internal::generate_reports impl $report_path $log_mode
 
     ::common::set_working_dir $init_path
 
@@ -1565,21 +1567,21 @@ proc ::project::impl {{log_mode "quiet"}} {
 }
 
 proc ::project::bitstream_gen {{log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
-    variable bitstream_generated
+    variable internal::PRJ_BUILD_PATH
+    variable internal::bitstream_generated
 
-    ::project::check_is_implemented
+    ::project::internal::check_is_implemented
 
     set bitstream_generated 0
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Prepare output directories
     # ------------------------------------------------------------------
-    set prj_build_path [::project::build_path]
+    set prj_build_path [::project::internal::build_path]
 
     set bitstream_path [file join $prj_build_path bitstream]
 
@@ -1592,10 +1594,10 @@ proc ::project::bitstream_gen {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Generate bitstream
     # ------------------------------------------------------------------
-    set opts [project::get_default configuration.bitstream.opts {}]
+    set opts [::project::internal::get_default configuration.bitstream.opts {}]
 
     set bit_path [file join $bitstream_path \
-        [format "%s_v%s.bit" [::project::name] [::project::version]]]
+        [format "%s_v%s.bit" [::project::internal::name] [::project::internal::version]]]
 
     puts ""
     puts "Generate bitstream..."
@@ -1621,21 +1623,21 @@ proc ::project::bitstream_gen {{log_mode "quiet"}} {
 }
 
 proc ::project::xsa_gen {{log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
-    variable xsa_generated
+    variable internal::PRJ_BUILD_PATH
+    variable internal::xsa_generated
 
-    ::project::check_is_bitstream_generated
+    ::project::internal::check_is_bitstream_generated
 
     set xsa_generated 0
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Prepare output directories
     # ------------------------------------------------------------------
-    set prj_build_path [::project::build_path]
+    set prj_build_path [::project::internal::build_path]
 
     set xsa_path [file join $prj_build_path xsa]
 
@@ -1646,13 +1648,13 @@ proc ::project::xsa_gen {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # XSA options
     # ------------------------------------------------------------------
-    set opts [project::get_default configuration.xsa.opts {}]
+    set opts [::project::internal::get_default configuration.xsa.opts {}]
 
     # ------------------------------------------------------------------
     # Generate XSA
     # ------------------------------------------------------------------
     set xsa_file [file join $xsa_path \
-        [format "%s_v%s.xsa" [::project::name] [::project::version]]]
+        [format "%s_v%s.xsa" [::project::internal::name] [::project::internal::version]]]
 
     puts ""
     puts "Generate XSA..."
@@ -1679,15 +1681,15 @@ proc ::project::xsa_gen {{log_mode "quiet"}} {
 }
 
 proc ::project::bd_create {bd_name {log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
+    variable internal::PRJ_BUILD_PATH
 
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::build_path]
+    set build_path [::project::internal::build_path]
 
     set bd_path [file join $build_path "bd"]
 
@@ -1705,9 +1707,9 @@ proc ::project::bd_create {bd_name {log_mode "quiet"}} {
 }
 
 proc ::project::bd_regenerate {bd_name bd_path {log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
+    variable internal::PRJ_BUILD_PATH
 
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     if {$bd_path eq ""} {
         error "Block design path is empty."
@@ -1719,13 +1721,13 @@ proc ::project::bd_regenerate {bd_name bd_path {log_mode "quiet"}} {
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     puts "Re-Generate block design..."
     puts "    Tcl:  $bd_path"
 
     # Clean the build generated block-design
-    set build_path [::project::build_path]
+    set build_path [::project::internal::build_path]
     set build_bd_path [file join $build_path [format "bd/%s" $bd_name]]
 
     if {[file exists $build_bd_path]} {
@@ -1751,15 +1753,15 @@ proc ::project::bd_regenerate {bd_name bd_path {log_mode "quiet"}} {
 }
 
 proc ::project::bd_upgrade {bd_name {log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
+    variable internal::PRJ_BUILD_PATH
 
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::build_path]
+    set build_path [::project::internal::build_path]
 
     set bd_file [file join $build_path [format "bd/%s/%s.bd" $bd_name $bd_name]]
 
@@ -1777,15 +1779,15 @@ proc ::project::bd_upgrade {bd_name {log_mode "quiet"}} {
 }
 
 proc ::project::bd_open {bd_name {log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
+    variable internal::PRJ_BUILD_PATH
 
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::build_path]
+    set build_path [::project::internal::build_path]
 
     set bd_file [file join $build_path [format "bd/%s/%s.bd" $bd_name $bd_name]]
 
@@ -1807,13 +1809,13 @@ proc ::project::bd_open {bd_name {log_mode "quiet"}} {
 }
 
 proc ::project::bd_close {{log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
+    variable internal::PRJ_BUILD_PATH
 
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
     ::close_bd_design {*}$log_opts [current_bd_design]
 
@@ -1824,7 +1826,7 @@ proc ::project::bd_close {{log_mode "quiet"}} {
 }
 
 proc ::project::bd_export_tcl {{log_mode "quiet"}} {
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
 
@@ -1834,9 +1836,9 @@ proc ::project::bd_export_tcl {{log_mode "quiet"}} {
         puts "Current block design: $bd_name"
     }
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
-    set bd_export_path [file join [::project::build_path] "bd/export"]
+    set bd_export_path [file join [::project::internal::build_path] "bd/export"]
     set bd_export_path_filename [file join $bd_export_path [current_bd_design]]
     set rel_bd_create_path "./bd"
 
@@ -1852,15 +1854,15 @@ proc ::project::bd_export_tcl {{log_mode "quiet"}} {
 }
 
 proc ::project::bd_make_wrapper {bd_name {log_mode "quiet"}} {
-    variable PRJ_BUILD_PATH
+    variable internal::PRJ_BUILD_PATH
 
-    ::project::check_is_prepared
+    ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::_set_working_dir]
+    set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::build_path]
+    set build_path [::project::internal::build_path]
 
     set bd_path [file join $build_path [format "bd/%s" $bd_name]]
     set bd_file [file join $bd_path [format "%s.bd" $bd_name]]
@@ -1882,16 +1884,16 @@ proc ::project::bd_make_wrapper {bd_name {log_mode "quiet"}} {
 }
 
 proc ::project::close {{log_mode "quiet"}} {
-    variable db
-    variable resolved_db
-    variable loaded
-    variable resolved
-    variable prepared
-    variable designed
-    variable synthesized
-    variable implemented
-    variable bitstream_generated
-    variable xsa_generated
+    variable internal::db
+    variable internal::resolved_db
+    variable internal::loaded
+    variable internal::resolved
+    variable internal::prepared
+    variable internal::designed
+    variable internal::synthesized
+    variable internal::implemented
+    variable internal::bitstream_generated
+    variable internal::xsa_generated
 
     set log_opts [::common::log_option $log_mode]
 
@@ -1915,7 +1917,7 @@ proc ::project::close {{log_mode "quiet"}} {
     set xsa_generated 0
 }
 
-proc ::project::_generate_results {stage path {log_mode "quiet"}} {
+proc ::project::internal::generate_results {stage path {log_mode "quiet"}} {
     switch -- $stage {
         synth {
 
@@ -1930,57 +1932,57 @@ proc ::project::_generate_results {stage path {log_mode "quiet"}} {
         }
     }
 
-    if {[::project::get "generation.write_verilog.$stage.enable"] eq "true"} {
-        set opts [::project::get "generation.write_verilog.$stage.opts"]
+    if {[::project::internal::get "generation.write_verilog.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "generation.write_verilog.$stage.opts"]
         set filename "project_netlist"
-        ::project::_write_verilog $opts $path $filename $log_mode
+        ::project::internal::write_verilog $opts $path $filename $log_mode
         puts "write_verilog"
     }
 
-    if {[::project::get "generation.write_vhdl.$stage.enable"] eq "true"} {
-        set opts [::project::get "generation.write_vhdl.$stage.opts"]
+    if {[::project::internal::get "generation.write_vhdl.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "generation.write_vhdl.$stage.opts"]
         set filename "project_netlist"
-        ::project::_write_vhdl $opts $path $filename $log_mode
+        ::project::internal::write_vhdl $opts $path $filename $log_mode
         puts "write_vhdl"
     }
 
-    if {[::project::get "generation.write_sdf.$stage.enable"] eq "true"} {
-        set opts [::project::get "generation.write_sdf.$stage.opts"]
+    if {[::project::internal::get "generation.write_sdf.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "generation.write_sdf.$stage.opts"]
         set filename "project_sdf_delays"
-        ::project::_write_sdf $opts $path $filename $log_mode
+        ::project::internal::write_sdf $opts $path $filename $log_mode
         puts "write_sdf"
     }
 
-    if {[::project::get "generation.write_edif.$stage.enable"] eq "true"} {
-        set opts [::project::get "generation.write_edif.$stage.opts"]
+    if {[::project::internal::get "generation.write_edif.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "generation.write_edif.$stage.opts"]
         set filename "project_netlist"
-        ::project::_write_edif $opts $path $filename $log_mode
+        ::project::internal::write_edif $opts $path $filename $log_mode
         puts "write_edif"
     }
 
-    if {[::project::get "generation.write_xdc.$stage.enable"] eq "true"} {
-        set opts [::project::get "generation.write_xdc.$stage.opts"]
+    if {[::project::internal::get "generation.write_xdc.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "generation.write_xdc.$stage.opts"]
         set filename "project_constraints"
-        ::project::_write_xdc $opts $path $filename $log_mode
+        ::project::internal::write_xdc $opts $path $filename $log_mode
         puts "write_xdc"
     }
 
-    if {[::project::get "generation.write_waivers.$stage.enable"] eq "true"} {
-        set opts [::project::get "generation.write_waivers.$stage.opts"]
+    if {[::project::internal::get "generation.write_waivers.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "generation.write_waivers.$stage.opts"]
         set filename "project_waivers"
-        ::project::_write_waivers $opts $path $filename $log_mode
+        ::project::internal::write_waivers $opts $path $filename $log_mode
         puts "write_waivers"
     }
 
-    if {[::project::get "generation.write_schematic.$stage.enable"] eq "true"} {
-        set opts [::project::get "generation.write_schematic.$stage.opts"]
+    if {[::project::internal::get "generation.write_schematic.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "generation.write_schematic.$stage.opts"]
         set filename "project_schematic"
-        ::project::_write_schematic $opts $path $filename $log_mode
+        ::project::internal::write_schematic $opts $path $filename $log_mode
         puts "write_schematic"
     }
 }
 
-proc ::project::_reports {stage path {log_mode "quiet"}} {
+proc ::project::internal::generate_reports {stage path {log_mode "quiet"}} {
     switch -- $stage {
         synth {
 
@@ -1995,141 +1997,141 @@ proc ::project::_reports {stage path {log_mode "quiet"}} {
         }
     }
 
-    if {[::project::get "report.methodology.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.methodology.$stage.opts"]
-        ::project::_report_methodology $opts $path $log_mode
+    if {[::project::internal::get "report.methodology.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.methodology.$stage.opts"]
+        ::project::internal::report_methodology $opts $path $log_mode
         puts "report_methodology"
     }
 
-    if {[::project::get "report.timing_summary.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.timing_summary.$stage.opts"]
-        ::project::_report_timing_summary $opts $path $log_mode
+    if {[::project::internal::get "report.timing_summary.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.timing_summary.$stage.opts"]
+        ::project::internal::report_timing_summary $opts $path $log_mode
         puts "report_timing_summary"
     }
 
-    if {[::project::get "report.drc.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.drc.$stage.opts"]
-        ::project::_report_drc $opts $path $log_mode
+    if {[::project::internal::get "report.drc.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.drc.$stage.opts"]
+        ::project::internal::report_drc $opts $path $log_mode
         puts "report_drc"
     }
 
-    if {[::project::get "report.timing.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.timing.$stage.opts"]
-        ::project::_report_timing $opts $path $log_mode
+    if {[::project::internal::get "report.timing.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.timing.$stage.opts"]
+        ::project::internal::report_timing $opts $path $log_mode
         puts "report_timing"
     }
 
-    if {[::project::get "report.clock_networks.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.clock_networks.$stage.opts"]
-        ::project::_report_clock_networks $opts $path $log_mode
+    if {[::project::internal::get "report.clock_networks.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.clock_networks.$stage.opts"]
+        ::project::internal::report_clock_networks $opts $path $log_mode
         puts "report_clock_networks"
     }
 
-    if {[::project::get "report.clock_interaction.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.clock_interaction.$stage.opts"]
-        ::project::_report_clock_interaction $opts $path $log_mode
+    if {[::project::internal::get "report.clock_interaction.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.clock_interaction.$stage.opts"]
+        ::project::internal::report_clock_interaction $opts $path $log_mode
         puts "report_clock_interaction"
     }
 
-    if {[::project::get "report.cdc.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.cdc.$stage.opts"]
-        ::project::_report_cdc $opts $path $log_mode
+    if {[::project::internal::get "report.cdc.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.cdc.$stage.opts"]
+        ::project::internal::report_cdc $opts $path $log_mode
         puts "report_cdc"
     }
 
-    if {[::project::get "report.power.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.power.$stage.opts"]
-        ::project::_report_power $opts $path $log_mode
+    if {[::project::internal::get "report.power.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.power.$stage.opts"]
+        ::project::internal::report_power $opts $path $log_mode
         puts "report_power"
     }
 
-    if {[::project::get "report.clock_utilization.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.clock_utilization.$stage.opts"]
-        ::project::_report_clock_utilization $opts $path $log_mode
+    if {[::project::internal::get "report.clock_utilization.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.clock_utilization.$stage.opts"]
+        ::project::internal::report_clock_utilization $opts $path $log_mode
         puts "report_clock_utilization"
     }
 
-    if {[::project::get "report.qor_suggestions.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.qor_suggestions.$stage.opts"]
-        ::project::_report_qor_suggestions $opts $path $log_mode
+    if {[::project::internal::get "report.qor_suggestions.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.qor_suggestions.$stage.opts"]
+        ::project::internal::report_qor_suggestions $opts $path $log_mode
         puts "report_qor_suggestions"
     }
 
-    if {[::project::get "report.high_fanout_nets.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.high_fanout_nets.$stage.opts"]
-        ::project::_report_high_fanout_nets $opts $path $log_mode
+    if {[::project::internal::get "report.high_fanout_nets.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.high_fanout_nets.$stage.opts"]
+        ::project::internal::report_high_fanout_nets $opts $path $log_mode
         puts "report_high_fanout_nets"
     }
 
-    if {[::project::get "report.qor_assessment.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.qor_assessment.$stage.opts"]
-        ::project::_report_qor_assessment $opts $path $log_mode
+    if {[::project::internal::get "report.qor_assessment.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.qor_assessment.$stage.opts"]
+        ::project::internal::report_qor_assessment $opts $path $log_mode
         puts "report_qor_assessment"
     }
 
-    if {[::project::get "report.design_analysis.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.design_analysis.$stage.opts"]
-        ::project::_report_design_analysis $opts $path $log_mode
+    if {[::project::internal::get "report.design_analysis.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.design_analysis.$stage.opts"]
+        ::project::internal::report_design_analysis $opts $path $log_mode
         puts "report_design_analysis"
     }
 
-    if {[::project::get "report.dfx_summary.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.dfx_summary.$stage.opts"]
-        ::project::_report_dfx_summary $opts $path $log_mode
+    if {[::project::internal::get "report.dfx_summary.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.dfx_summary.$stage.opts"]
+        ::project::internal::report_dfx_summary $opts $path $log_mode
         puts "report_dfx_summary"
     }
 
-    if {[::project::get "report.bus_skew.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.bus_skew.$stage.opts"]
-        ::project::_report_bus_skew $opts $path $log_mode
+    if {[::project::internal::get "report.bus_skew.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.bus_skew.$stage.opts"]
+        ::project::internal::report_bus_skew $opts $path $log_mode
         puts "report_bus_skew"
     }
 
-    if {[::project::get "report.datasheet.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.datasheet.$stage.opts"]
-        ::project::_report_datasheet $opts $path $log_mode
+    if {[::project::internal::get "report.datasheet.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.datasheet.$stage.opts"]
+        ::project::internal::report_datasheet $opts $path $log_mode
         puts "report_datasheet"
     }
 
-    if {[::project::get "report.route_status.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.route_status.$stage.opts"]
-        ::project::_report_route_status $opts $path $log_mode
+    if {[::project::internal::get "report.route_status.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.route_status.$stage.opts"]
+        ::project::internal::report_route_status $opts $path $log_mode
         puts "report_route_status"
     }
 
-    if {[::project::get "report.io.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.io.$stage.opts"]
-        ::project::_report_io $opts $path $log_mode
+    if {[::project::internal::get "report.io.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.io.$stage.opts"]
+        ::project::internal::report_io $opts $path $log_mode
         puts "report_io"
     }
 
-    if {[::project::get "report.utilization.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.utilization.$stage.opts"]
-        ::project::_report_utilization $opts $path $log_mode
+    if {[::project::internal::get "report.utilization.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.utilization.$stage.opts"]
+        ::project::internal::report_utilization $opts $path $log_mode
         puts "report_utilization"
     }
 
-    if {[::project::get "report.control_sets.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.control_sets.$stage.opts"]
-        ::project::_report_control_sets $opts $path $log_mode
+    if {[::project::internal::get "report.control_sets.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.control_sets.$stage.opts"]
+        ::project::internal::report_control_sets $opts $path $log_mode
         puts "report_control_sets"
     }
 
-    if {[::project::get "report.ssn.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.ssn.$stage.opts"]
-        ::project::_report_ssn $opts $path $log_mode
+    if {[::project::internal::get "report.ssn.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.ssn.$stage.opts"]
+        ::project::internal::report_ssn $opts $path $log_mode
         puts "report_ssn"
     }
 
-    if {[::project::get "report.ram_utilization.$stage.enable"] eq "true"} {
-        set opts [::project::get "report.ram_utilization.$stage.opts"]
-        ::project::_report_ram_utilization $opts $path $log_mode
+    if {[::project::internal::get "report.ram_utilization.$stage.enable"] eq "true"} {
+        set opts [::project::internal::get "report.ram_utilization.$stage.opts"]
+        ::project::internal::report_ram_utilization $opts $path $log_mode
         puts "report_ram_utilization"
     }
 }
 
-proc ::project::_write_verilog {opts path filename {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::write_verilog {opts path filename {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
@@ -2138,8 +2140,8 @@ proc ::project::_write_verilog {opts path filename {log_mode "quiet"}} {
     ::write_verilog {*}$log_opts {*}$opts -force $path_file_name
 }
 
-proc ::project::_write_vhdl {opts path filename {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::write_vhdl {opts path filename {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
@@ -2148,8 +2150,8 @@ proc ::project::_write_vhdl {opts path filename {log_mode "quiet"}} {
     ::write_vhdl {*}$log_opts {*}$opts -force $path_file_name
 }
 
-proc ::project::_write_sdf {opts path filename {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::write_sdf {opts path filename {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
@@ -2158,8 +2160,8 @@ proc ::project::_write_sdf {opts path filename {log_mode "quiet"}} {
     ::write_sdf {*}$log_opts {*}$opts -force $path_file_name
 }
 
-proc ::project::_write_edif {opts path filename {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::write_edif {opts path filename {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
@@ -2168,8 +2170,8 @@ proc ::project::_write_edif {opts path filename {log_mode "quiet"}} {
     ::write_edif {*}$log_opts {*}$opts -force $path_file_name
 }
 
-proc ::project::_write_xdc {opts path filename {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::write_xdc {opts path filename {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
@@ -2178,8 +2180,8 @@ proc ::project::_write_xdc {opts path filename {log_mode "quiet"}} {
     ::write_xdc {*}$log_opts {*}$opts -force $path_file_name
 }
 
-proc ::project::_write_waivers {opts path filename {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::write_waivers {opts path filename {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
@@ -2188,8 +2190,8 @@ proc ::project::_write_waivers {opts path filename {log_mode "quiet"}} {
     ::write_waivers {*}$log_opts {*}$opts -force $path_file_name
 }
 
-proc ::project::_write_schematic {opts path filename {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::write_schematic {opts path filename {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
 
@@ -2202,8 +2204,8 @@ proc ::project::_write_schematic {opts path filename {log_mode "quiet"}} {
     ::write_schematic {*}$log_opts {*}$opts -format native -force $path_file_name_txt
 }
 
-proc ::project::_report_methodology {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_methodology {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "methodology"
 
@@ -2215,8 +2217,8 @@ proc ::project::_report_methodology {opts path {log_mode "quiet"}} {
     ::report_methodology {*}$log_opts {*}$opts -rpx $path_file_name_rpx -file $path_file_name
 }
 
-proc ::project::_report_timing_summary {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_timing_summary {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "timing_summary"
 
@@ -2228,8 +2230,8 @@ proc ::project::_report_timing_summary {opts path {log_mode "quiet"}} {
     ::report_timing_summary {*}$log_opts {*}$opts -rpx $path_file_name_rpx -file $path_file_name
 }
 
-proc ::project::_report_drc {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_drc {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "drc"
 
@@ -2241,8 +2243,8 @@ proc ::project::_report_drc {opts path {log_mode "quiet"}} {
     ::report_drc {*}$log_opts {*}$opts -rpx $path_file_name_rpx -file $path_file_name
 }
 
-proc ::project::_report_timing {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_timing {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "timing"
 
@@ -2254,8 +2256,8 @@ proc ::project::_report_timing {opts path {log_mode "quiet"}} {
     ::report_timing {*}$log_opts {*}$opts -rpx $path_file_name_rpx -file $path_file_name
 }
 
-proc ::project::_report_clock_networks {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_clock_networks {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "clock_networks"
 
@@ -2266,8 +2268,8 @@ proc ::project::_report_clock_networks {opts path {log_mode "quiet"}} {
     ::report_clock_networks {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_clock_interaction {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_clock_interaction {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "clock_interaction"
 
@@ -2278,8 +2280,8 @@ proc ::project::_report_clock_interaction {opts path {log_mode "quiet"}} {
     ::report_clock_interaction {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_cdc {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_cdc {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "cdc"
 
@@ -2290,8 +2292,8 @@ proc ::project::_report_cdc {opts path {log_mode "quiet"}} {
     ::report_cdc {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_power {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_power {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "power"
 
@@ -2306,8 +2308,8 @@ proc ::project::_report_power {opts path {log_mode "quiet"}} {
         -file $path_file_name
 }
 
-proc ::project::_report_clock_utilization {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_clock_utilization {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "clock_utilization"
 
@@ -2318,8 +2320,8 @@ proc ::project::_report_clock_utilization {opts path {log_mode "quiet"}} {
     ::report_clock_utilization {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_qor_suggestions {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_qor_suggestions {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "qor_suggestions"
 
@@ -2330,8 +2332,8 @@ proc ::project::_report_qor_suggestions {opts path {log_mode "quiet"}} {
     ::report_qor_suggestions {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_high_fanout_nets {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_high_fanout_nets {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "high_fanout_nets"
 
@@ -2342,8 +2344,8 @@ proc ::project::_report_high_fanout_nets {opts path {log_mode "quiet"}} {
     ::report_high_fanout_nets {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_qor_assessment {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_qor_assessment {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "qor_assessment"
 
@@ -2354,8 +2356,8 @@ proc ::project::_report_qor_assessment {opts path {log_mode "quiet"}} {
     ::report_qor_assessment {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_design_analysis {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_design_analysis {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "design_analysis"
 
@@ -2366,8 +2368,8 @@ proc ::project::_report_design_analysis {opts path {log_mode "quiet"}} {
     ::report_design_analysis {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_dfx_summary {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_dfx_summary {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "dfx_summary"
 
@@ -2378,8 +2380,8 @@ proc ::project::_report_dfx_summary {opts path {log_mode "quiet"}} {
     ::report_dfx_summary {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_bus_skew {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_bus_skew {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "bus_skew"
 
@@ -2391,8 +2393,8 @@ proc ::project::_report_bus_skew {opts path {log_mode "quiet"}} {
     ::report_bus_skew {*}$log_opts {*}$opts -rpx $path_file_name_rpx -file $path_file_name
 }
 
-proc ::project::_report_datasheet {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_datasheet {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "datasheet"
 
@@ -2404,8 +2406,8 @@ proc ::project::_report_datasheet {opts path {log_mode "quiet"}} {
     ::report_datasheet {*}$log_opts {*}$opts -rpx $path_file_name_rpx -file $path_file_name
 }
 
-proc ::project::_report_route_status {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_route_status {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "route_status"
 
@@ -2416,8 +2418,8 @@ proc ::project::_report_route_status {opts path {log_mode "quiet"}} {
     ::report_route_status {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_io {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_io {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "io"
 
@@ -2428,8 +2430,8 @@ proc ::project::_report_io {opts path {log_mode "quiet"}} {
     ::report_io {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_utilization {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_utilization {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "utilization"
 
@@ -2440,8 +2442,8 @@ proc ::project::_report_utilization {opts path {log_mode "quiet"}} {
     ::report_utilization {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_control_sets {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_control_sets {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "control_sets"
 
@@ -2452,8 +2454,8 @@ proc ::project::_report_control_sets {opts path {log_mode "quiet"}} {
     ::report_control_sets {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_report_ssn {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_ssn {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "ssn"
 
@@ -2468,8 +2470,8 @@ proc ::project::_report_ssn {opts path {log_mode "quiet"}} {
     ::report_ssn {*}$log_opts {*}$opts -format html -file $path_file_name_html
 }
 
-proc ::project::_report_ram_utilization {opts path {log_mode "quiet"}} {
-    ::project::check_is_synthesized
+proc ::project::internal::report_ram_utilization {opts path {log_mode "quiet"}} {
+    ::project::internal::check_is_synthesized
 
     set filename "ram_utilization"
 
@@ -2480,10 +2482,10 @@ proc ::project::_report_ram_utilization {opts path {log_mode "quiet"}} {
     ::report_ram_utilization {*}$log_opts {*}$opts -file $path_file_name
 }
 
-proc ::project::_set_working_dir {} {
+proc ::project::internal::set_working_dir {} {
     variable resolved_db
 
-    ::project::check_is_resolved
+    ::project::internal::check_is_resolved
 
     set prj_build_dir [::common::dict_get_required $resolved_db project.project_build_path \
         "Error: The project build path is not specified in resolve step!!!"]
@@ -2499,120 +2501,120 @@ proc ::project::_set_working_dir {} {
     return $init_path
 }
 
-proc ::project::is_loaded {} {
+proc ::project::internal::is_loaded {} {
     variable loaded
 
     return $loaded
 }
 
-proc ::project::is_resolved {} {
+proc ::project::internal::is_resolved {} {
     variable resolved
 
     return $resolved
 }
 
-proc ::project::is_prepared {} {
+proc ::project::internal::is_prepared {} {
     variable prepared
 
     return $prepared
 }
 
-proc ::project::is_designed {} {
+proc ::project::internal::is_designed {} {
     variable designed
 
     return $designed
 }
 
-proc ::project::is_synthesized {} {
+proc ::project::internal::is_synthesized {} {
     variable synthesized
 
     return $synthesized
 }
 
-proc ::project::is_implemented {} {
+proc ::project::internal::is_implemented {} {
     variable implemented
 
     return $implemented
 }
 
-proc ::project::is_bitstream_generated {} {
+proc ::project::internal::is_bitstream_generated {} {
     variable bitstream_generated
 
     return $bitstream_generated
 }
 
-proc ::project::is_xsa_generated {} {
+proc ::project::internal::is_xsa_generated {} {
     variable xsa_generated
 
     return $xsa_generated
 }
 
-proc ::project::check_is_loaded {} {
-    if {![::project::is_loaded]} {
+proc ::project::internal::check_is_loaded {} {
+    if {![::project::internal::is_loaded]} {
         error "No project loaded."
     }
 }
 
-proc ::project::check_is_resolved {} {
-    ::project::check_is_loaded
+proc ::project::internal::check_is_resolved {} {
+    ::project::internal::check_is_loaded
 
-    if {![::project::is_resolved]} {
+    if {![::project::internal::is_resolved]} {
         error "Project has not been resolved."
     }
 }
 
-proc ::project::check_is_prepared {} {
-    ::project::check_is_resolved
+proc ::project::internal::check_is_prepared {} {
+    ::project::internal::check_is_resolved
 
-    if {![::project::is_prepared]} {
+    if {![::project::internal::is_prepared]} {
         error "Project has not been prepared."
     }
 }
 
-proc ::project::check_is_designed {} {
-    ::project::check_is_prepared
+proc ::project::internal::check_is_designed {} {
+    ::project::internal::check_is_prepared
 
-    if {![::project::is_designed]} {
+    if {![::project::internal::is_designed]} {
         error "Project has not been designed."
     }
 }
 
-proc ::project::check_is_synthesized {} {
-    ::project::check_is_designed
+proc ::project::internal::check_is_synthesized {} {
+    ::project::internal::check_is_designed
 
-    if {![::project::is_synthesized]} {
+    if {![::project::internal::is_synthesized]} {
         error "Project has not been synthesized."
     }
 }
 
-proc ::project::check_is_implemented {} {
-    ::project::check_is_synthesized
+proc ::project::internal::check_is_implemented {} {
+    ::project::internal::check_is_synthesized
 
-    if {![::project::is_implemented]} {
+    if {![::project::internal::is_implemented]} {
         error "Project has not been implemented."
     }
 }
 
-proc ::project::check_is_bitstream_generated {} {
-    ::project::check_is_implemented
+proc ::project::internal::check_is_bitstream_generated {} {
+    ::project::internal::check_is_implemented
 
-    if {![::project::is_bitstream_generated]} {
+    if {![::project::internal::is_bitstream_generated]} {
         error "The bitstream has not been generated."
     }
 }
 
-proc ::project::check_is_xsa_generated {} {
-    ::project::check_is_bitstream_generated
+proc ::project::internal::check_is_xsa_generated {} {
+    ::project::internal::check_is_bitstream_generated
 
-    if {![::project::is_xsa_generated]} {
+    if {![::project::internal::is_xsa_generated]} {
         error "The XSA has not been generated."
     }
 }
 
-proc ::project::get {path} {
+proc ::project::internal::get {path} {
     variable resolved_db
 
-    if {![project::is_resolved]} {
+    if {![::project::internal::is_resolved]} {
         error "The project is not resolved."
     }
 
@@ -2620,57 +2622,57 @@ proc ::project::get {path} {
         "The '$path' does not exists in the project database."]
 }
 
-proc ::project::get_default {path default} {
+proc ::project::internal::get_default {path default} {
     variable resolved_db
 
-    if {![project::is_resolved]} {
+    if {![::project::internal::is_resolved]} {
         error "The project is not resolved."
     }
 
     return [::common::dict_get_default $resolved_db $path $default]
 }
 
-proc ::project::src_path {} {
-    return [::project::get project.project_src_path]
+proc ::project::internal::src_path {} {
+    return [::project::internal::get project.project_src_path]
 }
 
-proc ::project::build_path {} {
-    return [::project::get project.project_build_path]
+proc ::project::internal::build_path {} {
+    return [::project::internal::get project.project_build_path]
 }
 
-proc ::project::name {} {
-    return [project::get project.name]
+proc ::project::internal::name {} {
+    return [::project::internal::get project.name]
 }
 
-proc ::project::version {} {
-    return [project::get project.version]
+proc ::project::internal::version {} {
+    return [::project::internal::get project.version]
 }
 
-proc ::project::language {} {
-    return [project::get project.language]
+proc ::project::internal::language {} {
+    return [::project::internal::get project.language]
 }
 
-proc ::project::target {} {
-    return [project::get target]
+proc ::project::internal::target {} {
+    return [::project::internal::get target]
 }
 
-proc ::project::resources {} {
-    return [project::get resources]
+proc ::project::internal::resources {} {
+    return [::project::internal::get resources]
 }
 
-proc ::project::top {} {
-    return [project::get resources.top]
+proc ::project::internal::top {} {
+    return [::project::internal::get resources.top]
 }
 
-proc ::project::configuration {} {
-    return [project::get configuration]
+proc ::project::internal::configuration {} {
+    return [::project::internal::get configuration]
 }
 
-proc ::project::simulation {} {
-    return [project::get simulation]
+proc ::project::internal::simulation {} {
+    return [::project::internal::get simulation]
 }
 
-proc ::project::_split_path {path} {
+proc ::project::internal::_split_path {path} {
     if {$path eq ""} {
         return {}
     }

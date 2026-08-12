@@ -1,4 +1,6 @@
-namespace eval ::simulate {
+namespace eval ::simulate {}
+
+namespace eval ::simulate::internal {
     variable project_root_path $::common::ROOT_DIR
     variable SIM_PATH $::common::SIM_PATH
     variable ELAB_PATH $::common::ELAB_PATH
@@ -8,9 +10,9 @@ namespace eval ::simulate {
     variable compile_db {}
 }
 
-proc simulate::compile {module_path sim_mode} {
-    variable compile_db
-    variable SIM_PATH
+proc ::simulate::compile {module_path sim_mode} {
+    variable internal::compile_db
+    variable internal::SIM_PATH
 
     set compile_db {}
     dict lappend compile_db includes
@@ -20,52 +22,52 @@ proc simulate::compile {module_path sim_mode} {
 
     set init_path [::common::set_working_dir $SIM_PATH]
 
-    module::scan
-    module::load $module_path
-    if {![module::is_loaded]} {
+    ::module::scan
+    ::module::load $module_path
+    if {![::module::is_loaded]} {
         error "No module loaded."
     }
 
-    set consume [dict get [module::simulation $sim_mode] consume]
-    set variant [dict get [module::simulation $sim_mode] variant]
-    set opts [dict get [module::simulation $sim_mode] xvlog_opts]
+    set consume [dict get [::module::simulation $sim_mode] consume]
+    set variant [dict get [::module::simulation $sim_mode] variant]
+    set opts [dict get [::module::simulation $sim_mode] xvlog_opts]
     if {$opts eq "null"} {
         set opts ""
     }
 
-    set deps [dependency::resolve $module_path $consume $variant]
+    set deps [::dependency::resolve $module_path $consume $variant]
 
     foreach node $deps {
-        simulate::_compile_collect $node
+        ::simulate::internal::compile_collect $node
     }
 
-    simulate::_add_sim_files $module_path $sim_mode
+    ::simulate::internal::add_sim_files $module_path $sim_mode
 
-    simulate::_compile $opts
+    ::simulate::internal::compile $opts
 
     ::common::set_working_dir $init_path
 }
 
-proc simulate::elaborate {module_path sim_mode} {
-    variable project_root_path
-    variable SIM_PATH
-    variable LIB_NAME
-    variable LIB_PATH
-    variable ELAB_PATH
+proc ::simulate::elaborate {module_path sim_mode} {
+    variable internal::project_root_path
+    variable internal::SIM_PATH
+    variable internal::LIB_NAME
+    variable internal::LIB_PATH
+    variable internal::ELAB_PATH
 
     set module_path [file normalize $module_path]
 
     set init_path [::common::set_working_dir $SIM_PATH]
 
-    module::load $module_path
-    if {![module::is_loaded]} {
+    ::module::load $module_path
+    if {![::module::is_loaded]} {
         error "No module loaded."
     }
 
-    set elab_dir [file join $ELAB_PATH [module::name] $sim_mode]
+    set elab_dir [file join $ELAB_PATH [::module::name] $sim_mode]
     file mkdir $elab_dir
 
-    set sim_cfg [module::simulation $sim_mode]
+    set sim_cfg [::module::simulation $sim_mode]
     set top [dict get $sim_cfg top]
     set snapshot [dict get $sim_cfg snapshot]
     set timescale [dict get $sim_cfg timescale]
@@ -76,7 +78,7 @@ proc simulate::elaborate {module_path sim_mode} {
     }
 
     set includes {}
-    foreach inc [module::get include] {
+    foreach inc [::module::get include] {
         if {$inc ne "null"} {
             lappend includes \
                 -i [file join $project_root_path $module_path $inc]
@@ -97,22 +99,22 @@ proc simulate::elaborate {module_path sim_mode} {
     ::common::set_working_dir $init_path
 }
 
-proc simulate::simulate {module_path sim_mode} {
-    variable project_root_path
-    variable ELAB_PATH
-    variable SIM_PATH
+proc ::simulate::simulate {module_path sim_mode} {
+    variable internal::project_root_path
+    variable internal::ELAB_PATH
+    variable internal::SIM_PATH
 
     set module_path [file normalize $module_path]
 
     set init_path [::common::set_working_dir $SIM_PATH]
 
-    module::load $module_path
+    ::module::load $module_path
 
-    if {![module::is_loaded]} {
+    if {![::module::is_loaded]} {
         error "No module loaded."
     }
 
-    set sim_cfg [module::simulation $sim_mode]
+    set sim_cfg [::module::simulation $sim_mode]
 
     set snapshot [dict get $sim_cfg snapshot]
     set tclbatch [dict get $sim_cfg tclbatch]
@@ -123,7 +125,7 @@ proc simulate::simulate {module_path sim_mode} {
         set opts {}
     }
 
-    set elab_dir [file join $ELAB_PATH [module::name] $sim_mode]
+    set elab_dir [file join $ELAB_PATH [::module::name] $sim_mode]
 
     if {![file isdirectory $elab_dir]} {
         error "Elaboration directory does not exist: $elab_dir"
@@ -171,7 +173,7 @@ proc simulate::simulate {module_path sim_mode} {
 
     puts ""
     puts "Simulation"
-    puts "  Module:    [module::name]"
+    puts "  Module:    [::module::name]"
     puts "  Snapshot:  $snapshot"
     puts "  Mode:      $sim_mode"
     puts "  Tcl Batch: $tclbatch"
@@ -183,7 +185,7 @@ proc simulate::simulate {module_path sim_mode} {
     ::common::set_working_dir $init_path
 }
 
-proc simulate::_compile_collect {node} {
+proc ::simulate::internal::compile_collect {node} {
     variable compile_db
     variable project_root_path
     variable IP_PATH
@@ -192,12 +194,12 @@ proc simulate::_compile_collect {node} {
     set consume [dict get $node consume]
     set variant [dict get $node variant]
 
-    module::load $module_path
-    if {![module::is_loaded]} {
+    ::module::load $module_path
+    if {![::module::is_loaded]} {
         error "No module loaded."
     }
 
-    foreach inc [module::get include] {
+    foreach inc [::module::get include] {
         if {$inc ne "null"} {
             dict lappend compile_db includes \
                 [file join $project_root_path $module_path $inc]
@@ -205,29 +207,29 @@ proc simulate::_compile_collect {node} {
     }
 
     if {$consume eq "rtl"} {
-        foreach f [module::get rtl] {
+        foreach f [::module::get rtl] {
             dict lappend compile_db files \
                 [file join $project_root_path $module_path $f]
         }
     } elseif {$consume eq "ip"} {
-        set module_name [module::name]
-        set module_version [module::version]
-        set variant_name [module::variant_get $variant name]
+        set module_name [::module::name]
+        set module_version [::module::version]
+        set variant_name [::module::variant_get $variant name]
 
         set ip_dir "${module_name}_v${module_version}"
 
         set xml_fileset [file join \
             $IP_PATH $ip_dir $variant_name "${variant_name}.xml"]
 
-        ip::load_xml_fileset $xml_fileset
+        ::ip::load_xml_fileset $xml_fileset
 
-        foreach f [ip::get_xml_field simulation.behavioral] {
+        foreach f [::ip::get_xml_field simulation.behavioral] {
             puts "$f"
             dict lappend compile_db files \
                 [file join $IP_PATH $ip_dir $variant_name $f]
         }
 
-        foreach f [ip::get_xml_field simulation.wrapper] {
+        foreach f [::ip::get_xml_field simulation.wrapper] {
             puts "$f"
             dict lappend compile_db files \
                 [file join $IP_PATH $ip_dir $variant_name $f]
@@ -235,11 +237,11 @@ proc simulate::_compile_collect {node} {
     }
 }
 
-proc simulate::_add_sim_files {module_path sim_mode} {
+proc ::simulate::internal::add_sim_files {module_path sim_mode} {
     variable compile_db
     variable project_root_path
 
-    set sim_cfg [module::simulation $sim_mode]
+    set sim_cfg [::module::simulation $sim_mode]
 
     foreach f [dict get $sim_cfg files] {
         dict lappend compile_db files \
@@ -247,7 +249,7 @@ proc simulate::_add_sim_files {module_path sim_mode} {
     }
 }
 
-proc simulate::_compile {{opts ""}} {
+proc ::simulate::internal::compile {{opts ""}} {
     variable LIB_NAME
     variable LIB_PATH
     variable compile_db

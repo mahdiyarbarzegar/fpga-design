@@ -1,24 +1,26 @@
-namespace eval ::dependency {
+namespace eval ::dependency {}
+
+namespace eval ::dependency::internal {
     variable visited
     variable visiting
     variable ordered
 }
 
-proc dependency::resolve {module_path {consume "null"} {variant "null"}} {
-    variable visited
-    variable visiting
-    variable ordered
+proc ::dependency::resolve {module_path {consume "null"} {variant "null"}} {
+    variable internal::visited
+    variable internal::visiting
+    variable internal::ordered
 
     array unset visited
     array unset visiting
     set ordered {}
 
-    _visit $module_path $consume $variant
+    ::dependency::internal::visit $module_path $consume $variant
 
     return $ordered
 }
 
-proc dependency::_visit {module_path {consume "null"} {variant "null"}} {
+proc ::dependency::internal::visit {module_path {consume "null"} {variant "null"}} {
     variable visited
     variable visiting
     variable ordered
@@ -35,13 +37,13 @@ proc dependency::_visit {module_path {consume "null"} {variant "null"}} {
 
     set visiting($key) 1
 
-    module::load $module_path
+    ::module::load $module_path
 
-    if {![module::is_loaded]} {
+    if {![::module::is_loaded]} {
         error "Cannot load module $module_path"
     }
 
-    set deps [module::get_default dependencies {}]
+    set deps [::module::get_default dependencies {}]
 
     foreach dep $deps {
         set dep_module [dict get $dep "module"]
@@ -56,19 +58,19 @@ proc dependency::_visit {module_path {consume "null"} {variant "null"}} {
             error "The dependency type is wrong: $dep_consume!!!"
         }
 
-        set dep_path [module::find $dep_module]
+        set dep_path [::module::find $dep_module]
 
-        module::load $dep_path
+        ::module::load $dep_path
 
-        if {![module::is_loaded]} {
+        if {![::module::is_loaded]} {
             error "Cannot load module $module_path"
         }
 
         if {$dep_consume eq "ip"} {
-            module::validate_variant $dep_variant
+            ::module::validate_variant $dep_variant
         }
 
-        _visit $dep_path $dep_consume $dep_variant
+        ::dependency::internal::visit $dep_path $dep_consume $dep_variant
     }
 
     unset visiting($key)

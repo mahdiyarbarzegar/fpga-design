@@ -1,14 +1,14 @@
-namespace eval package_append {
+namespace eval ::package_append {
 
 }
 
-proc package_append::do_package_append {ctx} {
+proc ::package_append::do_package_append {ctx} {
     set core [dict get $ctx core]
     set module_path [dict get $ctx module_path]
     set project_root [dict get $ctx project_root]
     set quiet [dict get $ctx quiet]
 
-    ipx::infer_bus_interfaces {*}$quiet $core
+    ::ipx::infer_bus_interfaces {*}$quiet $core
 
     #
     # ipx::add_bus_interface irq $core
