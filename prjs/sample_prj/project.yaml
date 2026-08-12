@@ -1,0 +1,382 @@
+project:
+  name: sample_prj
+  version: 0.1
+  description: A sample project using Zynq 7000
+  language: Verilog
+
+target:
+  type: board
+  part: xc7z020clg400-1
+  board: myir.com:mys-7z020:part0:2.1
+
+resources:
+  rtl:
+    modules:
+      - name: booth_multiplier
+        version: 0.1
+
+      - name: restoring_divider
+        version: 0.1
+
+    locals:
+      - rtl/shift_add_multiplier/shift_add_multiplier.v
+      - rtl/carry_look_ahead_adder/carry_look_ahead_adder.v
+      - rtl/carry_look_ahead_adder/carry_predictor.v
+      - rtl/carry_look_ahead_adder/cla_block.v
+
+  ip:
+    - name: pwm_gen
+      version: 0.1
+      variant: pwm_gen_1ch
+
+    - name: fifo_generator
+      version: 13.2
+      variant: fifo_simple_xil
+
+  bd:
+    name: system_top_3
+    path: bd/system_top_3.tcl
+
+  constraints:
+    - path:
+
+  top:
+    name: system_top_3_wrapper
+    path: top/system_top_3_wrapper.v
+
+configuration:
+  synth:
+    strategy: Vivado Synthesis Defaults
+      # Flow_AreaOptimized_high
+      # Flow_AreaOptimized_medium
+      # Flow_AreaMultThresholdDSP
+      # Flow_AlternateRoutability
+      # Flow_PerfOptimized_high
+      # Flow_PerfThresholdCarry
+    # Flow_RuntimeOptimized
+    directive: default
+      # runtimeoptimized
+      # AreaOptimized_high
+      # AreaOptimized_medium
+      # AlternateRoutability
+      # AreaMapLargeShiftRegToBRAM
+      # AreaMultThresholdDSP
+      # FewerCarryChains
+      # PerformanceOptimized
+    # LogicCompaction
+    opts:
+    # - -flatten_hierarchy
+    # - rebuilt
+    # - -retiming
+    # - -directive
+    # - AreaOptimized_high
+
+  impl:
+    strategy: Vivado Advanced Implementation Defaults
+      # Vivado Implementation Defaults
+      # Performance_Auto_1
+      # Performance_Auto_2
+      # Performance_Auto_3
+      # Performance_Explore
+      # Performance_AggressiveExplore
+      # Performance_ExplorePostRoutePhysOpt
+      # Performance_ExploreWithRemap
+      # Performance_WLBlockPlacement
+      # Performance_WLBlockPlacementFanoutOpt
+      # Performance_EarlyBlockPlacement
+      # Performance_NetDelay_high
+      # Performance_NetDelay_medium
+      # Performance_NetDelay_low
+      # Performance_Retiming
+      # Performance_ExtraTimingOpt
+      # Performance_RefinePlacement
+      # Performance_SpreadSLLs
+      # Performance_BalanceSLLs
+      # Performance_BalanceSLRs
+      # Performance_HighUtilSLRs
+      # Congestion_SpreadLogic_high
+      # Congestion_SpreadLogic_medium
+      # Congestion_SpreadLogic_low
+      # Congestion_SSI_SpreadLogic_high
+      # Congestion_SSI_SpreadLogic_medium
+      # Congestion_SSI_SpreadLogic_low
+      # Area_Explore
+      # Area_ExploreSequential
+      # Area_ExploreWithRemap
+      # Power_ExploreArea
+      # Flow_RunPhysOpt
+      # Flow_RunPostRoutePhysOpt
+      # Flow_RuntimeOptimized
+    # Flow_Quick
+    optimize:
+      directive: Default
+        # Explore
+        # ExploreArea
+        # ExploreWithRemap
+        # ExploreSequentialArea
+        # RuntimeOptimized
+      # RQS
+      opts:
+
+    power_optimize:
+      enabled: true
+      opts:
+
+    place:
+      directive: Default
+        # Explore
+        # AggressiveExplore
+        # RuntimeOptimized
+      # Quick
+      opts:
+
+    physical_optimize:
+      enabled: true
+      directive: Default
+        # Explore
+        # ExploreWithHoldFix
+        # ExploreWithAggressiveHoldFix
+        # AggressiveExplore
+        # AlternateReplication
+        # AggressiveFanoutOpt
+        # AlternateFlowWithRetiming
+        # AddRetime
+      # RuntimeOptimized
+      # RQS
+      opts:
+
+    route:
+      directive: Default
+        # Explore
+        # AggressiveExplore
+        # NoTimingRelaxation
+        # MoreGlobalIterations
+        # HigherDelayCost
+        # AdvancedSkewModeling
+        # AlternateCLBRouting
+        # RuntimeOptimized
+      # Quick
+      opts:
+
+  bitstream:
+    opts:
+
+  xsa:
+    opts:
+
+generation:
+  write_verilog:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  write_vhdl:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: false
+      opts:
+  write_sdf:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  write_edif:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  write_xdc:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  write_waivers:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  write_schematic:
+    synth:
+      enable: true
+      opts: -orientation portrait -scope all
+    impl:
+      enable: true
+      opts: -orientation portrait -scope all
+
+report:
+  methodology:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  timing_summary:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  drc:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  timing:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  clock_networks:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  clock_interaction:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  cdc:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  power:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  clock_utilization:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  qor_suggestions:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  high_fanout_nets:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  qor_assessment:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  design_analysis:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  dfx_summary:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  bus_skew:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  datasheet:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  route_status:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  io:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  utilization:
+    synth:
+      enable: true
+      opts:
+    impl:
+      enable: true
+      opts:
+  control_sets:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  ssn:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+  ram_utilization:
+    synth:
+      enable: false
+      opts:
+    impl:
+      enable: true
+      opts:
+
+simulation:
+  behavioral:
+    top:
+
+  post_synthesis:
+    top:
+
+  post_implementation:
+    top:

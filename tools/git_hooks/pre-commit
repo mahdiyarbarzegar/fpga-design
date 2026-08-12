@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Path to Verible (relative to repo root)
+VERIBLE="./tools/verible/bin/verible-verilog-format"
+FLAGFILE=".verible-verilog-format.flag"
+
+# Collect staged Verilog/SystemVerilog files
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(v|sv|vh|svh)$')
+
+if [ -z "$FILES" ]; then
+    exit 0
+fi
+
+RET=0
+
+echo "Checking Verible formatting..."
+
+# Loop through each staged file
+for FILE in $FILES; do
+    if [ ! -f "$FILE" ]; then
+        continue
+    fi
+
+    # Create a temporary file
+    TMPFILE=$(mktemp)
+
+    # Extract staged version of the file into TMPFILE
+    git show ":$FILE" > "$TMPFILE"
+
+    # Format the TMPFILE (in place)
+    $VERIBLE --flagfile "$FLAGFILE" --inplace "$TMPFILE"
+
+    # Compare formatted TMPFILE with staged file content
+    if ! diff -q "$TMPFILE" <(git show ":$FILE") > /dev/null; then
+        echo "*** Formatting issue in: $FILE"
+        echo "    Please run Verible formatter:"
+        echo "    $VERIBLE --flagfile $FLAGFILE --inplace $FILE"
+        RET=1
+    fi
+
+    rm "$TMPFILE"
+done
+
+if [ $RET -ne 0 ]; then
+    echo ""
+    echo "*** Commit rejected. Fix formatting and try again."
+    exit 1
+fi
+
+echo "Formatting OK."
+exit 0
+

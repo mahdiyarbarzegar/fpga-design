@@ -1,0 +1,64 @@
+name: carry_look_ahead_adder
+
+ip:
+  vlnv: user.org:user_ip:carry_look_ahead_adder:0.1
+  vendor: user.org
+  library: user_ip
+  name: carry_look_ahead_adder
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: Carry-Look-Ahead Adder
+  description: Carry Look Ahead Adder
+  top_module: carry_look_ahead_adder_w
+
+type: hdl
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/carry_look_ahead_adder_w.v
+  - rtl/carry_look_ahead_adder.v
+  - rtl/carry_predictor.v
+  - rtl/cla_block.v
+
+include:
+
+constraints:
+
+dependencies: { }
+
+simulation:
+  batch:
+    top: tb_carry_look_ahead_adder
+    snapshot: carry_look_ahead_adder_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_carry_look_ahead_adder.v
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top:
+    snapshot:
+    consume:
+    variant:
+    files:
+    timescale:
+    tclbatch:
+    waveform:
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
+  cla_adder_32b:
+    name: cla_adder_32b
+    display_name: Carry-Look-Ahead Adder 32bit
+    parameters:
+      CONFIG.BUS_WIDTH: 32
+      CONFIG.CLA_BLOCK_WIDTH: 4

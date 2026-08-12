@@ -1,0 +1,71 @@
+name: array_multiplier
+
+ip:
+  vlnv: user.org:user_ip:array_multiplier:0.1
+  vendor: user.org
+  library: user_ip
+  name: array_multiplier
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: Array Multiplier
+  description: An array like combinational multiplier
+  top_module: array_multiplier_w
+
+type: hdl
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/array_multiplier_w.v
+  - rtl/array_multiplier.v
+  - rtl/mul_slice.v
+
+include:
+
+constraints:
+
+dependencies:
+  - module: full_adder
+    consume: rtl
+    variant:
+
+simulation:
+  batch:
+    top: tb_array_multiplier
+    snapshot: array_multiplier_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_array_multiplier.v
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top:
+    snapshot:
+    consume:
+    variant:
+    files:
+    timescale:
+    tclbatch:
+    waveform:
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
+  array_mul_32b:
+    name: array_mul_32b
+    display_name: Array Multiplier 32bit
+    parameters:
+      CONFIG.DATA_WIDTH: 32
+
+  array_mul_8b:
+    name: array_mul_8b
+    display_name: Array Multiplier 8bit
+    parameters:
+      CONFIG.DATA_WIDTH: 8

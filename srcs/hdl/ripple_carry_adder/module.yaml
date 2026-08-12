@@ -1,0 +1,65 @@
+name: ripple_carry_adder
+
+ip:
+  vlnv: user.org:user_ip:ripple_carry_adder:0.1
+  vendor: user.org
+  library: user_ip
+  name: ripple_carry_adder
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: Ripple Carry Adder
+  description: Ripple Carry Adder
+  top_module: ripple_carry_adder_w
+
+type: hdl
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/ripple_carry_adder_w.v
+  - rtl/ripple_carry_adder.v
+
+include:
+
+constraints:
+
+dependencies:
+  - module: full_adder
+    consume: rtl
+    variant:
+
+simulation:
+  batch:
+    top: tb_ripple_carry_adder
+    snapshot: ripple_carry_adder_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_ripple_carry_adder.v
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top: gui_ripple_carry_adder
+    snapshot: ripple_carry_adder_gui
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_ripple_carry_adder.v
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/gui_sim.wcfg
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
+  rca_32b:
+    name: rca_32b
+    display_name: Ripple Carry Adder 32bit
+    parameters:
+      CONFIG.BUS_WIDTH: 32

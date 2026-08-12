@@ -1,0 +1,69 @@
+name: shift_add_multiplier
+
+ip:
+  vlnv: user.org:user_ip:shift_add_multiplier:0.1
+  vendor: user.org
+  library: user_ip
+  name: shift_add_multiplier
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: Shift-Add Multiplier
+  description: Shift-Add Multiplier
+  top_module: shift_add_multiplier_w
+
+type: hdl
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/shift_add_multiplier_w.v
+  - rtl/shift_add_multiplier.v
+
+include:
+
+constraints:
+  - constr/package.xdc
+
+dependencies: { }
+
+simulation:
+  batch:
+    top: tb_shift_add_multiplier
+    snapshot: shift_add_multiplier_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_shift_add_multiplier.v
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top: gui_shift_add_multiplier
+    snapshot: shift_add_multiplier_gui
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_shift_add_multiplier.v
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/gui_sim.tcl
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
+  shift_add_mul_32b:
+    name: shift_add_mul_32b
+    display_name: Shift-Add Multiplier 32bit
+    parameters:
+      CONFIG.BUS_WIDTH: 32
+
+  shift_add_mul_8b:
+    name: shift_add_mul_8b
+    display_name: Shift-Add Multiplier 8bit
+    parameters:
+      CONFIG.BUS_WIDTH: 8

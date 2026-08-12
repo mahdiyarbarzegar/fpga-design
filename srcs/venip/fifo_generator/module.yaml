@@ -1,0 +1,85 @@
+name: fifo_generator
+
+ip:
+  vlnv: xilinx.com:ip:fifo_generator:13.2
+  vendor: xilinx.com
+  library: ip
+  name: fifo_generator
+  version: 13.2
+  taxonomy:
+  display_name:
+  description:
+  top_module:
+
+type: venip
+
+constraints:
+
+include:
+
+dependencies: { }
+
+simulation:
+  batch:
+    top:
+    snapshot:
+    consume:
+    variant:
+    files:
+    timescale:
+    tclbatch:
+    waveform:
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+  gui:
+    top: gui_demo_xil_fifo
+    snapshot: demo_xil_fifo_gui
+    consume: ip
+    variant: fifo_simple_xil
+    files:
+      - sim/gui_demo_xil_fifo.v
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/gui_sim.wcfg
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
+
+  fifo_simple_xil:
+    name: fifo_simple_xil
+    display_name: Simple FiFo
+    parameters:
+      CONFIG.ADDRESS_WIDTH: 32
+      CONFIG.Almost_Empty_Flag: true
+      CONFIG.Almost_Full_Flag: true
+      CONFIG.CORE_CLK.FREQ_HZ: 100000000
+      CONFIG.Clock_Type_AXI: Common_Clock
+      CONFIG.Fifo_Implementation: Common_Clock_Block_RAM
+      CONFIG.Full_Threshold_Assert_Value: 126
+      CONFIG.Full_Threshold_Negate_Value: 125
+      CONFIG.Programmable_Full_Type: No_Programmable_Full_Threshold
+      CONFIG.Empty_Threshold_Assert_Value: 2
+      CONFIG.Empty_Threshold_Negate_Value: 3
+      CONFIG.Programmable_Empty_Type: No_Programmable_Empty_Threshold
+      CONFIG.Data_Count: true
+      CONFIG.Data_Count_Width: 7
+      CONFIG.Enable_Common_Overflow: true
+      CONFIG.Enable_Common_Underflow: true
+      CONFIG.Enable_Reset_Synchronization: true
+      CONFIG.INTERFACE_TYPE: Native
+      CONFIG.Input_Data_Width: 32
+      CONFIG.Input_Depth: 128
+      CONFIG.MASTER_ACLK.FREQ_HZ: 100000000
+      CONFIG.Output_Data_Width: 32
+      CONFIG.Output_Depth: 128
+      CONFIG.Overflow_Flag: true
+      CONFIG.Overflow_Sense: Active_High
+      CONFIG.READ_CLK.FREQ_HZ: 100000000
+      CONFIG.Reset_Pin: true
+      CONFIG.Reset_Type: Synchronous_Reset
+      CONFIG.Dout_Reset_Value: 0
+      CONFIG.Underflow_Flag: true
+      CONFIG.Underflow_Sense: Active_High

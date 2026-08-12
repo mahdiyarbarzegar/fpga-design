@@ -1,0 +1,54 @@
+name: full_adder
+
+ip:
+  vlnv: user.org:user_ip:full_adder:1.0
+  vendor: user.org
+  library: user_ip
+  name: full_adder
+  version: 1.0
+  taxonomy: /UserIP
+  display_name: Full Adder
+  description: A Simple Full Adder IP
+  top_module: full_adder
+
+type: hdl
+
+package: { }
+
+rtl:
+  - rtl/full_adder.v
+
+include:
+
+constraints:
+
+dependencies: { }
+
+simulation:
+  batch:
+    top: tb_full_adder
+    snapshot: full_adder_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_full_adder.v
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top:
+    snapshot:
+    consume:
+    variant:
+    files:
+    timescale:
+    tclbatch:
+    waveform:
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants: { }

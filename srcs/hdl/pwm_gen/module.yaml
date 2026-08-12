@@ -1,0 +1,82 @@
+name: pwm_gen
+
+ip:
+  vlnv: user.org:user_ip:pwm_gen:0.1
+  vendor: user.org
+  library: user_ip
+  name: pwm_gen
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: PWM Generator
+  description: A PWM generator with duty-cycle and frequency control.
+  top_module: pwm_gen_w
+
+type: hdl
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/pwm_gen_w.v
+  - rtl/pwm_gen.sv
+
+include:
+  - rtl
+
+constraints:
+  - constr/package.xdc
+
+dependencies:
+  - module:
+    consume:
+    variant:
+
+simulation:
+  batch:
+    top:
+    snapshot:
+    consume:
+    variant:
+    files:
+    timescale:
+    tclbatch:
+    waveform:
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+  gui:
+    top: gui_pwm_gen
+    snapshot: pwm_gen_gui
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_pwm_gen.sv
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/gui_sim.wcfg
+    xvlog_opts:
+      - --relax
+    xelab_opts:
+    xsim_opts:
+
+variants:
+  pwm_gen_1ch:
+    name: pwm_gen_1ch
+    display_name: PWM Generator 1-Channel
+    parameters:
+      CONFIG.TIMER_RESOLUTION: 32
+      CONFIG.CHANNELS: 1
+
+  pwm_gen_2ch:
+    name: pwm_gen_2ch
+    display_name: PWM Generator 2-Channel
+    parameters:
+      CONFIG.TIMER_RESOLUTION: 32
+      CONFIG.CHANNELS: 2
+
+  pwm_gen_3ch_high_res:
+    name: pwm_gen_3ch_high_res
+    display_name: PWM Generator 3-Channel High Resolution
+    parameters:
+      CONFIG.TIMER_RESOLUTION: 64
+      CONFIG.CHANNELS: 3

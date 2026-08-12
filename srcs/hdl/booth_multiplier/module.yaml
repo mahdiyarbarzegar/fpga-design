@@ -1,0 +1,69 @@
+name: booth_multiplier
+
+ip:
+  vlnv: user.org:user_ip:booth_multiplier:0.1
+  vendor: user.org
+  library: user_ip
+  name: booth_multiplier
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: Booth Multiplier
+  description: A booth sequential multiplier
+  top_module: booth_multiplier_w
+
+type: hdl
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/booth_multiplier_w.v
+  - rtl/booth_multiplier.v
+
+include:
+
+constraints:
+  - constr/package.xdc
+
+dependencies: { }
+
+simulation:
+  batch:
+    top: tb_booth_multiplier
+    snapshot: booth_multiplier_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_booth_multiplier.v
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top: gui_booth_multiplier
+    snapshot: booth_multiplier_gui
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_booth_multiplier.v
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/gui_sim.wcfg
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
+  booth_mul_32b:
+    name: booth_mul_32b
+    display_name: Booth Multiplier 32bit
+    parameters:
+      CONFIG.DATA_WIDTH: 32
+
+  booth_mul_8b:
+    name: booth_mul_8b
+    display_name: Booth Multiplier 8bit
+    parameters:
+      CONFIG.DATA_WIDTH: 8

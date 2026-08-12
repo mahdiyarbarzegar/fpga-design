@@ -1,0 +1,66 @@
+name: restoring_divider
+
+ip:
+  vlnv: user.org:user_ip:restoring_divider:0.1
+  vendor: user.org
+  library: user_ip
+  name: restoring_divider
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: Restoring Divider
+  description: Restoring Divider
+  top_module: restoring_divider_w
+
+type: hdl
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/restoring_divider_w.v
+  - rtl/restoring_divider.v
+
+include:
+
+constraints:
+  - constr/package.xdc
+
+dependencies:
+  - module: ripple_carry_adder
+    consume: rtl
+    variant:
+
+simulation:
+  batch:
+    top: tb_restoring_divider
+    snapshot: restoring_divider_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_restoring_divider.v
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top: gui_restoring_divider
+    snapshot: restoring_divider_gui
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_restoring_divider.v
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/gui_sim.wcfg
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
+  restoring_div_32b:
+    name: restoring_div_32b
+    display_name: Restoring Divider 32bit
+    parameters:
+      CONFIG.BUS_WIDTH: 32
