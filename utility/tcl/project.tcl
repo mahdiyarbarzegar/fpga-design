@@ -900,17 +900,29 @@ proc ::project::internal::load_prj {path} {
 }
 
 proc ::project::prepare {{log_mode "quiet"}} {
-    variable internal::resolved_db
-    variable internal::BUILD_PATH
-    variable internal::PRJ_BUILD_PATH
-    variable internal::PACKAGE_PATH
-    variable internal::prepared
+    try {
+        set init_path [::project::internal::set_working_dir]
+        ::project::internal::prepare $log_mode
+    } on error {result options} {
+        ::project::close
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during preparing."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::project::internal::prepare {{log_mode "quiet"}} {
+    variable resolved_db
+    variable BUILD_PATH
+    variable PRJ_BUILD_PATH
+    variable PACKAGE_PATH
+    variable prepared
 
     ::project::internal::check_is_resolved
 
     set log_opts [::common::log_option $log_mode]
-
-    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Prepare build directories
@@ -1063,8 +1075,6 @@ proc ::project::prepare {{log_mode "quiet"}} {
         puts "      $bd_tcl"
     }
 
-    ::common::set_working_dir $init_path
-
     # ------------------------------------------------------------------
     # Save preparation state
     # ------------------------------------------------------------------
@@ -1082,16 +1092,28 @@ proc ::project::prepare {{log_mode "quiet"}} {
 }
 
 proc ::project::design {{log_mode "quiet"}} {
-    variable internal::PRJ_BUILD_PATH
-    variable internal::project_path
-    variable internal::resolved_db
-    variable internal::designed
+    try {
+        set init_path [::project::internal::set_working_dir]
+        ::project::internal::design $log_mode
+    } on error {result options} {
+        ::project::close
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during design."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::project::internal::design {{log_mode "quiet"}} {
+    variable PRJ_BUILD_PATH
+    variable project_path
+    variable resolved_db
+    variable designed
 
     ::project::internal::check_is_prepared
 
     set log_opts [::common::log_option $log_mode]
-
-    set init_path [::project::internal::set_working_dir]
 
     puts ""
     puts "========================================"
@@ -1224,8 +1246,6 @@ proc ::project::design {{log_mode "quiet"}} {
         error "Failed to set top design. Expected '$top_name', got '$configured_top'."
     }
 
-    ::common::set_working_dir $init_path
-
     # ------------------------------------------------------------------
     # Design status
     # ------------------------------------------------------------------
@@ -1245,15 +1265,27 @@ proc ::project::design {{log_mode "quiet"}} {
 }
 
 proc ::project::synth {{log_mode "quiet"}} {
-    variable internal::synthesized
-    variable internal::PRJ_BUILD_PATH
-    variable internal::resolved_db
+    try {
+        set init_path [::project::internal::set_working_dir]
+        ::project::internal::synth $log_mode
+    } on error {result options} {
+        ::project::close
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during synthesis."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::project::internal::synth {{log_mode "quiet"}} {
+    variable synthesized
+    variable PRJ_BUILD_PATH
+    variable resolved_db
 
     ::project::internal::check_is_designed
 
     set log_opts [::common::log_option $log_mode]
-
-    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Reset synthesis state
@@ -1380,21 +1412,31 @@ proc ::project::synth {{log_mode "quiet"}} {
 
     ::project::internal::generate_reports synth $report_path $log_mode
 
-    ::common::set_working_dir $init_path
-
     puts ""
     puts "Synthesis completed successfully."
 }
 
 proc ::project::impl {{log_mode "quiet"}} {
-    variable internal::implemented
-    variable internal::PRJ_BUILD_PATH
+    try {
+        set init_path [::project::internal::set_working_dir]
+        ::project::internal::impl $log_mode
+    } on error {result options} {
+        ::project::close
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during implementation."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::project::internal::impl {{log_mode "quiet"}} {
+    variable implemented
+    variable PRJ_BUILD_PATH
 
     ::project::internal::check_is_synthesized
 
     set log_opts [::common::log_option $log_mode]
-
-    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Reset implementation state
@@ -1560,23 +1602,33 @@ proc ::project::impl {{log_mode "quiet"}} {
 
     ::project::internal::generate_reports impl $report_path $log_mode
 
-    ::common::set_working_dir $init_path
-
     puts ""
     puts "Implementation completed successfully."
 }
 
 proc ::project::bitstream_gen {{log_mode "quiet"}} {
-    variable internal::PRJ_BUILD_PATH
-    variable internal::bitstream_generated
+    try {
+        set init_path [::project::internal::set_working_dir]
+        ::project::internal::bitstream_gen $log_mode
+    } on error {result options} {
+        ::project::close
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during bitstream generation."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::project::internal::bitstream_gen {{log_mode "quiet"}} {
+    variable PRJ_BUILD_PATH
+    variable bitstream_generated
 
     ::project::internal::check_is_implemented
 
     set bitstream_generated 0
 
     set log_opts [::common::log_option $log_mode]
-
-    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Prepare output directories
@@ -1610,9 +1662,6 @@ proc ::project::bitstream_gen {{log_mode "quiet"}} {
         {*}$opts \
         $bit_path
 
-
-    ::common::set_working_dir $init_path
-
     # ------------------------------------------------------------------
     # Update state
     # ------------------------------------------------------------------
@@ -1623,16 +1672,28 @@ proc ::project::bitstream_gen {{log_mode "quiet"}} {
 }
 
 proc ::project::xsa_gen {{log_mode "quiet"}} {
-    variable internal::PRJ_BUILD_PATH
-    variable internal::xsa_generated
+    try {
+        set init_path [::project::internal::set_working_dir]
+        ::project::internal::xsa_gen $log_mode
+    } on error {result options} {
+        ::project::close
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during XSA generation."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::project::internal::xsa_gen {{log_mode "quiet"}} {
+    variable PRJ_BUILD_PATH
+    variable xsa_generated
 
     ::project::internal::check_is_bitstream_generated
 
     set xsa_generated 0
 
     set log_opts [::common::log_option $log_mode]
-
-    set init_path [::project::internal::set_working_dir]
 
     # ------------------------------------------------------------------
     # Prepare output directories
@@ -1669,8 +1730,6 @@ proc ::project::xsa_gen {{log_mode "quiet"}} {
         {*}$opts \
         $xsa_file
 
-    ::common::set_working_dir $init_path
-
     # ------------------------------------------------------------------
     # Update state
     # ------------------------------------------------------------------
@@ -1687,23 +1746,25 @@ proc ::project::bd_create {bd_name {log_mode "quiet"}} {
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::internal::set_working_dir]
+    try {
+        set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::internal::build_path]
+        set build_path [::project::internal::build_path]
 
-    set bd_path [file join $build_path "bd"]
+        set bd_path [file join $build_path "bd"]
 
-    puts "Creating Block-Design..."
-    ::create_bd_design {*}$log_opts -dir $bd_path $bd_name
+        puts "Creating Block-Design..."
+        ::create_bd_design {*}$log_opts -dir $bd_path $bd_name
 
-    ::update_compile_order {*}$log_opts
+        ::update_compile_order {*}$log_opts
 
-    ::common::set_working_dir $init_path
-
-    puts ""
-    puts "Block-Design created successfully."
-    puts "    Name: $bd_name"
-    puts "    Path: $bd_path"
+        puts ""
+        puts "Block-Design created successfully."
+        puts "    Name: $bd_name"
+        puts "    Path: $bd_path"
+    } finally {
+        ::common::set_working_dir $init_path
+    }
 }
 
 proc ::project::bd_regenerate {bd_name bd_path {log_mode "quiet"}} {
@@ -1721,35 +1782,37 @@ proc ::project::bd_regenerate {bd_name bd_path {log_mode "quiet"}} {
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::internal::set_working_dir]
+    try {
+        set init_path [::project::internal::set_working_dir]
 
-    puts "Re-Generate block design..."
-    puts "    Tcl:  $bd_path"
+        puts "Re-Generate block design..."
+        puts "    Tcl:  $bd_path"
 
-    # Clean the build generated block-design
-    set build_path [::project::internal::build_path]
-    set build_bd_path [file join $build_path [format "bd/%s" $bd_name]]
+        # Clean the build generated block-design
+        set build_path [::project::internal::build_path]
+        set build_bd_path [file join $build_path [format "bd/%s" $bd_name]]
 
-    if {[file exists $build_bd_path]} {
-        file delete -force $build_bd_path
+        if {[file exists $build_bd_path]} {
+            file delete -force $build_bd_path
+        }
+
+        puts "    Source block design Tcl..."
+        uplevel #0 [list source $bd_path]
+
+        # Verify that the BD now exists.
+        set bd_obj [get_bd_designs $bd_name -quiet]
+
+        if {[llength $bd_obj] == 0} {
+            error "Block design was not created: $bd_name"
+        }
+
+        puts ""
+        puts "Block-Design re-generated successfully."
+        puts "    Name: $bd_name"
+        puts "    Path: $build_bd_path"
+    } finally {
+        ::common::set_working_dir $init_path
     }
-
-    puts "    Source block design Tcl..."
-    uplevel #0 [list source $bd_path]
-
-    # Verify that the BD now exists.
-    set bd_obj [get_bd_designs $bd_name -quiet]
-
-    if {[llength $bd_obj] == 0} {
-        error "Block design was not created: $bd_name"
-    }
-
-    ::common::set_working_dir $init_path
-
-    puts ""
-    puts "Block-Design re-generated successfully."
-    puts "    Name: $bd_name"
-    puts "    Path: $build_bd_path"
 }
 
 proc ::project::bd_upgrade {bd_name {log_mode "quiet"}} {
@@ -1759,23 +1822,25 @@ proc ::project::bd_upgrade {bd_name {log_mode "quiet"}} {
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::internal::set_working_dir]
+    try {
+        set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::internal::build_path]
+        set build_path [::project::internal::build_path]
 
-    set bd_file [file join $build_path [format "bd/%s/%s.bd" $bd_name $bd_name]]
+        set bd_file [file join $build_path [format "bd/%s/%s.bd" $bd_name $bd_name]]
 
-    ::project::bd_open $bd_name $log_mode
+        ::project::bd_open $bd_name $log_mode
 
-    ::upgrade_ip {*}$log_opts [get_bd_cells -hierarchical *]
-    ::reset_target {*}$log_opts all [get_files $bd_file]
-    ::generate_target {*}$log_opts all [get_files $bd_file]
+        ::upgrade_ip {*}$log_opts [get_bd_cells -hierarchical *]
+        ::reset_target {*}$log_opts all [get_files $bd_file]
+        ::generate_target {*}$log_opts all [get_files $bd_file]
 
-    ::common::set_working_dir $init_path
-
-    puts ""
-    puts "Block-Design upgraded successfully."
-    puts "You can re-create HDL wrapper using ::project::bd_make_wrapper"
+        puts ""
+        puts "Block-Design upgraded successfully."
+        puts "You can re-create HDL wrapper using ::project::bd_make_wrapper"
+    } finally {
+        ::common::set_working_dir $init_path
+    }
 }
 
 proc ::project::bd_open {bd_name {log_mode "quiet"}} {
@@ -1785,27 +1850,29 @@ proc ::project::bd_open {bd_name {log_mode "quiet"}} {
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::internal::set_working_dir]
+    try {
+        set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::internal::build_path]
+        set build_path [::project::internal::build_path]
 
-    set bd_file [file join $build_path [format "bd/%s/%s.bd" $bd_name $bd_name]]
+        set bd_file [file join $build_path [format "bd/%s/%s.bd" $bd_name $bd_name]]
 
-    if {![file exists $bd_file]} {
-        error "The block-design file does not exists:\n$bd_file"
+        if {![file exists $bd_file]} {
+            error "The block-design file does not exists:\n$bd_file"
+        }
+
+        ::read_bd {*}$log_opts $bd_file
+        ::open_bd_design {*}$log_opts $bd_file
+        ::current_bd_design {*}$log_opts $bd_file
+        ::update_compile_order {*}$log_opts
+
+        puts ""
+        puts "Block-Design opened successfully."
+        puts "    Name: $bd_name"
+        puts "    Path: $bd_file"
+    } finally {
+        ::common::set_working_dir $init_path
     }
-
-    ::read_bd {*}$log_opts $bd_file
-    ::open_bd_design {*}$log_opts $bd_file
-    ::current_bd_design {*}$log_opts $bd_file
-    ::update_compile_order {*}$log_opts
-
-    ::common::set_working_dir $init_path
-
-    puts ""
-    puts "Block-Design opened successfully."
-    puts "    Name: $bd_name"
-    puts "    Path: $bd_file"
 }
 
 proc ::project::bd_close {{log_mode "quiet"}} {
@@ -1815,14 +1882,16 @@ proc ::project::bd_close {{log_mode "quiet"}} {
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::internal::set_working_dir]
+    try {
+        set init_path [::project::internal::set_working_dir]
 
-    ::close_bd_design {*}$log_opts [current_bd_design]
+        ::close_bd_design {*}$log_opts [current_bd_design]
 
-    ::common::set_working_dir $init_path
-
-    puts ""
-    puts "Block-Design closed successfully."
+        puts ""
+        puts "Block-Design closed successfully."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
 }
 
 proc ::project::bd_export_tcl {{log_mode "quiet"}} {
@@ -1836,21 +1905,26 @@ proc ::project::bd_export_tcl {{log_mode "quiet"}} {
         puts "Current block design: $bd_name"
     }
 
-    set init_path [::project::internal::set_working_dir]
+    try {
+        set init_path [::project::internal::set_working_dir]
 
-    set bd_export_path [file join [::project::internal::build_path] "bd/export"]
-    set bd_export_path_filename [file join $bd_export_path [current_bd_design]]
-    set rel_bd_create_path "./bd"
+        set bd_export_path [file join [::project::internal::build_path] "bd/export"]
+        set bd_export_path_filename [file join $bd_export_path [current_bd_design]]
+        set rel_bd_create_path "./bd"
 
-    if {![file exists $bd_export_path]} {
-        file mkdir $bd_export_path
+        if {![file exists $bd_export_path]} {
+            file mkdir $bd_export_path
+        }
+
+        ::write_bd_tcl -force {*}$log_opts \
+            -bd_folder $rel_bd_create_path \
+            $bd_export_path_filename
+
+        puts ""
+        puts "Block-Design TCL exported successfully."
+    } finally {
+        ::common::set_working_dir $init_path
     }
-
-    ::write_bd_tcl -force {*}$log_opts \
-        -bd_folder $rel_bd_create_path \
-        $bd_export_path_filename
-
-    ::common::set_working_dir $init_path
 }
 
 proc ::project::bd_make_wrapper {bd_name {log_mode "quiet"}} {
@@ -1860,27 +1934,29 @@ proc ::project::bd_make_wrapper {bd_name {log_mode "quiet"}} {
 
     set log_opts [::common::log_option $log_mode]
 
-    set init_path [::project::internal::set_working_dir]
+    try {
+        set init_path [::project::internal::set_working_dir]
 
-    set build_path [::project::internal::build_path]
+        set build_path [::project::internal::build_path]
 
-    set bd_path [file join $build_path [format "bd/%s" $bd_name]]
-    set bd_file [file join $bd_path [format "%s.bd" $bd_name]]
-    set hdl_wrapper_path [file join $bd_path [format "hdl/%s_wrapper" $bd_name]]
+        set bd_path [file join $build_path [format "bd/%s" $bd_name]]
+        set bd_file [file join $bd_path [format "%s.bd" $bd_name]]
+        set hdl_wrapper_path [file join $bd_path [format "hdl/%s_wrapper" $bd_name]]
 
-    if {![file exists $bd_file]} {
-        error "The block-design file does not exists:\n$bd_file"
+        if {![file exists $bd_file]} {
+            error "The block-design file does not exists:\n$bd_file"
+        }
+
+        ::make_wrapper {*}$log_opts -files [get_files $bd_file] -top -force
+        ::update_compile_order {*}$log_opts
+
+        puts ""
+        puts "Block-Design HDL wrapper created successfully."
+        puts "    Name: $bd_name"
+        puts "    Path: $hdl_wrapper_path"
+    } finally {
+        ::common::set_working_dir $init_path
     }
-
-    ::make_wrapper {*}$log_opts -files [get_files $bd_file] -top -force
-    ::update_compile_order {*}$log_opts
-
-    ::common::set_working_dir $init_path
-
-    puts ""
-    puts "Block-Design HDL wrapper created successfully."
-    puts "    Name: $bd_name"
-    puts "    Path: $hdl_wrapper_path"
 }
 
 proc ::project::close {{log_mode "quiet"}} {

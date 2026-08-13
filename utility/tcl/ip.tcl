@@ -12,7 +12,61 @@ namespace eval ::ip::internal {
 
 proc ::ip::package_ip {part_number module_path {log_mode "quiet"}} {
     variable internal::PACKAGE_PATH
-    variable internal::project_root_path
+
+    set module_path [file normalize $module_path]
+
+    try {
+        set init_path [::common::set_working_dir $PACKAGE_PATH]
+        ::ip::internal::package_ip $part_number $module_path $log_mode
+    } on error {result options} {
+        ::ip::internal::close_prj
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during packaging."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::ip::generate_ip {part_number module_path variant {log_mode "quiet"}} {
+    variable internal::IP_PATH
+
+    set module_path [file normalize $module_path]
+
+    try {
+        set init_path [::common::set_working_dir $IP_PATH]
+        ::ip::internal::generate_ip $part_number $module_path $variant $log_mode
+    } on error {result options} {
+        ::ip::internal::close_prj
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during generating."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::ip::list_props {part_number module_path} {
+    variable internal::PROPS_PATH
+
+    set module_path [file normalize $module_path]
+
+    try {
+        set init_path [::common::set_working_dir $PROPS_PATH]
+        ::ip::internal::list_props $part_number $module_path
+    } on error {result options} {
+        ::ip::internal::close_prj
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during properties listing."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::ip::internal::package_ip {part_number module_path {log_mode "quiet"}} {
+    variable PACKAGE_PATH
+    variable project_root_path
 
     set log_opts [::common::log_option $log_mode]
 
@@ -23,8 +77,6 @@ proc ::ip::package_ip {part_number module_path {log_mode "quiet"}} {
     if {![::module::is_loaded]} {
         error "No module loaded."
     }
-
-    set init_path [::common::set_working_dir $PACKAGE_PATH]
 
     set ip_display_name [::module::display_name]
     set ip_description [::module::description]
@@ -144,8 +196,6 @@ proc ::ip::package_ip {part_number module_path {log_mode "quiet"}} {
 
     ::close_project {*}$log_opts
 
-    ::common::set_working_dir $init_path
-
     puts ""
     puts "---------------------------------------"
     puts "IP successfully packaged."
@@ -154,9 +204,7 @@ proc ::ip::package_ip {part_number module_path {log_mode "quiet"}} {
     puts "---------------------------------------"
 }
 
-proc ::ip::generate_ip {part_number module_path variant {log_mode "quiet"}} {
-    variable internal::IP_PATH
-
+proc ::ip::internal::generate_ip {part_number module_path variant {log_mode "quiet"}} {
     set module_path [file normalize $module_path]
 
     ::module::scan
@@ -164,8 +212,6 @@ proc ::ip::generate_ip {part_number module_path variant {log_mode "quiet"}} {
     ::module::validate_variant $variant
 
     set log_opts [::common::log_option $log_mode]
-
-    set init_path [::common::set_working_dir $IP_PATH]
 
     set deps [::dependency::resolve $module_path "ip" $variant]
 
@@ -176,8 +222,6 @@ proc ::ip::generate_ip {part_number module_path variant {log_mode "quiet"}} {
     }
 
     ::close_project {*}$log_opts
-
-    ::common::set_working_dir $init_path
 }
 
 proc ::ip::load_xml_fileset {xml_file} {
@@ -208,17 +252,15 @@ proc ::ip::get_xml_field {field} {
     }
 }
 
-proc ::ip::list_props {part_number module_path} {
-    variable internal::project_root_path
-    variable internal::DOCS_PATH
-    variable internal::PROPS_PATH
-    variable internal::PACKAGE_PATH
+proc ::ip::internal::list_props {part_number module_path} {
+    variable project_root_path
+    variable DOCS_PATH
+    variable PROPS_PATH
+    variable PACKAGE_PATH
 
     set module_path [file normalize $module_path]
 
     ::module::load $module_path
-
-    set init_path [::common::set_working_dir $PROPS_PATH]
 
     if {![::module::is_loaded]} {
         error "No module loaded."
@@ -262,8 +304,6 @@ proc ::ip::list_props {part_number module_path} {
     close $fp
 
     ::close_project -quiet
-
-    ::common::set_working_dir $init_path
 
     puts "--INFO: Exported CONFIG properties of $ip_vlnv to $output_file"
 }
@@ -398,4 +438,12 @@ proc ::ip::internal::get_xml_fileset {fileset_name} {
     }
 
     return {}
+}
+
+proc ::ip::internal::close_prj {} {
+    if {[info commands current_project] ne ""} {
+        if {[llength [current_project -quiet]] > 0} {
+            close_project -quiet
+        }
+    }
 }

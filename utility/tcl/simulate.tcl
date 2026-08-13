@@ -11,16 +11,30 @@ namespace eval ::simulate::internal {
 }
 
 proc ::simulate::compile {module_path sim_mode} {
-    variable internal::compile_db
     variable internal::SIM_PATH
+
+    set module_path [file normalize $module_path]
+
+    try {
+        set init_path [::common::set_working_dir $SIM_PATH]
+        ::simulate::internal::compile $module_path $sim_mode
+    } on error {result options} {
+        ::simulate::internal::close_prj
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during compilation."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::simulate::internal::compile {module_path sim_mode} {
+    variable compile_db
+    variable SIM_PATH
 
     set compile_db {}
     dict lappend compile_db includes
     dict lappend compile_db files
-
-    set module_path [file normalize $module_path]
-
-    set init_path [::common::set_working_dir $SIM_PATH]
 
     ::module::scan
     ::module::load $module_path
@@ -43,21 +57,33 @@ proc ::simulate::compile {module_path sim_mode} {
 
     ::simulate::internal::add_sim_files $module_path $sim_mode
 
-    ::simulate::internal::compile $opts
-
-    ::common::set_working_dir $init_path
+    ::simulate::internal::compile_all $opts
 }
 
 proc ::simulate::elaborate {module_path sim_mode} {
-    variable internal::project_root_path
     variable internal::SIM_PATH
-    variable internal::LIB_NAME
-    variable internal::LIB_PATH
-    variable internal::ELAB_PATH
 
     set module_path [file normalize $module_path]
 
-    set init_path [::common::set_working_dir $SIM_PATH]
+    try {
+        set init_path [::common::set_working_dir $SIM_PATH]
+        ::simulate::internal::elaborate $module_path $sim_mode
+    } on error {result options} {
+        ::simulate::internal::close_prj
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during elaboration."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::simulate::internal::elaborate {module_path sim_mode} {
+    variable project_root_path
+    variable SIM_PATH
+    variable LIB_NAME
+    variable LIB_PATH
+    variable ELAB_PATH
 
     ::module::load $module_path
     if {![::module::is_loaded]} {
@@ -95,18 +121,30 @@ proc ::simulate::elaborate {module_path sim_mode} {
         $LIB_NAME.$top]
 
     common::run $cmd $elab_dir
-
-    ::common::set_working_dir $init_path
 }
 
 proc ::simulate::simulate {module_path sim_mode} {
-    variable internal::project_root_path
-    variable internal::ELAB_PATH
     variable internal::SIM_PATH
 
     set module_path [file normalize $module_path]
 
-    set init_path [::common::set_working_dir $SIM_PATH]
+    try {
+        set init_path [::common::set_working_dir $SIM_PATH]
+        ::simulate::internal::simulate $module_path $sim_mode
+    } on error {result options} {
+        ::simulate::internal::close_prj
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during simulation."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
+proc ::simulate::internal::simulate {module_path sim_mode} {
+    variable project_root_path
+    variable ELAB_PATH
+    variable SIM_PATH
 
     ::module::load $module_path
 
@@ -181,8 +219,6 @@ proc ::simulate::simulate {module_path sim_mode} {
     puts ""
 
     common::run $cmd $elab_dir
-
-    ::common::set_working_dir $init_path
 }
 
 proc ::simulate::internal::compile_collect {node} {
@@ -249,7 +285,7 @@ proc ::simulate::internal::add_sim_files {module_path sim_mode} {
     }
 }
 
-proc ::simulate::internal::compile {{opts ""}} {
+proc ::simulate::internal::compile_all {{opts ""}} {
     variable LIB_NAME
     variable LIB_PATH
     variable compile_db
@@ -312,5 +348,13 @@ proc ::simulate::internal::compile {{opts ""}} {
             {*}$vhdl_files]
 
         common::run $cmd
+    }
+}
+
+proc ::simulate::internal::close_prj {} {
+    if {[info commands current_project] ne ""} {
+        if {[llength [current_project -quiet]] > 0} {
+            close_project -quiet
+        }
     }
 }
