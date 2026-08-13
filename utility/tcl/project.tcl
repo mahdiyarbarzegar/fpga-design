@@ -28,7 +28,9 @@ proc ::project::resolve {path} {
     variable internal::HDL_PATH
     variable internal::IP_PATH
 
-    ::project::internal::load_prj $path
+    set prj_path [file normalize $path]
+
+    ::project::internal::load_prj $prj_path
 
     ::project::internal::check_is_loaded
 
@@ -1775,6 +1777,8 @@ proc ::project::bd_regenerate {bd_name bd_path {log_mode "quiet"}} {
     if {$bd_path eq ""} {
         error "Block design path is empty."
     }
+
+    set bd_path [file normalize $bd_path]
 
     if {![file exists $bd_path]} {
         error "Block design Tcl file does not exist: $bd_path"
