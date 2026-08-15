@@ -1,5 +1,7 @@
 namespace eval ::project {}
 
+namespace eval ::project::checkpoint {}
+
 namespace eval ::project::internal {
     variable db {}
     variable resolved_db {}
@@ -17,6 +19,23 @@ namespace eval ::project::internal {
     variable BUILD_PATH $::common::BUILD_PATH
     variable PRJ_BUILD_PATH $::common::PRJ_BUILD_PATH
     variable PACKAGE_PATH $::common::PACKAGE_PATH
+}
+
+namespace eval ::project::checkpoint::internal {
+    variable metadata[dict create]
+    variable current_checkpoint ""
+    variable stages {
+        synth
+        opt
+        power_opt
+        place
+        post_place_power_opt
+        post_place_phy_opt
+        route
+        post_route_phy_opt
+        bitstream
+        xsa
+    }
 }
 
 proc ::project::resolve {path} {
@@ -78,11 +97,14 @@ proc ::project::resolve {path} {
             utilization {} \
             control_sets {} \
             ssn {} \
-            ram_utilization {}]]
+            ram_utilization {}] \
+        metadata [dict create \
+            checkpoint {} \
+            project_hash {}]]
 
     ::module::scan
 
-    puts "\nResolve the project information...\n"
+    puts "Resolve the project information..."
 
     set db_project [::common::dict_get_required $db project \
         "Error: The project.yaml does not have the project section!"]
@@ -103,7 +125,7 @@ proc ::project::resolve {path} {
         project_src_path $project_src_path \
         project_build_path $project_build_path]
 
-    puts "\nResolve the target information...\n"
+    puts "Resolve the target information..."
 
     set db_target [::common::dict_get_required $db target \
         "Error: The project.yaml does not have the target section!"]
@@ -126,12 +148,12 @@ proc ::project::resolve {path} {
         part $target_part \
         board $target_board]
 
-    puts "\nResolve the resources...\n"
+    puts "Resolve the resources..."
 
     set db_resources [::common::dict_get_required $db resources \
         "Error: The project.yaml does not have the resources section!"]
 
-    puts "\nResolve the RTL local files...\n"
+    puts "Resolve the RTL local files..."
 
     set rtl_locals [::common::dict_get_default $db_resources rtl.locals ""]
     foreach local $rtl_locals {
@@ -144,7 +166,7 @@ proc ::project::resolve {path} {
         dict with resolved_db resources {lappend rtl $abs_local_file}
     }
 
-    puts "\nResolve the RTL modules...\n"
+    puts "Resolve the RTL modules..."
 
     set rtl_modules [::common::dict_get_default $db_resources rtl.modules ""]
     foreach module $rtl_modules {
@@ -233,7 +255,7 @@ proc ::project::resolve {path} {
         }
     }
 
-    puts "\nResolve the IPs...\n"
+    puts "Resolve the IPs..."
 
     set db_ip [::common::dict_get_default $db_resources ip ""]
 
@@ -264,7 +286,7 @@ proc ::project::resolve {path} {
     }
 
 
-    puts "\nResolve the block-designs...\n"
+    puts "Resolve the block-designs..."
 
     set db_bd [::common::dict_get_default $db_resources bd ""]
 
@@ -288,7 +310,7 @@ proc ::project::resolve {path} {
     }
 
 
-    puts "\nResolve the constraints...\n"
+    puts "Resolve the constraints..."
 
     set db_constr [::common::dict_get_default $db_resources constraints ""]
 
@@ -308,7 +330,7 @@ proc ::project::resolve {path} {
         dict with resolved_db resources {lappend constraints $abs_constr_path}
     }
 
-    puts "\nResolve the top...\n"
+    puts "Resolve the top..."
 
     set db_top [::common::dict_get_default $db_resources top ""]
 
@@ -333,7 +355,7 @@ proc ::project::resolve {path} {
         }
     }
 
-    puts "\nResolve the configuration...\n"
+    puts "Resolve the configuration..."
 
     set db_configuration [::common::dict_get_required $db configuration \
         "Error: The configuration in the project.yaml is missing!"]
@@ -408,7 +430,7 @@ proc ::project::resolve {path} {
             opts $xsa_opts]
     }
 
-    puts "\nResolve the generation...\n"
+    puts "Resolve the generation..."
 
     set db_generation [::common::dict_get_required $db generation \
         "Error: The generation section in the project.yaml is missing!"]
@@ -518,7 +540,7 @@ proc ::project::resolve {path} {
                 opts $write_schematic_impl_opts]]
     }
 
-    puts "\nResolve the report...\n"
+    puts "Resolve the report..."
 
     set db_report [::common::dict_get_required $db report \
         "Error: The report section in the project.yaml is missing!"]
@@ -853,6 +875,15 @@ proc ::project::resolve {path} {
                 opts $ram_utilization_impl_opts]]
     }
 
+    # Resolve the metadata
+    set metadata_path [file join $project_build_path ".metadata"]
+    set dcp_metadata_path [file join $metadata_path "checkpoint.tcl"]
+
+    dict with resolved_db metadata {
+        set checkpoint [dict create \
+            path $dcp_metadata_path]
+    }
+
     set resolved 1
 
     set prj_name [::project::internal::name]
@@ -933,8 +964,9 @@ proc ::project::internal::prepare {{log_mode "quiet"}} {
 
     set bd_path [file join $prj_build_path bd]
     set dcp_path [file join $prj_build_path dcp]
+    set metadata_path [file join $prj_build_path .metadata]
 
-    foreach path [list $bd_path $dcp_path] {
+    foreach path [list $bd_path $dcp_path $metadata_path] {
         if {![file exists $path]} {
             file mkdir $path
         }
@@ -1001,19 +1033,22 @@ proc ::project::internal::prepare {{log_mode "quiet"}} {
         switch -- $ext {
             ".v" -
             ".vh" {
-                puts "    read_verilog: $rtl_file"
+                puts "read_verilog:"
+                puts "    $rtl_file"
                 read_verilog {*}$log_opts $rtl_file
             }
 
             ".sv" -
             ".svh" {
-                puts "    read_verilog -sv: $rtl_file"
+                puts "read_verilog -sv:"
+                puts "    $rtl_file"
                 read_verilog {*}$log_opts -sv $rtl_file
             }
 
             ".vhd" -
             ".vhdl" {
-                puts "    read_vhdl: $rtl_file"
+                puts "read_vhdl:"
+                puts "    $rtl_file"
                 read_vhdl {*}$log_opts $rtl_file
             }
 
@@ -1036,8 +1071,8 @@ proc ::project::internal::prepare {{log_mode "quiet"}} {
         set ip_variant [dict get $ip variant]
         set ip_xci [dict get $ip path]
 
-        puts "    read_ip: $ip_name v$ip_version ($ip_variant)"
-        puts "             $ip_xci"
+        puts "read_ip: $ip_name v$ip_version ($ip_variant)"
+        puts "    $ip_xci"
 
         read_ip {*}$log_opts $ip_xci
     }
@@ -1050,7 +1085,8 @@ proc ::project::internal::prepare {{log_mode "quiet"}} {
     set constraints [::project::internal::get resources.constraints]
 
     foreach constraint $constraints {
-        puts "    read_xdc: $constraint"
+        puts "read_xdc:"
+        puts "    $constraint"
         read_xdc {*}$log_opts $constraint
     }
 
@@ -1251,8 +1287,20 @@ proc ::project::internal::design {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Design status
     # ------------------------------------------------------------------
-
     set designed 1
+
+    # ------------------------------------------------------------------
+    # Calculate Project Hash
+    # ------------------------------------------------------------------
+    set prj_hash [::project::internal::calc_project_hash]
+    dict with resolved_db metadata {
+        set project_hash $prj_hash
+    }
+
+    # ------------------------------------------------------------------
+    # Refresh the Design Checkpoint status
+    # ------------------------------------------------------------------
+    ::project::checkpoint::refresh
 
     set prj_name [::project::internal::name]
     set prj_ver [::project::internal::version]
@@ -1293,6 +1341,7 @@ proc ::project::internal::synth {{log_mode "quiet"}} {
     # Reset synthesis state
     # ------------------------------------------------------------------
     set synthesized 0
+    ::project::checkpoint::internal::dcp_invalidate synth
 
     # ------------------------------------------------------------------
     # Prepare output directories
@@ -1385,13 +1434,8 @@ proc ::project::internal::synth {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Checkpoint
     # ------------------------------------------------------------------
-    set dcp_path [file join $prj_build_path dcp post_synth.dcp]
-
-    puts ""
-    puts "Write synthesis checkpoint:"
-    puts "    $dcp_path"
-
-    ::write_checkpoint {*}$log_opts -force $dcp_path
+    set dcp [::project::checkpoint::internal::dcp_write synth]
+    puts "Checkpoint $dcp"
 
     # ------------------------------------------------------------------
     # Update state
@@ -1486,6 +1530,7 @@ proc ::project::internal::impl {{log_mode "quiet"}} {
     lappend place_opts -directive $place_directive
     lappend route_opts -directive $route_directive
 
+    puts ""
     puts "Optimize directive:  $optimize_directive"
     puts "Place directive:     $place_directive"
     puts "Route directive:     $route_directive"
@@ -1504,85 +1549,89 @@ proc ::project::internal::impl {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     # Optimization
     # ------------------------------------------------------------------
-    puts ""
-    puts "Run optimization..."
+    ::project::checkpoint::internal::dcp_invalidate opt
 
+    puts "\nRun optimization..."
     puts "Command: opt_design $optimize_opts"
     ::opt_design {*}$log_opts {*}$optimize_opts
 
+    set dcp [::project::checkpoint::internal::dcp_write opt]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Power optimization
     # ------------------------------------------------------------------
-    if {$power_optimize_enabled eq "true"} {
-        puts ""
-        puts "Run power optimization..."
+    ::project::checkpoint::internal::dcp_invalidate power_opt
 
+    if {$power_optimize_enabled eq "true"} {
+        puts "\nRun power optimization..."
         puts "Command: power_opt_design $power_optimize_opts"
         ::power_opt_design {*}$log_opts {*}$power_optimize_opts
     }
 
+    set dcp [::project::checkpoint::internal::dcp_write power_opt]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Placement
     # ------------------------------------------------------------------
-    puts ""
-    puts "Run placement..."
+    ::project::checkpoint::internal::dcp_invalidate place
 
+    puts "\nRun placement..."
     puts "Command: place_design $place_opts"
     ::place_design {*}$log_opts {*}$place_opts
 
+    set dcp [::project::checkpoint::internal::dcp_write place]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Post-Place Power optimization
     # ------------------------------------------------------------------
+    ::project::checkpoint::internal::dcp_invalidate post_place_power_opt
+
     if {$power_optimize_enabled eq "true"} {
-        puts ""
-        puts "Run post-place power optimization..."
+        puts "\nRun post-place power optimization..."
 
         puts "Command: power_opt_design $power_optimize_opts"
         ::power_opt_design {*}$log_opts {*}$power_optimize_opts
     }
 
+    set dcp [::project::checkpoint::internal::dcp_write post_place_power_opt]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Post-Place physical optimization
     # ------------------------------------------------------------------
-    if {$physical_optimize_enabled eq "true"} {
-        puts ""
-        puts "Run post-place physical optimization..."
+    ::project::checkpoint::internal::dcp_invalidate post_place_phy_opt
 
+    if {$physical_optimize_enabled eq "true"} {
+        puts "\nRun post-place physical optimization..."
         puts "Command: phys_opt_design $physical_optimize_opts"
         ::phys_opt_design {*}$log_opts {*}$physical_optimize_opts
     }
 
+    set dcp [::project::checkpoint::internal::dcp_write post_place_phy_opt]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Routing
     # ------------------------------------------------------------------
-    puts ""
-    puts "Run routing..."
+    ::project::checkpoint::internal::dcp_invalidate route
 
+    puts "\nRun routing..."
     puts "Command: route_design $route_opts"
     ::route_design {*}$log_opts {*}$route_opts
 
+    set dcp [::project::checkpoint::internal::dcp_write route]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Post-Routing physical optimization
     # ------------------------------------------------------------------
-    if {$physical_optimize_enabled eq "true"} {
-        puts ""
-        puts "Run post-routing physical optimization..."
+    ::project::checkpoint::internal::dcp_invalidate post_route_phy_opt
 
+    if {$physical_optimize_enabled eq "true"} {
+        puts "\nRun post-routing physical optimization..."
         puts "Command: phys_opt_design $physical_optimize_opts"
         ::phys_opt_design {*}$log_opts {*}$physical_optimize_opts
     }
 
-    # ------------------------------------------------------------------
-    # Checkpoint
-    # ------------------------------------------------------------------
-    set dcp_path [file join $prj_build_path dcp post_impl.dcp]
-
-    puts ""
-    puts "Write implementation checkpoint:"
-    puts "    $dcp_path"
-
-    ::write_checkpoint {*}$log_opts -force $dcp_path
-
+    set dcp [::project::checkpoint::internal::dcp_write post_route_phy_opt]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Update state
     # ------------------------------------------------------------------
@@ -1592,7 +1641,7 @@ proc ::project::internal::impl {{log_mode "quiet"}} {
     # Generate
     # ------------------------------------------------------------------
     puts ""
-    puts "Generate synthesis related files..."
+    puts "Generate implementation related files..."
 
     ::project::internal::generate_results impl $generateds_path $log_mode
 
@@ -1600,7 +1649,7 @@ proc ::project::internal::impl {{log_mode "quiet"}} {
     # Reports
     # ------------------------------------------------------------------
     puts ""
-    puts "Generate synthesis reports..."
+    puts "Generate implementation reports..."
 
     ::project::internal::generate_reports impl $report_path $log_mode
 
@@ -1629,6 +1678,7 @@ proc ::project::internal::bitstream_gen {{log_mode "quiet"}} {
     ::project::internal::check_is_implemented
 
     set bitstream_generated 0
+    ::project::checkpoint::internal::dcp_invalidate bitstream
 
     set log_opts [::common::log_option $log_mode]
 
@@ -1664,6 +1714,8 @@ proc ::project::internal::bitstream_gen {{log_mode "quiet"}} {
         {*}$opts \
         $bit_path
 
+    set dcp [::project::checkpoint::internal::dcp_write bitstream]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Update state
     # ------------------------------------------------------------------
@@ -1694,6 +1746,7 @@ proc ::project::internal::xsa_gen {{log_mode "quiet"}} {
     ::project::internal::check_is_bitstream_generated
 
     set xsa_generated 0
+    ::project::checkpoint::internal::dcp_invalidate xsa
 
     set log_opts [::common::log_option $log_mode]
 
@@ -1732,6 +1785,8 @@ proc ::project::internal::xsa_gen {{log_mode "quiet"}} {
         {*}$opts \
         $xsa_file
 
+    set dcp [::project::checkpoint::internal::dcp_write xsa]
+    puts "Checkpoint $dcp"
     # ------------------------------------------------------------------
     # Update state
     # ------------------------------------------------------------------
@@ -1995,6 +2050,520 @@ proc ::project::close {{log_mode "quiet"}} {
     set implemented 0
     set bitstream_generated 0
     set xsa_generated 0
+}
+
+proc ::project::checkpoint::status {} {
+    ::project::internal::check_is_designed
+
+    variable internal::stages
+
+    set result [dict create]
+
+    foreach stage $stages {
+        set exists [::project::checkpoint::internal::dcp_exists $stage]
+        set valid 0
+
+        if {$exists} {
+            set valid [::project::checkpoint::internal::dcp_valid $stage]
+        }
+
+        dict set result $stage exists $exists
+        dict set result $stage valid $valid
+    }
+
+    return $result
+}
+
+proc ::project::checkpoint::available {} {
+    ::project::internal::check_is_designed
+
+    variable internal::stages
+
+    set result {}
+
+    foreach stage $stages {
+        if {[::project::checkpoint::internal::dcp_valid $stage]} {
+            lappend result $stage
+        }
+    }
+
+    return $result
+}
+
+proc ::project::checkpoint::latest {} {
+    ::project::internal::check_is_designed
+
+    variable internal::stages
+
+    for {set i [expr {[llength $stages] - 1}]} {$i >= 0} {incr i -1} {
+        set stage [lindex $stages $i]
+
+        if {[::project::checkpoint::internal::dcp_valid $stage]} {
+            return $stage
+        }
+    }
+
+    return ""
+}
+
+proc ::project::checkpoint::open {{stage ""} {log_mode "quiet"}} {
+    ::project::internal::check_is_designed
+
+    variable internal::current_checkpoint
+
+    # --------------------------------------------------------------
+    # Select checkpoint
+    # --------------------------------------------------------------
+    if {$stage eq ""} {
+        set stage [::project::checkpoint::latest]
+
+        if {$stage eq ""} {
+            error "No valid checkpoint is available."
+        }
+    }
+
+    # --------------------------------------------------------------
+    # Open checkpoint
+    # --------------------------------------------------------------
+    puts "Open checkpoint: $stage"
+
+    set path [::project::checkpoint::internal::dcp_open $stage $log_mode]
+
+    # --------------------------------------------------------------
+    # Update current checkpoint
+    # --------------------------------------------------------------
+    set current_checkpoint $stage
+
+    return $path
+}
+
+proc ::project::checkpoint::invalidate {stage} {
+    ::project::internal::check_is_designed
+
+    return [::project::checkpoint::dcp_invalidate $stage]
+}
+
+proc ::project::checkpoint::invalidate_all {} {
+    ::project::internal::check_is_designed
+
+    variable internal::stages
+
+    if {[llength $stages] == 0} {
+        return
+    }
+
+    set first_stage [lindex $stages 0]
+
+    return [::project::checkpoint::internal::dcp_invalidate $first_stage]
+}
+
+proc ::project::checkpoint::refresh {} {
+    ::project::internal::check_is_designed
+
+    variable internal::stages
+
+    set metadata [::project::checkpoint::internal::read_metadata]
+    set project_hash [::project::internal::project_hash]
+
+    set changed 0
+
+    foreach stage $stages {
+        # --------------------------------------------------------------
+        # No metadata for this stage
+        # --------------------------------------------------------------
+        if {![dict exists $metadata stages $stage]} {
+            dict set metadata stages $stage valid 0
+            dict set metadata stages $stage hash ""
+            set changed 1
+            continue
+        }
+
+        set valid [dict get $metadata stages $stage valid]
+        set stored_hash [dict get $metadata stages $stage hash]
+
+        # --------------------------------------------------------------
+        # Invalid metadata -> keep invalid
+        # --------------------------------------------------------------
+        if {!$valid} {
+            continue
+        }
+
+        # --------------------------------------------------------------
+        # DCP file doesn't exist
+        # --------------------------------------------------------------
+        if {![::project::checkpoint::internal::dcp_exists $stage]} {
+            dict set metadata stages $stage valid 0
+            dict set metadata stages $stage hash ""
+            set changed 1
+
+            puts "Invalidate checkpoint: $stage"
+            puts "    DCP file does not exist."
+
+            continue
+        }
+
+        # --------------------------------------------------------------
+        # Project has changed
+        # --------------------------------------------------------------
+        if {$stored_hash ne $project_hash} {
+            dict set metadata stages $stage valid 0
+            dict set metadata stages $stage hash ""
+            set changed 1
+
+            puts "Invalidate checkpoint: $stage"
+            puts "    Project hash has changed."
+
+            continue
+        }
+    }
+
+    # --------------------------------------------------------------
+    # Save metadata only when necessary
+    # --------------------------------------------------------------
+    if {$changed} {
+        ::project::checkpoint::internal::write_metadata $metadata
+    }
+
+    # --------------------------------------------------------------
+    # Synchronize state variables
+    # --------------------------------------------------------------
+    ::project::internal::sync_state_from_current_checkpoint
+
+    return [::project::checkpoint::status]
+}
+
+proc ::project::checkpoint::current {} {
+    variable internal::current_checkpoint
+
+    return $current_checkpoint
+}
+
+proc ::project::checkpoint::internal::metadata_path {} {
+    ::project::internal::check_is_designed
+
+    return [::project::internal::get metadata.checkpoint.path]
+}
+
+proc ::project::checkpoint::internal::initialize_metadata {} {
+    variable stages
+
+    set metadata [dict create]
+
+    foreach stage $stages {
+        dict set metadata stages $stage valid 0
+        dict set metadata stages $stage hash ""
+    }
+
+    return $metadata
+}
+
+proc ::project::checkpoint::internal::read_metadata {} {
+    set metadata_path [::project::checkpoint::internal::metadata_path]
+
+    if {![file exists $metadata_path]} {
+        return [::project::checkpoint::internal::initialize_metadata]
+    }
+
+    set fd [open $metadata_path r]
+
+    try {
+        set metadata [read $fd]
+    } finally {
+        close $fd
+    }
+
+    if {$metadata eq ""} {
+        return [::project::checkpoint::internal::initialize_metadata]
+    }
+
+    if {[catch {dict size $metadata}]} {
+        error "Invalid checkpoint metadata: $metadata_path"
+    }
+
+    return $metadata
+}
+
+proc ::project::checkpoint::internal::write_metadata {metadata} {
+    set path [::project::checkpoint::internal::metadata_path]
+    set dir [file dirname $path]
+
+    if {![file exists $dir]} {
+        file mkdir $dir
+    }
+
+    set fd [::open $path w]
+
+    try {
+        puts $fd $metadata
+    } finally {
+        close $fd
+    }
+}
+
+proc ::project::checkpoint::internal::dcp_path {stage} {
+    ::project::internal::check_is_designed
+
+    set build_path [::project::internal::build_path]
+    set dcp_path [file join $build_path dcp]
+
+    switch -- $stage {
+        synth {return [file join $dcp_path synth.dcp]}
+        opt {return [file join $dcp_path opt.dcp]}
+        power_opt {return [file join $dcp_path power_opt.dcp]}
+        place {return [file join $dcp_path place.dcp]}
+        post_place_power_opt {return [file join $dcp_path post_place_power_opt.dcp]}
+        post_place_phy_opt {return [file join $dcp_path post_place_phy_opt.dcp]}
+        route {return [file join $dcp_path route.dcp]}
+        post_route_phy_opt {return [file join $dcp_path post_route_phy_opt.dcp]}
+        bitstream {return [file join $dcp_path bitstream.dcp]}
+        xsa {return [file join $dcp_path xsa.dcp]}
+        default {
+            error "Error: The stage value for design checkpoint is incorrect!"
+        }
+    }
+}
+
+proc ::project::checkpoint::internal::dcp_exists {stage} {
+    ::project::internal::check_is_designed
+
+    return [file exists [::project::checkpoint::internal::dcp_path $stage]]
+}
+
+proc ::project::checkpoint::internal::dcp_valid {stage} {
+    ::project::internal::check_is_resolved
+
+    set metadata [::project::checkpoint::internal::read_metadata]
+
+    if {![dict exists $metadata stages $stage]} {
+        error "Unknown checkpoint stage: $stage"
+    }
+
+    if {![dict get $metadata stages $stage valid]} {
+        return 0
+    }
+
+    if {![::project::checkpoint::internal::dcp_exists $stage]} {
+        return 0
+    }
+
+    set dcp_hash [dict get $metadata stages $stage hash]
+    set project_hash [::project::internal::project_hash]
+
+    if {$dcp_hash ne $project_hash} {
+        return 0
+    }
+
+    return 1
+}
+
+proc ::project::checkpoint::internal::dcp_write {stage {log_mode "quiet"}} {
+    ::project::internal::check_is_designed
+
+    set log_opts [::common::log_option $log_mode]
+
+    set dcp_path [::project::checkpoint::internal::dcp_path $stage]
+    set dcp_dir [file dirname $dcp_path]
+
+    if {![file exists $dcp_dir]} {
+        file mkdir $dcp_dir
+    }
+
+    ::write_checkpoint {*}$log_opts -force $dcp_path
+    # --------------------------------------------------------------
+    # Update metadata
+    # --------------------------------------------------------------
+    set metadata [::project::checkpoint::internal::read_metadata]
+    set hash [::project::internal::project_hash]
+
+    dict set metadata stages $stage valid 1
+    dict set metadata stages $stage hash $hash
+
+    ::project::checkpoint::internal::write_metadata $metadata
+
+    return $dcp_path
+}
+
+proc ::project::checkpoint::internal::dcp_open {stage {log_mode "quiet"}} {
+    ::project::internal::check_is_designed
+
+    variable current_checkpoint
+
+    set log_opts [::common::log_option $log_mode]
+
+    if {![::project::checkpoint::internal::dcp_exists $stage]} {
+        error "Checkpoint does not exist: $stage"
+    }
+
+    if {![::project::checkpoint::internal::dcp_valid $stage]} {
+        error "Checkpoint is invalid: $stage"
+    }
+
+    set dcp_path [::project::checkpoint::internal::dcp_path $stage]
+
+    ::open_checkpoint {*}$log_opts $dcp_path
+
+    set current_checkpoint $stage
+
+    ::project::internal::sync_state_from_current_checkpoint
+
+    return $dcp_path
+}
+
+proc ::project::checkpoint::internal::dcp_invalidate {stage} {
+    ::project::internal::check_is_designed
+
+    variable current_checkpoint
+    variable stages
+
+    set index [lsearch -exact $stages $stage]
+
+    if {$index < 0} {
+        error "Unknown checkpoint stage: $stage"
+    }
+
+    set metadata [::project::checkpoint::internal::read_metadata]
+
+    for {set i $index} {$i < [llength $stages]} {incr i} {
+        set invalid_stage [lindex $stages $i]
+
+        if {[dict exists $metadata stages $invalid_stage]} {
+            dict set metadata stages $invalid_stage valid 0
+            dict set metadata stages $invalid_stage hash ""
+        }
+    }
+
+    ::project::checkpoint::internal::write_metadata $metadata
+
+    if {$current_checkpoint ne ""} {
+        set current_index \
+            [lsearch -exact $stages $current_checkpoint]
+
+        if {$current_index >= $index} {
+            set current_checkpoint ""
+        }
+    }
+
+    ::project::internal::sync_state_from_current_checkpoint
+}
+
+proc ::project::internal::sync_state_from_current_checkpoint {} {
+    ::project::internal::check_is_designed
+
+    variable synthesized
+    variable implemented
+    variable bitstream_generated
+    variable xsa_generated
+
+    variable ::project::checkpoint::internal::current_checkpoint
+
+    if {$current_checkpoint eq ""} {
+        return
+    }
+
+    variable ::project::checkpoint::internal::stages
+
+    set index [lsearch -exact \
+        $stages \
+        $current_checkpoint]
+
+    if {$index < 0} {
+        error "Unknown current checkpoint: $current_checkpoint"
+    }
+
+    # --------------------------------------------------------------
+    # State is determined by the currently opened checkpoint.
+    # --------------------------------------------------------------
+
+    set synthesized 0
+    set implemented 0
+    set bitstream_generated 0
+    set xsa_generated 0
+
+    if {$index >= [lsearch -exact $stages synth]} {
+        set synthesized 1
+    }
+
+    if {$index >= [lsearch -exact $stages post_route_phy_opt]} {
+        set implemented 1
+    }
+
+    if {$index >= [lsearch -exact $stages bitstream]} {
+        set bitstream_generated 1
+    }
+
+    if {$index >= [lsearch -exact $stages xsa]} {
+        set xsa_generated 1
+    }
+}
+
+proc ::project::internal::get_hash_files {} {
+    ::project::internal::check_is_designed
+
+    set files {}
+
+    set prj_src_path [::project::internal::src_path]
+
+    lappend files [file join $prj_src_path project.yaml]
+
+    foreach f [::project::internal::get resources.rtl] {
+        lappend files $f
+    }
+
+    foreach ip [::project::internal::get resources.ip] {
+        lappend files [dict get $ip path]
+    }
+
+    foreach constr [::project::internal::get resources.constraints] {
+        lappend files [dict get $constr path]
+    }
+
+    lappend files [::project::internal::get resources.bd.path]
+
+    lappend files [::project::internal::get resources.top.path]
+
+    return [lsort -unique $files]
+}
+
+proc ::project::internal::calc_project_hash {} {
+    ::project::internal::check_is_designed
+
+    set files [::project::internal::get_hash_files]
+
+    # --------------------------------------------------------------
+    # Create deterministic manifest
+    # --------------------------------------------------------------
+    set manifest ""
+
+    foreach path $files {
+        set file_hash [::common::sha256_file $path]
+
+        append manifest \
+            $path \
+            "\t" \
+            $file_hash \
+            "\n"
+    }
+
+    # --------------------------------------------------------------
+    # Hash manifest
+    # --------------------------------------------------------------
+    set tmp_file [file tempfile tmp_path]
+
+    try {
+        fconfigure $tmp_file \
+            -translation lf \
+            -encoding utf-8
+
+        puts -nonewline $tmp_file $manifest
+        close $tmp_file
+
+        set result [exec sha256sum -- $tmp_path]
+
+        return [lindex $result 0]
+    } finally {
+        catch {close $tmp_file}
+        catch {file delete -force $tmp_path}
+    }
 }
 
 proc ::project::internal::generate_results {stage path {log_mode "quiet"}} {
@@ -2746,6 +3315,12 @@ proc ::project::internal::top {} {
 
 proc ::project::internal::configuration {} {
     return [::project::internal::get configuration]
+}
+
+proc ::project::internal::project_hash {} {
+    ::project::internal::check_is_designed
+
+    return [::project::internal::get metadata.project_hash]
 }
 
 proc ::project::internal::simulation {} {

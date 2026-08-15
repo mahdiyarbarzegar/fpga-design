@@ -114,3 +114,17 @@ proc ::common::set_working_dir {path} {
 
     return $last_path
 }
+
+proc ::common::sha256_file {path} {
+    if {![file exists $path]} {
+        error "Cannot hash file because it does not exist: $path"
+    }
+
+    if {![file isfile $path]} {
+        error "Cannot hash path because it is not a file: $path"
+    }
+
+    set result [exec sha256sum -- $path]
+
+    return [lindex $result 0]
+}
