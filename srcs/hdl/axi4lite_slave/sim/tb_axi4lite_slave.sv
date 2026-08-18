@@ -5,7 +5,6 @@ module tb_axi4lite_slave ();
     localparam int ADDR_WIDTH = 5;
     localparam int DATA_WIDTH = 32;
     localparam int STRB_WIDTH = DATA_WIDTH / 8;
-    localparam int REG_ADDR_WIDTH = 3;
 
     logic clk;
     logic resetn;
@@ -25,8 +24,8 @@ module tb_axi4lite_slave ();
     // Register interface
     // ========================================================================
     axi4_reg_ifc #(
-        .AXI_DATA_WIDTH(DATA_WIDTH),
-        .REG_ADDR_WIDTH(REG_ADDR_WIDTH)
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH    (ADDR_WIDTH)
     ) reg_ifc ();
 
     // ========================================================================
@@ -41,37 +40,10 @@ module tb_axi4lite_slave ();
     // AXI slave - DUT
     // ========================================================================
     axi4lite_slave #(
-        .C_S_AXI_DATA_WIDTH    (DATA_WIDTH),
-        .C_S_AXI_ADDR_WIDTH    (ADDR_WIDTH),
-        .C_S_AXI_REG_ADDR_WIDTH(REG_ADDR_WIDTH)
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH(ADDR_WIDTH)
     ) dut (
-        .S_AXI_ACLK   (clk),
-        .S_AXI_ARESETN(resetn),
-
-        .S_AXI_AWADDR (axi_bus_ifc.AWADDR),
-        .S_AXI_AWPROT (axi_bus_ifc.AWPROT),
-        .S_AXI_AWVALID(axi_bus_ifc.AWVALID),
-        .S_AXI_AWREADY(axi_bus_ifc.AWREADY),
-
-        .S_AXI_WDATA (axi_bus_ifc.WDATA),
-        .S_AXI_WSTRB (axi_bus_ifc.WSTRB),
-        .S_AXI_WVALID(axi_bus_ifc.WVALID),
-        .S_AXI_WREADY(axi_bus_ifc.WREADY),
-
-        .S_AXI_BRESP (axi_bus_ifc.BRESP),
-        .S_AXI_BVALID(axi_bus_ifc.BVALID),
-        .S_AXI_BREADY(axi_bus_ifc.BREADY),
-
-        .S_AXI_ARADDR (axi_bus_ifc.ARADDR),
-        .S_AXI_ARPROT (axi_bus_ifc.ARPROT),
-        .S_AXI_ARVALID(axi_bus_ifc.ARVALID),
-        .S_AXI_ARREADY(axi_bus_ifc.ARREADY),
-
-        .S_AXI_RDATA (axi_bus_ifc.RDATA),
-        .S_AXI_RRESP (axi_bus_ifc.RRESP),
-        .S_AXI_RVALID(axi_bus_ifc.RVALID),
-        .S_AXI_RREADY(axi_bus_ifc.RREADY),
-
+        .bus_ifc(axi_bus_ifc),
         .reg_ifc(reg_ifc)
     );
 
@@ -79,8 +51,8 @@ module tb_axi4lite_slave ();
     // Register model
     // ========================================================================
     axi4_reg_model #(
-        .DATA_WIDTH    (DATA_WIDTH),
-        .REG_ADDR_WIDTH(REG_ADDR_WIDTH)
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH(ADDR_WIDTH)
     ) reg_model (
         .clk    (clk),
         .resetn (resetn),

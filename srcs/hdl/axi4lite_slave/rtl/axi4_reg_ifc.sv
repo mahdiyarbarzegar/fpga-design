@@ -1,16 +1,18 @@
 interface axi4_reg_ifc #(
-    parameter int AXI_DATA_WIDTH = 32,
-    parameter int REG_ADDR_WIDTH = 3
+    parameter int DATA_WIDTH = 32,
+    parameter int ADDR_WIDTH = 5
 );
 
-    localparam int AXI_STRB_WIDTH = AXI_DATA_WIDTH / 8;
+    localparam int STRB_WIDTH = DATA_WIDTH / 8;
+    localparam int ADDR_LSB = (DATA_WIDTH / 32) + 1;
+    localparam int REG_ADDR_WIDTH = ADDR_WIDTH - ADDR_LSB;
 
     logic                        wr_en;
     logic [REG_ADDR_WIDTH-1 : 0] wr_addr;
-    logic [AXI_DATA_WIDTH-1 : 0] wr_data;
-    logic [AXI_STRB_WIDTH-1 : 0] wr_strb;
+    logic [    DATA_WIDTH-1 : 0] wr_data;
+    logic [    STRB_WIDTH-1 : 0] wr_strb;
     logic [REG_ADDR_WIDTH-1 : 0] rd_addr;
-    logic [AXI_DATA_WIDTH-1 : 0] rd_data;
+    logic [    DATA_WIDTH-1 : 0] rd_data;
 
     modport AXI(
         output wr_en,

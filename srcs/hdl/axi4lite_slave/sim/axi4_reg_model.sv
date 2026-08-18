@@ -1,6 +1,6 @@
 module axi4_reg_model #(
-    parameter int DATA_WIDTH     = 32,
-    parameter int REG_ADDR_WIDTH = 3
+    parameter int DATA_WIDTH = 32,
+    parameter int ADDR_WIDTH = 5
 ) (
     input logic clk,
     input logic resetn,
@@ -9,6 +9,8 @@ module axi4_reg_model #(
 );
 
     localparam int STRB_WIDTH = DATA_WIDTH / 8;
+    localparam int ADDR_LSB = (DATA_WIDTH / 32) + 1;
+    localparam int REG_ADDR_WIDTH = ADDR_WIDTH - ADDR_LSB;
     localparam int NUMBER_OF_REGS = 2 ** REG_ADDR_WIDTH;
 
     logic [DATA_WIDTH-1:0] regs[NUMBER_OF_REGS];

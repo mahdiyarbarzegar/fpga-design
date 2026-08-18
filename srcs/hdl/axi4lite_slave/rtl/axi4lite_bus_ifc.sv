@@ -7,6 +7,14 @@ interface axi4lite_bus_ifc #(
 );
     localparam int STRB_WIDTH = DATA_WIDTH / 8;
 
+    initial begin
+        assert (DATA_WIDTH == 32 || DATA_WIDTH == 64)
+        else $error("Unsupported AXI data width");
+
+        assert (DATA_WIDTH % 8 == 0)
+        else $error("AXI data width must be byte aligned");
+    end
+
     // ========================================================================
     // Write address channel
     // ========================================================================
