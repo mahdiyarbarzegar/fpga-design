@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="axi4lite_slave_gui.wdb" id="1">
+         <top_modules>
+            <top_module name="\$unit_axi4lite_bus_ifc_sv_3473221544 " />
+            <top_module name="tb_axi4lite_slave" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="335.001 ns"></ZoomEndTime>
+      <Cursor1Time time="335.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="108"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="86" />
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/resetn">
+      <obj_property name="ElementShortName">resetn</obj_property>
+      <obj_property name="ObjectShortName">resetn</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/ACLK">
+      <obj_property name="ElementShortName">ACLK</obj_property>
+      <obj_property name="ObjectShortName">ACLK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/ARESETN">
+      <obj_property name="ElementShortName">ARESETN</obj_property>
+      <obj_property name="ObjectShortName">ARESETN</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/AWADDR">
+      <obj_property name="ElementShortName">AWADDR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">AWADDR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/AWPROT">
+      <obj_property name="ElementShortName">AWPROT[2:0]</obj_property>
+      <obj_property name="ObjectShortName">AWPROT[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/AWVALID">
+      <obj_property name="ElementShortName">AWVALID</obj_property>
+      <obj_property name="ObjectShortName">AWVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/AWREADY">
+      <obj_property name="ElementShortName">AWREADY</obj_property>
+      <obj_property name="ObjectShortName">AWREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/WDATA">
+      <obj_property name="ElementShortName">WDATA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">WDATA[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/WSTRB">
+      <obj_property name="ElementShortName">WSTRB[3:0]</obj_property>
+      <obj_property name="ObjectShortName">WSTRB[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/WVALID">
+      <obj_property name="ElementShortName">WVALID</obj_property>
+      <obj_property name="ObjectShortName">WVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/WREADY">
+      <obj_property name="ElementShortName">WREADY</obj_property>
+      <obj_property name="ObjectShortName">WREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/BRESP">
+      <obj_property name="ElementShortName">BRESP[1:0]</obj_property>
+      <obj_property name="ObjectShortName">BRESP[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/BVALID">
+      <obj_property name="ElementShortName">BVALID</obj_property>
+      <obj_property name="ObjectShortName">BVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/BREADY">
+      <obj_property name="ElementShortName">BREADY</obj_property>
+      <obj_property name="ObjectShortName">BREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/ARADDR">
+      <obj_property name="ElementShortName">ARADDR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ARADDR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/ARPROT">
+      <obj_property name="ElementShortName">ARPROT[2:0]</obj_property>
+      <obj_property name="ObjectShortName">ARPROT[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/ARVALID">
+      <obj_property name="ElementShortName">ARVALID</obj_property>
+      <obj_property name="ObjectShortName">ARVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/ARREADY">
+      <obj_property name="ElementShortName">ARREADY</obj_property>
+      <obj_property name="ObjectShortName">ARREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/RDATA">
+      <obj_property name="ElementShortName">RDATA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">RDATA[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/RRESP">
+      <obj_property name="ElementShortName">RRESP[1:0]</obj_property>
+      <obj_property name="ObjectShortName">RRESP[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/RVALID">
+      <obj_property name="ElementShortName">RVALID</obj_property>
+      <obj_property name="ObjectShortName">RVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/axi_bus_ifc/RREADY">
+      <obj_property name="ElementShortName">RREADY</obj_property>
+      <obj_property name="ObjectShortName">RREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/DATA_WIDTH">
+      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/ADDR_WIDTH">
+      <obj_property name="ElementShortName">ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/axi_bus_ifc/STRB_WIDTH">
+      <obj_property name="ElementShortName">STRB_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">STRB_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_ACLK">
+      <obj_property name="ElementShortName">S_AXI_ACLK</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ACLK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_ARESETN">
+      <obj_property name="ElementShortName">S_AXI_ARESETN</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ARESETN</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_AWADDR">
+      <obj_property name="ElementShortName">S_AXI_AWADDR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_AWADDR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_AWPROT">
+      <obj_property name="ElementShortName">S_AXI_AWPROT[2:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_AWPROT[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_AWVALID">
+      <obj_property name="ElementShortName">S_AXI_AWVALID</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_AWVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_AWREADY">
+      <obj_property name="ElementShortName">S_AXI_AWREADY</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_AWREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_WDATA">
+      <obj_property name="ElementShortName">S_AXI_WDATA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_WDATA[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_WSTRB">
+      <obj_property name="ElementShortName">S_AXI_WSTRB[3:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_WSTRB[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_WVALID">
+      <obj_property name="ElementShortName">S_AXI_WVALID</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_WVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_WREADY">
+      <obj_property name="ElementShortName">S_AXI_WREADY</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_WREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_BRESP">
+      <obj_property name="ElementShortName">S_AXI_BRESP[1:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_BRESP[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_BVALID">
+      <obj_property name="ElementShortName">S_AXI_BVALID</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_BVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_BREADY">
+      <obj_property name="ElementShortName">S_AXI_BREADY</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_BREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_ARADDR">
+      <obj_property name="ElementShortName">S_AXI_ARADDR[4:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ARADDR[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_ARPROT">
+      <obj_property name="ElementShortName">S_AXI_ARPROT[2:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ARPROT[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_ARVALID">
+      <obj_property name="ElementShortName">S_AXI_ARVALID</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ARVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_ARREADY">
+      <obj_property name="ElementShortName">S_AXI_ARREADY</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ARREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_RDATA">
+      <obj_property name="ElementShortName">S_AXI_RDATA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_RDATA[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/S_AXI_RRESP">
+      <obj_property name="ElementShortName">S_AXI_RRESP[1:0]</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_RRESP[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_RVALID">
+      <obj_property name="ElementShortName">S_AXI_RVALID</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_RVALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/S_AXI_RREADY">
+      <obj_property name="ElementShortName">S_AXI_RREADY</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_RREADY</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/axi_awaddr">
+      <obj_property name="ElementShortName">axi_awaddr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_awaddr[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/axi_wdata">
+      <obj_property name="ElementShortName">axi_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/axi_wstrb">
+      <obj_property name="ElementShortName">axi_wstrb[3:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_wstrb[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/have_aw">
+      <obj_property name="ElementShortName">have_aw</obj_property>
+      <obj_property name="ObjectShortName">have_aw</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/have_w">
+      <obj_property name="ElementShortName">have_w</obj_property>
+      <obj_property name="ObjectShortName">have_w</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/axi_awready">
+      <obj_property name="ElementShortName">axi_awready</obj_property>
+      <obj_property name="ObjectShortName">axi_awready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/axi_wready">
+      <obj_property name="ElementShortName">axi_wready</obj_property>
+      <obj_property name="ObjectShortName">axi_wready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/aw_handshake">
+      <obj_property name="ElementShortName">aw_handshake</obj_property>
+      <obj_property name="ObjectShortName">aw_handshake</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/w_handshake">
+      <obj_property name="ElementShortName">w_handshake</obj_property>
+      <obj_property name="ObjectShortName">w_handshake</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/write_fire">
+      <obj_property name="ElementShortName">write_fire</obj_property>
+      <obj_property name="ObjectShortName">write_fire</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/axi_bresp">
+      <obj_property name="ElementShortName">axi_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/axi_bvalid">
+      <obj_property name="ElementShortName">axi_bvalid</obj_property>
+      <obj_property name="ObjectShortName">axi_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/axi_araddr">
+      <obj_property name="ElementShortName">axi_araddr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_araddr[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/axi_rresp">
+      <obj_property name="ElementShortName">axi_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/axi_arready">
+      <obj_property name="ElementShortName">axi_arready</obj_property>
+      <obj_property name="ObjectShortName">axi_arready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/axi_rvalid">
+      <obj_property name="ElementShortName">axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">axi_rvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/ar_handshake">
+      <obj_property name="ElementShortName">ar_handshake</obj_property>
+      <obj_property name="ObjectShortName">ar_handshake</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/dut/r_handshake">
+      <obj_property name="ElementShortName">r_handshake</obj_property>
+      <obj_property name="ObjectShortName">r_handshake</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/C_S_AXI_DATA_WIDTH">
+      <obj_property name="ElementShortName">C_S_AXI_DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">C_S_AXI_DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/C_S_AXI_ADDR_WIDTH">
+      <obj_property name="ElementShortName">C_S_AXI_ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">C_S_AXI_ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/C_S_AXI_REG_ADDR_WIDTH">
+      <obj_property name="ElementShortName">C_S_AXI_REG_ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">C_S_AXI_REG_ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/STRB_WIDTH">
+      <obj_property name="ElementShortName">STRB_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">STRB_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/dut/ADDR_LSB">
+      <obj_property name="ElementShortName">ADDR_LSB[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDR_LSB[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/reg_ifc/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/wr_addr">
+      <obj_property name="ElementShortName">wr_addr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_addr[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/wr_data">
+      <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/wr_strb">
+      <obj_property name="ElementShortName">wr_strb[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_strb[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/rd_addr">
+      <obj_property name="ElementShortName">rd_addr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_addr[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/rd_data">
+      <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/AXI_DATA_WIDTH">
+      <obj_property name="ElementShortName">AXI_DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AXI_DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/REG_ADDR_WIDTH">
+      <obj_property name="ElementShortName">REG_ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">REG_ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_ifc/AXI_STRB_WIDTH">
+      <obj_property name="ElementShortName">AXI_STRB_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AXI_STRB_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/reg_model/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_axi4lite_slave/reg_model/resetn">
+      <obj_property name="ElementShortName">resetn</obj_property>
+      <obj_property name="ObjectShortName">resetn</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_model/regs">
+      <obj_property name="ElementShortName">regs[0:7][31:0]</obj_property>
+      <obj_property name="ObjectShortName">regs[0:7][31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_model/DATA_WIDTH">
+      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_model/REG_ADDR_WIDTH">
+      <obj_property name="ElementShortName">REG_ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">REG_ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_model/STRB_WIDTH">
+      <obj_property name="ElementShortName">STRB_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">STRB_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_axi4lite_slave/reg_model/NUMBER_OF_REGS">
+      <obj_property name="ElementShortName">NUMBER_OF_REGS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">NUMBER_OF_REGS[31:0]</obj_property>
+   </wvobject>
+</wave_config>

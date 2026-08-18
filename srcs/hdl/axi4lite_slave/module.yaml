@@ -1,0 +1,61 @@
+name: axi4lite_slave
+
+ip:
+  vlnv: user.org:user_ip:axi4lite_slave:0.1
+  vendor: user.org
+  library: user_ip
+  name: axi4lite_slave
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: AXI4-Lite-Slave
+  description: AXI4-Lite Slave Bus Interface
+  top_module: axi4lite_slave
+
+type: hdl
+
+package: { }
+
+rtl:
+  - rtl/axi4lite_bus_ifc.sv
+  - rtl/axi4_reg_ifc.sv
+  - rtl/axi4lite_slave.sv
+
+include:
+
+constraints:
+
+dependencies: { }
+
+simulation:
+  batch:
+    top: tb_axi4lite_slave
+    snapshot: axi4lite_slave_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/axi4_reg_model.sv
+      - sim/axi4lite_master_model.sv
+      - sim/tb_axi4lite_slave.sv
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  gui:
+    top: tb_axi4lite_slave
+    snapshot: axi4lite_slave_gui
+    consume: rtl
+    variant:
+    files:
+      - sim/axi4_reg_model.sv
+      - sim/axi4lite_master_model.sv
+      - sim/tb_axi4lite_slave.sv
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/sui_sim.wcfg
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:
