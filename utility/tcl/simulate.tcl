@@ -42,6 +42,11 @@ proc ::simulate::internal::compile {module_path sim_mode} {
         error "No module loaded."
     }
 
+    set top [dict get [::module::simulation $sim_mode] top]
+    if {$top eq "null"} {
+        error "The simulation mode $sim_mode does not have any top module"
+    }
+
     set consume [dict get [::module::simulation $sim_mode] consume]
     set variant [dict get [::module::simulation $sim_mode] variant]
     set opts [dict get [::module::simulation $sim_mode] xvlog_opts]
@@ -49,13 +54,23 @@ proc ::simulate::internal::compile {module_path sim_mode} {
         set opts ""
     }
 
-    set deps [::dependency::resolve $module_path $consume $variant]
+    set sim_files [::simulate::internal::get_sim_files $module_path $sim_mode]
 
-    foreach node $deps {
+    set deps [::dependency::resolve $module_path $consume $variant]
+    set sim_deps [::dependency::resolve $module_path $consume $variant "true" $sim_mode]
+
+    set all_deps [concat $deps $sim_deps]
+
+    foreach node $all_deps {
         ::simulate::internal::compile_collect $node
     }
 
-    ::simulate::internal::add_sim_files $module_path $sim_mode
+    ::module::load $module_path
+    if {![::module::is_loaded]} {
+        error "No module loaded."
+    }
+
+    dict lappend compile_db files $sim_files
 
     ::simulate::internal::compile_all $opts
 }
@@ -242,47 +257,58 @@ proc ::simulate::internal::compile_collect {node} {
         }
     }
 
-    if {$consume eq "rtl"} {
-        foreach f [::module::get rtl] {
+    set module_type [::module::get type]
+
+    if {$module_type eq "lib"} {
+        foreach f [::module::get src] {
             dict lappend compile_db files \
                 [file join $project_root_path $module_path $f]
         }
-    } elseif {$consume eq "ip"} {
-        set module_name [::module::name]
-        set module_version [::module::version]
-        set variant_name [::module::variant_get $variant name]
+    } else {
+        if {$consume eq "rtl"} {
+            foreach f [::module::get rtl] {
+                dict lappend compile_db files \
+                    [file join $project_root_path $module_path $f]
+            }
+        } elseif {$consume eq "ip"} {
+            set module_name [::module::name]
+            set module_version [::module::version]
+            set variant_name [::module::variant_get $variant name]
 
-        set ip_dir "${module_name}_v${module_version}"
+            set ip_dir "${module_name}_v${module_version}"
 
-        set xml_fileset [file join \
-            $IP_PATH $ip_dir $variant_name "${variant_name}.xml"]
+            set xml_fileset [file join \
+                $IP_PATH $ip_dir $variant_name "${variant_name}.xml"]
 
-        ::ip::load_xml_fileset $xml_fileset
+            ::ip::load_xml_fileset $xml_fileset
 
-        foreach f [::ip::get_xml_field simulation.behavioral] {
-            puts "$f"
-            dict lappend compile_db files \
-                [file join $IP_PATH $ip_dir $variant_name $f]
-        }
+            foreach f [::ip::get_xml_field simulation.behavioral] {
+                puts "$f"
+                dict lappend compile_db files \
+                    [file join $IP_PATH $ip_dir $variant_name $f]
+            }
 
-        foreach f [::ip::get_xml_field simulation.wrapper] {
-            puts "$f"
-            dict lappend compile_db files \
-                [file join $IP_PATH $ip_dir $variant_name $f]
+            foreach f [::ip::get_xml_field simulation.wrapper] {
+                puts "$f"
+                dict lappend compile_db files \
+                    [file join $IP_PATH $ip_dir $variant_name $f]
+            }
         }
     }
 }
 
-proc ::simulate::internal::add_sim_files {module_path sim_mode} {
-    variable compile_db
+proc ::simulate::internal::get_sim_files {module_path sim_mode} {
     variable project_root_path
+
+    set sim_files {}
 
     set sim_cfg [::module::simulation $sim_mode]
 
     foreach f [dict get $sim_cfg files] {
-        dict lappend compile_db files \
-            [file join $project_root_path $module_path $f]
+        lappend sim_files [file join $project_root_path $module_path $f]
     }
+
+    return $sim_files
 }
 
 proc ::simulate::internal::compile_all {{opts ""}} {

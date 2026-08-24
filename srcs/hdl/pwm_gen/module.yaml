@@ -1,5 +1,7 @@
 name: pwm_gen
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:pwm_gen:0.1
   vendor: user.org
@@ -11,14 +13,15 @@ ip:
   description: A PWM generator with duty-cycle and frequency control.
   top_module: pwm_gen_w
 
-type: hdl
-
 package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/pwm_gen_w.v
+  - rtl/pwm_gen_reg_pkg.sv
+  - rtl/pwm_gen_regmap.sv
+  - rtl/pwm_gen_core.sv
   - rtl/pwm_gen.sv
+  - rtl/pwm_gen_w.v
 
 include:
   - rtl
@@ -27,9 +30,12 @@ constraints:
   - constr/package.xdc
 
 dependencies:
-  - module:
-    consume:
-    variant:
+  lib:
+    - axi4_reg
+  module:
+    - name: axi4lite_slave
+      consume: rtl
+      variant:
 
 simulation:
   batch:
@@ -38,6 +44,9 @@ simulation:
     consume:
     variant:
     files:
+    dependencies:
+      lib:
+      module:
     timescale:
     tclbatch:
     waveform:
@@ -45,15 +54,19 @@ simulation:
     xelab_opts:
     xsim_opts:
   gui:
-    top: gui_pwm_gen
-    snapshot: pwm_gen_gui
+    top: gui_axi_pwm_gen
+    snapshot: axi_pwm_gen_gui
     consume: rtl
     variant:
     files:
-      - sim/gui_pwm_gen.sv
+      - sim/gui_axi_pwm_gen.sv
+    dependencies:
+      lib:
+        - axi4lite_master_model
+      module:
     timescale: 1ns/1ps
-    tclbatch: gui/gui_sim.tcl
-    waveform: gui/gui_sim.wcfg
+    tclbatch: gui/gui_axi_sim.tcl
+    waveform: gui/gui_axi_sim.wcfg
     xvlog_opts:
       - --relax
     xelab_opts:

@@ -1,5 +1,7 @@
 name: full_adder
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:full_adder:1.0
   vendor: user.org
@@ -10,8 +12,6 @@ ip:
   display_name: Full Adder
   description: A Simple Full Adder IP
   top_module: full_adder
-
-type: hdl
 
 package: { }
 
@@ -32,6 +32,9 @@ simulation:
     variant:
     files:
       - sim/tb_full_adder.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch:
     waveform:
@@ -44,6 +47,9 @@ simulation:
     consume:
     variant:
     files:
+    dependencies:
+      lib:
+      module:
     timescale:
     tclbatch:
     waveform:

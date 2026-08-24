@@ -1,5 +1,7 @@
 name: restoring_divider
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:restoring_divider:0.1
   vendor: user.org
@@ -10,8 +12,6 @@ ip:
   display_name: Restoring Divider
   description: Restoring Divider
   top_module: restoring_divider_w
-
-type: hdl
 
 package:
   append: ip/package_append.tcl
@@ -26,9 +26,11 @@ constraints:
   - constr/package.xdc
 
 dependencies:
-  - module: ripple_carry_adder
-    consume: rtl
-    variant:
+  lib:
+  module:
+    - name: ripple_carry_adder
+      consume: rtl
+      variant:
 
 simulation:
   batch:
@@ -38,6 +40,9 @@ simulation:
     variant:
     files:
       - sim/tb_restoring_divider.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch:
     waveform:
@@ -51,6 +56,9 @@ simulation:
     variant:
     files:
       - sim/gui_restoring_divider.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.wcfg

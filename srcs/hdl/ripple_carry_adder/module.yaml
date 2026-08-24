@@ -1,5 +1,7 @@
 name: ripple_carry_adder
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:ripple_carry_adder:0.1
   vendor: user.org
@@ -10,8 +12,6 @@ ip:
   display_name: Ripple Carry Adder
   description: Ripple Carry Adder
   top_module: ripple_carry_adder_w
-
-type: hdl
 
 package:
   append: ip/package_append.tcl
@@ -25,9 +25,11 @@ include:
 constraints:
 
 dependencies:
-  - module: full_adder
-    consume: rtl
-    variant:
+  lib:
+  module:
+    - name: full_adder
+      consume: rtl
+      variant:
 
 simulation:
   batch:
@@ -37,6 +39,9 @@ simulation:
     variant:
     files:
       - sim/tb_ripple_carry_adder.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch:
     waveform:
@@ -50,6 +55,9 @@ simulation:
     variant:
     files:
       - sim/gui_ripple_carry_adder.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.wcfg

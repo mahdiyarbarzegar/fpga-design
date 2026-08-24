@@ -6,7 +6,7 @@ namespace eval ::dependency::internal {
     variable ordered
 }
 
-proc ::dependency::resolve {module_path {consume "null"} {variant "null"}} {
+proc ::dependency::resolve {module_path {consume "null"} {variant "null"} {sim_dep "false"} {sim_mode "batch"}} {
     variable internal::visited
     variable internal::visiting
     variable internal::ordered
@@ -15,12 +15,12 @@ proc ::dependency::resolve {module_path {consume "null"} {variant "null"}} {
     array unset visiting
     set ordered {}
 
-    ::dependency::internal::visit $module_path $consume $variant
+    ::dependency::internal::visit $module_path $consume $variant $sim_dep $sim_mode
 
     return $ordered
 }
 
-proc ::dependency::internal::visit {module_path {consume "null"} {variant "null"}} {
+proc ::dependency::internal::visit {module_path {consume "null"} {variant "null"} {sim_dep "false"} {sim_mode "batch"}} {
     variable visited
     variable visiting
     variable ordered
@@ -43,10 +43,29 @@ proc ::dependency::internal::visit {module_path {consume "null"} {variant "null"
         error "Cannot load module $module_path"
     }
 
-    set deps [::module::get_default dependencies {}]
+    if {$sim_dep eq "true"} {
+        set deps [::module::get_default "simulation.$sim_mode.dependencies" {}]
+    } else {
+        set deps [::module::get_default dependencies {}]
+    }
 
-    foreach dep $deps {
-        set dep_module [dict get $dep "module"]
+    set deps_lib [::common::dict_get_default $deps "lib" ""]
+    set deps_module [::common::dict_get_default $deps "module" ""]
+
+    foreach libdep $deps_lib {
+        set dep_path [::module::find $libdep]
+
+        ::module::load $dep_path
+
+        if {![::module::is_loaded]} {
+            error "Cannot load module $module_path"
+        }
+
+        ::dependency::internal::visit $dep_path "rtl"
+    }
+
+    foreach dep $deps_module {
+        set dep_module [dict get $dep "name"]
         set dep_consume [dict get $dep "consume"]
         set dep_variant [dict get $dep "variant"]
 
@@ -77,9 +96,11 @@ proc ::dependency::internal::visit {module_path {consume "null"} {variant "null"
 
     set visited($key) 1
 
-    lappend ordered \
-        [dict create \
-            path $module_path \
-            consume $consume \
-            variant $variant]
+    if {$sim_dep eq "false"} {
+        lappend ordered \
+            [dict create \
+                path $module_path \
+                consume $consume \
+                variant $variant]
+    }
 }

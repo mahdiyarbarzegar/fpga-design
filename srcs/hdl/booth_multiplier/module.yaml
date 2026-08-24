@@ -1,5 +1,7 @@
 name: booth_multiplier
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:booth_multiplier:0.1
   vendor: user.org
@@ -10,8 +12,6 @@ ip:
   display_name: Booth Multiplier
   description: A booth sequential multiplier
   top_module: booth_multiplier_w
-
-type: hdl
 
 package:
   append: ip/package_append.tcl
@@ -35,6 +35,9 @@ simulation:
     variant:
     files:
       - sim/tb_booth_multiplier.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch:
     waveform:
@@ -48,6 +51,9 @@ simulation:
     variant:
     files:
       - sim/gui_booth_multiplier.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.wcfg

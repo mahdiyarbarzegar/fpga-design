@@ -1,5 +1,7 @@
 name: shift_add_multiplier
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:shift_add_multiplier:0.1
   vendor: user.org
@@ -10,8 +12,6 @@ ip:
   display_name: Shift-Add Multiplier
   description: Shift-Add Multiplier
   top_module: shift_add_multiplier_w
-
-type: hdl
 
 package:
   append: ip/package_append.tcl
@@ -35,6 +35,9 @@ simulation:
     variant:
     files:
       - sim/tb_shift_add_multiplier.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch:
     waveform:
@@ -48,6 +51,9 @@ simulation:
     variant:
     files:
       - sim/gui_shift_add_multiplier.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.tcl

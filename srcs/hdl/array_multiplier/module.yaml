@@ -1,5 +1,7 @@
 name: array_multiplier
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:array_multiplier:0.1
   vendor: user.org
@@ -10,8 +12,6 @@ ip:
   display_name: Array Multiplier
   description: An array like combinational multiplier
   top_module: array_multiplier_w
-
-type: hdl
 
 package:
   append: ip/package_append.tcl
@@ -26,9 +26,11 @@ include:
 constraints:
 
 dependencies:
-  - module: full_adder
-    consume: rtl
-    variant:
+  lib:
+  module:
+    - name: full_adder
+      consume: rtl
+      variant:
 
 simulation:
   batch:
@@ -38,6 +40,9 @@ simulation:
     variant:
     files:
       - sim/tb_array_multiplier.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch:
     waveform:
@@ -50,6 +55,9 @@ simulation:
     consume:
     variant:
     files:
+    dependencies:
+      lib:
+      module:
     timescale:
     tclbatch:
     waveform:

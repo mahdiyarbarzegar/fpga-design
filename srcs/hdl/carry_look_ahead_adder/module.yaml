@@ -1,5 +1,7 @@
 name: carry_look_ahead_adder
 
+type: hdl
+
 ip:
   vlnv: user.org:user_ip:carry_look_ahead_adder:0.1
   vendor: user.org
@@ -10,8 +12,6 @@ ip:
   display_name: Carry-Look-Ahead Adder
   description: Carry Look Ahead Adder
   top_module: carry_look_ahead_adder_w
-
-type: hdl
 
 package:
   append: ip/package_append.tcl
@@ -36,6 +36,9 @@ simulation:
     variant:
     files:
       - sim/tb_carry_look_ahead_adder.v
+    dependencies:
+      lib:
+      module:
     timescale: 1ns/1ps
     tclbatch:
     waveform:
@@ -48,6 +51,9 @@ simulation:
     consume:
     variant:
     files:
+    dependencies:
+      lib:
+      module:
     timescale:
     tclbatch:
     waveform:
