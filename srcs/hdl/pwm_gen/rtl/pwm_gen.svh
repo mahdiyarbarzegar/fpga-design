@@ -1,5 +1,5 @@
-`ifndef PWM_GEN_VH
-`define PWM_GEN_VH
+`ifndef PWM_GEN_SVH
+`define PWM_GEN_SVH
 
 `define RIGHT_ALIGNED 0
 `define LEFT_ALIGNED 1

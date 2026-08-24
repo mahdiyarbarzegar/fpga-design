@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="axi_pwm_gen_gui.wdb" id="1">
+         <top_modules>
+            <top_module name="\$unit_axi4lite_bus_ifc_sv_2637615685 " />
+            <top_module name="axi4lite_reg_pkg" />
+            <top_module name="gui_axi_pwm_gen" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="10.600000 us"></ZoomEndTime>
+      <Cursor1Time time="10.600000 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="108"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="33" />
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwm">
+      <obj_property name="ElementShortName">pwm[1:0]</obj_property>
+      <obj_property name="ObjectShortName">pwm[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/stop">
+      <obj_property name="ElementShortName">stop</obj_property>
+      <obj_property name="ObjectShortName">stop</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/mode">
+      <obj_property name="ElementShortName">mode[1:0]</obj_property>
+      <obj_property name="ObjectShortName">mode[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/psc">
+      <obj_property name="ElementShortName">psc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psc[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/arr">
+      <obj_property name="ElementShortName">arr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">arr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/ccr">
+      <obj_property name="ElementShortName">ccr[0:1][31:0]</obj_property>
+      <obj_property name="ObjectShortName">ccr[0:1][31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_awaddr">
+      <obj_property name="ElementShortName">s_axi_awaddr[5:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awaddr[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_awprot">
+      <obj_property name="ElementShortName">s_axi_awprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_awvalid">
+      <obj_property name="ElementShortName">s_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_awready">
+      <obj_property name="ElementShortName">s_axi_awready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_wdata">
+      <obj_property name="ElementShortName">s_axi_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_wstrb">
+      <obj_property name="ElementShortName">s_axi_wstrb[3:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wstrb[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_wvalid">
+      <obj_property name="ElementShortName">s_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_wready">
+      <obj_property name="ElementShortName">s_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_bresp">
+      <obj_property name="ElementShortName">s_axi_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_bvalid">
+      <obj_property name="ElementShortName">s_axi_bvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_bready">
+      <obj_property name="ElementShortName">s_axi_bready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_bready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_araddr">
+      <obj_property name="ElementShortName">s_axi_araddr[5:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_araddr[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_arprot">
+      <obj_property name="ElementShortName">s_axi_arprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_arprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_arvalid">
+      <obj_property name="ElementShortName">s_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_arready">
+      <obj_property name="ElementShortName">s_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_arready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_rdata">
+      <obj_property name="ElementShortName">s_axi_rdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_rresp">
+      <obj_property name="ElementShortName">s_axi_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_rvalid">
+      <obj_property name="ElementShortName">s_axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_axi_pwm_gen/pwmgen/s_axi_rready">
+      <obj_property name="ElementShortName">s_axi_rready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/oc">
+      <obj_property name="ElementShortName">oc[1:0]</obj_property>
+      <obj_property name="ObjectShortName">oc[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/TIMER_RESOLUTION">
+      <obj_property name="ElementShortName">TIMER_RESOLUTION[31:0]</obj_property>
+      <obj_property name="ObjectShortName">TIMER_RESOLUTION[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_axi_pwm_gen/pwmgen/CHANNELS">
+      <obj_property name="ElementShortName">CHANNELS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CHANNELS[31:0]</obj_property>
+   </wvobject>
+</wave_config>
