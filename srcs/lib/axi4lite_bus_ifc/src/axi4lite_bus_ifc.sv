@@ -1,6 +1,6 @@
 interface axi4lite_bus_ifc #(
-    parameter int DATA_WIDTH = 32,
-    parameter int ADDR_WIDTH = 5
+    parameter int DATA_WIDTH,
+    parameter int ADDR_WIDTH
 ) (
     input logic ACLK,
     input logic ARESETN

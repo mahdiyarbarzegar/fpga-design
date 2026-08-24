@@ -1,0 +1,12 @@
+name: axi4_reg
+
+type: lib
+
+src:
+  - src/axi4_reg_pkg.sv
+  - src/axi4_reg_ifc.sv
+  - src/axi4_reg_bank.sv
+
+include:
+
+dependencies:

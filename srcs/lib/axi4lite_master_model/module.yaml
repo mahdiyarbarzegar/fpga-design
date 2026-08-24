@@ -1,0 +1,13 @@
+name: axi4lite_master_model
+
+type: lib
+
+src:
+  - src/axi4lite_master_model.sv
+
+include:
+  - src
+
+dependencies:
+  lib:
+    - axi4lite_bus_ifc

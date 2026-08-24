@@ -5,6 +5,9 @@ module tb_axi4lite_slave ();
     localparam int ADDR_WIDTH = 5;
     localparam int DATA_WIDTH = 32;
     localparam int STRB_WIDTH = DATA_WIDTH / 8;
+    localparam int ADDR_LSB = (DATA_WIDTH / 32) + 1;
+    localparam int REG_ADDR_WIDTH = ADDR_WIDTH - ADDR_LSB;
+    localparam int NUM_REGS = 2 ** REG_ADDR_WIDTH;
 
     logic clk;
     logic resetn;
@@ -25,7 +28,8 @@ module tb_axi4lite_slave ();
     // ========================================================================
     axi4_reg_ifc #(
         .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH    (ADDR_WIDTH)
+        .ADDR_WIDTH(ADDR_WIDTH),
+        .NUM_REGS  (NUM_REGS)
     ) reg_ifc ();
 
     // ========================================================================
@@ -55,7 +59,7 @@ module tb_axi4lite_slave ();
         .ADDR_WIDTH(ADDR_WIDTH)
     ) reg_model (
         .clk    (clk),
-        .resetn (resetn),
+        .rst_n  (resetn),
         .reg_ifc(reg_ifc)
     );
 

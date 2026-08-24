@@ -1,15 +1,22 @@
 `include "axi4lite_master_model.svh"
 
 class axi4lite_master_model #(
-    parameter int DATA_WIDTH = 32,
-    parameter int ADDR_WIDTH = 5
+    parameter int DATA_WIDTH,
+    parameter int ADDR_WIDTH
 );
     localparam int STRB_WIDTH = DATA_WIDTH / 8;
     localparam int TIMEOUT_CYCLES = 100;
 
-    virtual axi4lite_bus_ifc.MASTER vif;
+    virtual axi4lite_bus_ifc #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH(ADDR_WIDTH)
+    ).MASTER vif;
 
-    function new(virtual axi4lite_bus_ifc.MASTER vif);
+    function new(
+    virtual axi4lite_bus_ifc #(
+    .DATA_WIDTH(DATA_WIDTH),
+    .ADDR_WIDTH(ADDR_WIDTH)
+                 ).MASTER vif);
         this.vif = vif;
     endfunction
 

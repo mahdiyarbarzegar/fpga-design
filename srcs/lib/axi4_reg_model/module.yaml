@@ -1,0 +1,12 @@
+name: axi4_reg_model
+
+type: lib
+
+src:
+  - src/axi4_reg_model.sv
+
+include:
+
+dependencies:
+  lib:
+    - axi4_reg

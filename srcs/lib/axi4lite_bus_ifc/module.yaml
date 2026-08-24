@@ -1,0 +1,10 @@
+name: axi4lite_bus_ifc
+
+type: lib
+
+src:
+  - src/axi4lite_bus_ifc.sv
+
+include:
+
+dependencies:

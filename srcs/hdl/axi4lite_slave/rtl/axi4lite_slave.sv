@@ -1,9 +1,9 @@
 module axi4lite_slave #(
-    parameter int DATA_WIDTH = 32,
-    parameter int ADDR_WIDTH = 5
+    parameter int DATA_WIDTH,
+    parameter int ADDR_WIDTH
 ) (
     axi4lite_bus_ifc.SLAVE bus_ifc,
-    axi4_reg_ifc.AXI       reg_ifc
+    axi4_reg_ifc.ACCESS    reg_ifc
 );
 
     localparam int STRB_WIDTH = DATA_WIDTH / 8;
@@ -19,7 +19,14 @@ module axi4lite_slave #(
 
         assert (ADDR_WIDTH >= ADDR_LSB + REG_ADDR_WIDTH)
         else $error("AXI address width is too small");
+
+        assert (reg_ifc.CHANNELS == 1)
+        else $error("The CHANNELS for the Register-Interface should be 1!");
     end
+
+    function automatic int addr_alignment(logic [ADDR_WIDTH-1:0] addr);
+        return addr[ADDR_LSB+REG_ADDR_WIDTH-1:ADDR_LSB];
+    endfunction
 
     // ------------------------------------------------------------------------
     // Write channel storage
@@ -133,12 +140,14 @@ module axi4lite_slave #(
      * The expression below also handles the case where AW and W are
      * accepted in the same clock cycle.
      */
-    assign reg_ifc.wr_en = write_fire;
-    assign reg_ifc.wr_addr = (have_aw)?
-                                        axi_awaddr[ADDR_LSB+REG_ADDR_WIDTH-1:ADDR_LSB]:
-                                        bus_ifc.AWADDR[ADDR_LSB+REG_ADDR_WIDTH-1:ADDR_LSB];
-    assign reg_ifc.wr_data = (have_w) ? axi_wdata : bus_ifc.WDATA;
-    assign reg_ifc.wr_strb = (have_w) ? axi_wstrb : bus_ifc.WSTRB;
+    assign reg_ifc.wr_en[0] = write_fire;
+    assign reg_ifc.wr_inx[0] = (have_aw) ? addr_alignment(
+        axi_awaddr
+    ) : addr_alignment(
+        bus_ifc.AWADDR
+    );
+    assign reg_ifc.wr_data[0] = (have_w) ? axi_wdata : bus_ifc.WDATA;
+    assign reg_ifc.wr_strb[0] = (have_w) ? axi_wstrb : bus_ifc.WSTRB;
 
     // ========================================================================
     // Read Channel
@@ -173,7 +182,6 @@ module axi4lite_slave #(
     // ========================================================================
     // Register Read Interface
     // ========================================================================
-    assign reg_ifc.rd_addr = axi_araddr[ADDR_LSB+REG_ADDR_WIDTH-1:ADDR_LSB];
-    assign bus_ifc.RDATA   = reg_ifc.rd_data;
+    assign bus_ifc.RDATA = reg_ifc.regs[addr_alignment(axi_araddr)];
 
 endmodule : axi4lite_slave
