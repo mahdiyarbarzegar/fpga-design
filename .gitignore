@@ -1,8 +1,10 @@
 .idea/
+.tcl-lsp/
 .Xil/
 build/
 
 *.jou
 *.log
 *.pb
+*.str
 
