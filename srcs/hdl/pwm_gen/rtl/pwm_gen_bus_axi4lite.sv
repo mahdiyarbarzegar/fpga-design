@@ -1,78 +1,72 @@
-`include "pwm_gen_reg_pkg.sv"
+`include "pwm_gen.vh"
 
 import pwm_gen_reg_pkg::*;
 
-module pwm_gen #(
+module pwm_gen_bus_axi4lite #(
     parameter TIMER_RESOLUTION = 32,
     parameter CHANNELS         = 1
 ) (
     input clk,
     input rst_n,
 
-    input                         start,
-    input                         stop,
-    input  [                 1:0] mode,
-    input  [TIMER_RESOLUTION-1:0] psc,              // clk_cnt = clk / [pcs+1]
-    input  [TIMER_RESOLUTION-1:0] arr,
-    input  [TIMER_RESOLUTION-1:0] ccr  [CHANNELS],
-    output [        CHANNELS-1:0] oc,
+    input  wire [    AXI_ADDR_WIDTH-1 : 0] s_axi_awaddr,
+    input  wire [                   2 : 0] s_axi_awprot,
+    input  wire                            s_axi_awvalid,
+    output wire                            s_axi_awready,
+    input  wire [    AXI_DATA_WIDTH-1 : 0] s_axi_wdata,
+    input  wire [(AXI_DATA_WIDTH/8)-1 : 0] s_axi_wstrb,
+    input  wire                            s_axi_wvalid,
+    output wire                            s_axi_wready,
+    output wire [                   1 : 0] s_axi_bresp,
+    output wire                            s_axi_bvalid,
+    input  wire                            s_axi_bready,
+    input  wire [    AXI_ADDR_WIDTH-1 : 0] s_axi_araddr,
+    input  wire [                   2 : 0] s_axi_arprot,
+    input  wire                            s_axi_arvalid,
+    output wire                            s_axi_arready,
+    output wire [    AXI_DATA_WIDTH-1 : 0] s_axi_rdata,
+    output wire [                   1 : 0] s_axi_rresp,
+    output wire                            s_axi_rvalid,
+    input  wire                            s_axi_rready,
 
-    input  wire [    ADDR_WIDTH-1 : 0] s_axi_awaddr,
-    input  wire [               2 : 0] s_axi_awprot,
-    input  wire                        s_axi_awvalid,
-    output wire                        s_axi_awready,
-    input  wire [    DATA_WIDTH-1 : 0] s_axi_wdata,
-    input  wire [(DATA_WIDTH/8)-1 : 0] s_axi_wstrb,
-    input  wire                        s_axi_wvalid,
-    output wire                        s_axi_wready,
-    output wire [               1 : 0] s_axi_bresp,
-    output wire                        s_axi_bvalid,
-    input  wire                        s_axi_bready,
-    input  wire [    ADDR_WIDTH-1 : 0] s_axi_araddr,
-    input  wire [               2 : 0] s_axi_arprot,
-    input  wire                        s_axi_arvalid,
-    output wire                        s_axi_arready,
-    output wire [    DATA_WIDTH-1 : 0] s_axi_rdata,
-    output wire [               1 : 0] s_axi_rresp,
-    output wire                        s_axi_rvalid,
-    input  wire                        s_axi_rready
+    output [CHANNELS-1:0] oc
 );
 
     axi4lite_bus_ifc #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) axi_bus_ifc (
         .ACLK   (clk),
         .ARESETN(rst_n)
     );
 
     axi4_reg_ifc #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH),
-        .NUM_REGS  (NUM_REGS)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH),
+        .NUM_REGS      (NUM_REGS)
     ) reg_ifc_axi ();
 
     axi4lite_slave #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) dut (
         .bus_ifc(axi_bus_ifc),
         .reg_ifc(reg_ifc_axi)
     );
 
     axi4_reg_ifc #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH),
-        .CHANNELS  (NUM_REGS),
-        .NUM_REGS  (NUM_REGS)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH),
+        .CHANNELS      (NUM_REGS),
+        .NUM_REGS      (NUM_REGS)
     ) reg_ifc_rtl ();
 
     axi4_reg_bank #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH),
-        .NUM_REGS  (NUM_REGS),
-        .REG_DESC_T(pwm_reg_desc_t),
-        .REG_MAP   (PWM_GEN_REGMAP)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH),
+        .NUM_REGS      (NUM_REGS),
+        .REG_DESC_T    (pwm_reg_desc_t),
+        .REG_MAP       (PWM_GEN_REGMAP)
     ) reg_bank (
         .clk        (clk),
         .rst_n      (rst_n),
@@ -87,12 +81,12 @@ module pwm_gen #(
         .clk        (clk),
         .rst_n      (rst_n),
         .reg_ifc_rtl(reg_ifc_rtl),
-        .start,
-        .stop,
-        .mode,
-        .psc,
-        .arr,
-        .ccr
+        .start      (),
+        .stop       (),
+        .mode       (),
+        .psc        (),
+        .arr        (),
+        .ccr        ()
     );
 
     pwm_gen_core #(

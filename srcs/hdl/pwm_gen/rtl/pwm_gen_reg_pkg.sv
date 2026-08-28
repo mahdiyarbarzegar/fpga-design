@@ -1,12 +1,12 @@
 package pwm_gen_reg_pkg;
 
+    `include "pwm_gen.vh"
+
     import axi4lite_reg_pkg::*;
 
-    localparam int DATA_WIDTH = 32;
-    localparam int ADDR_WIDTH = 6;
-    localparam int STRB_WIDTH = DATA_WIDTH / 8;
+    localparam int AXI_STRB_WIDTH = AXI_DATA_WIDTH / 8;
 
-    `DECLARE_REG_DESC_T(pwm_reg_desc_t, ADDR_WIDTH, DATA_WIDTH)
+    `DECLARE_REG_DESC_T(pwm_reg_desc_t, AXI_ADDR_WIDTH, AXI_DATA_WIDTH)
 
     typedef enum int unsigned {
         REG_START                = 0,

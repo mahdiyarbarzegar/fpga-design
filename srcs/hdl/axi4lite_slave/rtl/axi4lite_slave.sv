@@ -1,56 +1,56 @@
 module axi4lite_slave #(
-    parameter int DATA_WIDTH,
-    parameter int ADDR_WIDTH
+    parameter int AXI_DATA_WIDTH,
+    parameter int AXI_ADDR_WIDTH
 ) (
     axi4lite_bus_ifc.SLAVE bus_ifc,
     axi4_reg_ifc.ACCESS    reg_ifc
 );
 
-    localparam int STRB_WIDTH = DATA_WIDTH / 8;
-    localparam int ADDR_LSB = (DATA_WIDTH / 32) + 1;
-    localparam int REG_ADDR_WIDTH = ADDR_WIDTH - ADDR_LSB;
+    localparam int STRB_WIDTH = AXI_DATA_WIDTH / 8;
+    localparam int ADDR_LSB = (AXI_DATA_WIDTH / 32) + 1;
+    localparam int REG_AXI_ADDR_WIDTH = AXI_ADDR_WIDTH - ADDR_LSB;
 
     initial begin
-        assert (DATA_WIDTH == 32 || DATA_WIDTH == 64)
+        assert (AXI_DATA_WIDTH == 32 || AXI_DATA_WIDTH == 64)
         else $error("Unsupported AXI data width");
 
-        assert (DATA_WIDTH % 8 == 0)
+        assert (AXI_DATA_WIDTH % 8 == 0)
         else $error("AXI data width must be byte aligned");
 
-        assert (ADDR_WIDTH >= ADDR_LSB + REG_ADDR_WIDTH)
+        assert (AXI_ADDR_WIDTH >= ADDR_LSB + REG_AXI_ADDR_WIDTH)
         else $error("AXI address width is too small");
 
         assert (reg_ifc.CHANNELS == 1)
         else $error("The CHANNELS for the Register-Interface should be 1!");
     end
 
-    function automatic int addr_alignment(logic [ADDR_WIDTH-1:0] addr);
-        return addr[ADDR_LSB+REG_ADDR_WIDTH-1:ADDR_LSB];
+    function automatic int addr_alignment(logic [AXI_ADDR_WIDTH-1:0] addr);
+        return addr[ADDR_LSB+REG_AXI_ADDR_WIDTH-1:ADDR_LSB];
     endfunction
 
     // ------------------------------------------------------------------------
     // Write channel storage
     // ------------------------------------------------------------------------
-    logic [ADDR_WIDTH-1:0] axi_awaddr;
-    logic [DATA_WIDTH-1:0] axi_wdata;
-    logic [STRB_WIDTH-1:0] axi_wstrb;
+    logic [AXI_ADDR_WIDTH-1:0] axi_awaddr;
+    logic [AXI_DATA_WIDTH-1:0] axi_wdata;
+    logic [    STRB_WIDTH-1:0] axi_wstrb;
 
     logic have_aw, have_w;
     logic axi_awready, axi_wready;
     logic aw_handshake, w_handshake;
-    logic                  write_fire;
+    logic                      write_fire;
 
     // ------------------------------------------------------------------------
     // Write response
     // ------------------------------------------------------------------------
-    logic [           1:0] axi_bresp;
-    logic                  axi_bvalid;
+    logic [               1:0] axi_bresp;
+    logic                      axi_bvalid;
 
     // ------------------------------------------------------------------------
     // Read channel
     // ------------------------------------------------------------------------
-    logic [ADDR_WIDTH-1:0] axi_araddr;
-    logic [           1:0] axi_rresp;
+    logic [AXI_ADDR_WIDTH-1:0] axi_araddr;
+    logic [               1:0] axi_rresp;
     logic axi_arready, axi_rvalid;
     logic ar_handshake, r_handshake;
 

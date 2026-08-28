@@ -1,5 +1,3 @@
-`include "pwm_gen.svh"
-
 module pwm_gen_core #(
     parameter TIMER_RESOLUTION = 32,
     parameter CHANNELS         = 1
@@ -14,6 +12,8 @@ module pwm_gen_core #(
     input        [TIMER_RESOLUTION-1:0] ccr  [CHANNELS],
     output logic [        CHANNELS-1:0] oc
 );
+
+    `include "pwm_gen.vh"
 
     // states
     localparam logic [1:0] IDLE = 2'd0, LOADING = 2'd1, WORKING = 2'd2, STOPPED = 2'd3;

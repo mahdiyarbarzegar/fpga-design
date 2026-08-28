@@ -1,58 +1,58 @@
 interface axi4lite_bus_ifc #(
-    parameter int DATA_WIDTH,
-    parameter int ADDR_WIDTH
+    parameter int AXI_DATA_WIDTH,
+    parameter int AXI_ADDR_WIDTH
 ) (
     input logic ACLK,
     input logic ARESETN
 );
-    localparam int STRB_WIDTH = DATA_WIDTH / 8;
+    localparam int STRB_WIDTH = AXI_DATA_WIDTH / 8;
 
     initial begin
-        assert (DATA_WIDTH == 32 || DATA_WIDTH == 64)
+        assert (AXI_DATA_WIDTH == 32 || AXI_DATA_WIDTH == 64)
         else $error("Unsupported AXI data width");
 
-        assert (DATA_WIDTH % 8 == 0)
+        assert (AXI_DATA_WIDTH % 8 == 0)
         else $error("AXI data width must be byte aligned");
     end
 
     // ========================================================================
     // Write address channel
     // ========================================================================
-    logic [ADDR_WIDTH-1:0] AWADDR;
-    logic [           2:0] AWPROT;
-    logic                  AWVALID;
-    logic                  AWREADY;
+    logic [AXI_ADDR_WIDTH-1:0] AWADDR;
+    logic [               2:0] AWPROT;
+    logic                      AWVALID;
+    logic                      AWREADY;
 
     // ========================================================================
     // Write data channel
     // ========================================================================
-    logic [DATA_WIDTH-1:0] WDATA;
-    logic [STRB_WIDTH-1:0] WSTRB;
-    logic                  WVALID;
-    logic                  WREADY;
+    logic [AXI_DATA_WIDTH-1:0] WDATA;
+    logic [    STRB_WIDTH-1:0] WSTRB;
+    logic                      WVALID;
+    logic                      WREADY;
 
     // ========================================================================
     // Write response channel
     // ========================================================================
-    logic [           1:0] BRESP;
-    logic                  BVALID;
-    logic                  BREADY;
+    logic [               1:0] BRESP;
+    logic                      BVALID;
+    logic                      BREADY;
 
     // ========================================================================
     // Read address channel
     // ========================================================================
-    logic [ADDR_WIDTH-1:0] ARADDR;
-    logic [           2:0] ARPROT;
-    logic                  ARVALID;
-    logic                  ARREADY;
+    logic [AXI_ADDR_WIDTH-1:0] ARADDR;
+    logic [               2:0] ARPROT;
+    logic                      ARVALID;
+    logic                      ARREADY;
 
     // ========================================================================
     // Read data channel
     // ========================================================================
-    logic [DATA_WIDTH-1:0] RDATA;
-    logic [           1:0] RRESP;
-    logic                  RVALID;
-    logic                  RREADY;
+    logic [AXI_DATA_WIDTH-1:0] RDATA;
+    logic [               1:0] RRESP;
+    logic                      RVALID;
+    logic                      RREADY;
 
     // ========================================================================
     // Master modport

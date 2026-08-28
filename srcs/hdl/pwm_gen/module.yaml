@@ -20,7 +20,8 @@ rtl:
   - rtl/pwm_gen_reg_pkg.sv
   - rtl/pwm_gen_regmap.sv
   - rtl/pwm_gen_core.sv
-  - rtl/pwm_gen.sv
+  - rtl/pwm_gen_bus_simple.sv
+  - rtl/pwm_gen_bus_axi4lite.sv
   - rtl/pwm_gen_w.v
 
 include:
@@ -77,6 +78,15 @@ variants:
     name: pwm_gen_1ch
     display_name: PWM Generator 1-Channel
     parameters:
+      CONFIG.INTERFACE_TYPE: "SIMPLE"
+      CONFIG.TIMER_RESOLUTION: 32
+      CONFIG.CHANNELS: 1
+
+  axi_pwm_gen_1ch:
+    name: axi_pwm_gen_1ch
+    display_name: AXI PWM Generator 1-Channel
+    parameters:
+      CONFIG.INTERFACE_TYPE: "AXI4LITE_SLAVE"
       CONFIG.TIMER_RESOLUTION: 32
       CONFIG.CHANNELS: 1
 
@@ -84,6 +94,7 @@ variants:
     name: pwm_gen_2ch
     display_name: PWM Generator 2-Channel
     parameters:
+      CONFIG.INTERFACE_TYPE: "SIMPLE"
       CONFIG.TIMER_RESOLUTION: 32
       CONFIG.CHANNELS: 2
 
@@ -91,5 +102,132 @@ variants:
     name: pwm_gen_3ch_high_res
     display_name: PWM Generator 3-Channel High Resolution
     parameters:
+      CONFIG.INTERFACE_TYPE: "SIMPLE"
       CONFIG.TIMER_RESOLUTION: 64
       CONFIG.CHANNELS: 3
+
+interfaces:
+  clk:
+    type: clock
+    frequency: 100000000
+    port:
+      clk: clk
+
+  rst_n:
+    type: reset
+    polarity: active_low
+    port:
+      rst_n: rst_n
+
+  S_AXI:
+    type: axi4lite
+    mode: slave
+    enablement: '$INTERFACE_TYPE == "AXI4LITE_SLAVE"'
+    bus_parameters:
+      AXI_DATA_WIDTH: $AXI_DATA_WIDTH
+      AXI_ADDR_WIDTH: $AXI_ADDR_WIDTH
+    port:
+      AWADDR: s_axi_awaddr
+      AWPROT: s_axi_awprot
+      AWVALID: s_axi_awvalid
+      AWREADY: s_axi_awready
+      WDATA: s_axi_wdata
+      WSTRB: s_axi_wstrb
+      WVALID: s_axi_wvalid
+      WREADY: s_axi_wready
+      BRESP: s_axi_bresp
+      BVALID: s_axi_bvalid
+      BREADY: s_axi_bready
+      ARADDR: s_axi_araddr
+      ARPROT: s_axi_arprot
+      ARVALID: s_axi_arvalid
+      ARREADY: s_axi_arready
+      RDATA: s_axi_rdata
+      RRESP: s_axi_rresp
+      RVALID: s_axi_rvalid
+      RREADY: s_axi_rready
+
+  start:
+    type: input
+    enablement: '$INTERFACE_TYPE == "SIMPLE"'
+    port:
+      start: start
+
+  stop:
+    type: input
+    enablement: '$INTERFACE_TYPE == "SIMPLE"'
+    port:
+      stop: stop
+
+  mode:
+    type: input
+    enablement: '$INTERFACE_TYPE == "SIMPLE"'
+    port:
+      mode: mode
+
+  psc:
+    type: input
+    enablement: '$INTERFACE_TYPE == "SIMPLE"'
+    port:
+      psc: psc
+
+  arr:
+    type: input
+    enablement: '$INTERFACE_TYPE == "SIMPLE"'
+    port:
+      arr: arr
+
+  ccr:
+    type: input
+    enablement: '$INTERFACE_TYPE == "SIMPLE"'
+    port:
+      ccr: ccr
+
+  oc:
+    type: output
+    port:
+      oc: oc
+
+parameters:
+  INTERFACE_TYPE:
+    type: string
+    default: AXI4LITE_SLAVE
+    validation:
+      type: list
+      values:
+        - AXI4LITE_SLAVE
+        - SIMPLE
+    gui:
+      display_name: Interface Type
+      widget: dropdown
+      page: General
+      group: Interface
+
+  TIMER_RESOLUTION:
+    type: integer
+    default: 32
+    validation:
+      type: range_long
+      min: 8
+      max: 64
+    gui:
+      display_name: PWM Timer Resolution
+      page: General
+      group: PWM Generator
+
+  CHANNELS:
+    type: integer
+    default: 1
+    validation:
+      type: range_long
+      min: 1
+      max: 32
+    gui:
+      display_name: PWM Output Channels
+      page: General
+      group: PWM Generator
+
+parameters_constraints:
+  - expression: 'expr {$TIMER_RESOLUTION <= $AXI_DATA_WIDTH}'
+    enablement: 'expr {$INTERFACE_TYPE == {AXI4LITE_SLAVE}}'
+    message: 'TIMER_RESOLUTION must be <= AXI_DATA_WIDTH'

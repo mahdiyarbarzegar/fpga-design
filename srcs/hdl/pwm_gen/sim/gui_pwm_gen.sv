@@ -2,6 +2,7 @@
 
 module gui_pwm_gen;
 
+    localparam INTERFACE_TYPE = "SIMPLE";
     localparam TIMER_RESOLUTION = 32;
     localparam CHANNELS = 2;
 
@@ -12,6 +13,7 @@ module gui_pwm_gen;
     wire [CHANNELS-1:0]                       pwm;
 
     pwm_gen_w #(
+        .INTERFACE_TYPE  (INTERFACE_TYPE),
         .TIMER_RESOLUTION(TIMER_RESOLUTION),
         .CHANNELS        (CHANNELS)
     ) pwmgen (

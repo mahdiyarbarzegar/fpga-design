@@ -1,11 +1,11 @@
 import axi4lite_reg_pkg::*;
 
 module axi4_reg_bank #(
-    parameter int        DATA_WIDTH,
-    parameter int        ADDR_WIDTH,
+    parameter int        AXI_DATA_WIDTH,
+    parameter int        AXI_ADDR_WIDTH,
     parameter int        NUM_REGS,
     parameter type       REG_DESC_T,
-    parameter REG_DESC_T REG_MAP   [NUM_REGS] = '{default: '0}
+    parameter REG_DESC_T REG_MAP       [NUM_REGS] = '{default: '0}
 ) (
     input logic clk,
     input logic rst_n,
@@ -19,13 +19,14 @@ module axi4_reg_bank #(
         else $error("The CHANNELS and NUM_REGS for the RTL-Register-Interface should be equal!");
     end
 
-    localparam int STRB_WIDTH = DATA_WIDTH / 8;
-    localparam int ADDR_LSB = $clog2(DATA_WIDTH / 8);
-    localparam int INDEX_WIDTH = ADDR_WIDTH - ADDR_LSB;
+    localparam int STRB_WIDTH = AXI_DATA_WIDTH / 8;
+    localparam int ADDR_LSB = $clog2(AXI_DATA_WIDTH / 8);
+    localparam int INDEX_WIDTH = AXI_ADDR_WIDTH - ADDR_LSB;
 
-    logic [DATA_WIDTH-1:0] regs[NUM_REGS];
+    logic [AXI_DATA_WIDTH-1:0] regs[NUM_REGS];
 
-    task automatic write_reg(input logic [INDEX_WIDTH-1:0] index, input logic [DATA_WIDTH-1:0] data,
+    task automatic write_reg(input logic [INDEX_WIDTH-1:0] index,
+                             input logic [AXI_DATA_WIDTH-1:0] data,
                              input logic [STRB_WIDTH-1:0] strb, input logic ignore_access = 0);
         if (index < NUM_REGS) begin
             if (ignore_access || REG_MAP[index].access == REG_ACCESS_RW || REG_MAP[index].access == REG_ACCESS_W) begin
@@ -38,7 +39,7 @@ module axi4_reg_bank #(
         end
     endtask
 
-    function automatic logic [DATA_WIDTH-1:0] read_reg(input logic [INDEX_WIDTH-1:0] index);
+    function automatic logic [AXI_DATA_WIDTH-1:0] read_reg(input logic [INDEX_WIDTH-1:0] index);
         if (index < NUM_REGS) begin
             if (REG_MAP[index].access == REG_ACCESS_RW || REG_MAP[index].access == REG_ACCESS_R) begin
                 return regs[index];

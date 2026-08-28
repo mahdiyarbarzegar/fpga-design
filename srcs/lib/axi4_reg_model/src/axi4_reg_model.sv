@@ -1,6 +1,6 @@
 module axi4_reg_model #(
-    parameter int DATA_WIDTH,
-    parameter int ADDR_WIDTH
+    parameter int AXI_DATA_WIDTH,
+    parameter int AXI_ADDR_WIDTH
 ) (
     input logic clk,
     input logic rst_n,
@@ -8,15 +8,16 @@ module axi4_reg_model #(
     axi4_reg_ifc.STORAGE reg_ifc
 );
 
-    localparam int STRB_WIDTH = DATA_WIDTH / 8;
-    localparam int ADDR_LSB = (DATA_WIDTH / 32) + 1;
-    localparam int REG_ADDR_WIDTH = ADDR_WIDTH - ADDR_LSB;
-    localparam int NUMBER_OF_REGS = 2 ** REG_ADDR_WIDTH;
+    localparam int STRB_WIDTH = AXI_DATA_WIDTH / 8;
+    localparam int ADDR_LSB = (AXI_DATA_WIDTH / 32) + 1;
+    localparam int REG_AXI_ADDR_WIDTH = AXI_ADDR_WIDTH - ADDR_LSB;
+    localparam int NUMBER_OF_REGS = 2 ** REG_AXI_ADDR_WIDTH;
 
-    logic [DATA_WIDTH-1:0] regs[NUMBER_OF_REGS];
+    logic [AXI_DATA_WIDTH-1:0] regs[NUMBER_OF_REGS];
 
-    task automatic write_reg(input logic [REG_ADDR_WIDTH-1:0] addr,
-                             input logic [DATA_WIDTH-1:0] data, input logic [STRB_WIDTH-1:0] strb);
+    task automatic write_reg(input logic [REG_AXI_ADDR_WIDTH-1:0] addr,
+                             input logic [AXI_DATA_WIDTH-1:0] data,
+                             input logic [STRB_WIDTH-1:0] strb);
         for (int i = 0; i < STRB_WIDTH; i++) begin
             if (strb[i]) begin
                 regs[addr][i*8+:8] <= data[i*8+:8];

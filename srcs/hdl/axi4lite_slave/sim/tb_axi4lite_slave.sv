@@ -2,12 +2,12 @@
 
 module tb_axi4lite_slave ();
 
-    localparam int ADDR_WIDTH = 5;
-    localparam int DATA_WIDTH = 32;
-    localparam int STRB_WIDTH = DATA_WIDTH / 8;
-    localparam int ADDR_LSB = (DATA_WIDTH / 32) + 1;
-    localparam int REG_ADDR_WIDTH = ADDR_WIDTH - ADDR_LSB;
-    localparam int NUM_REGS = 2 ** REG_ADDR_WIDTH;
+    localparam int AXI_ADDR_WIDTH = 5;
+    localparam int AXI_DATA_WIDTH = 32;
+    localparam int STRB_WIDTH = AXI_DATA_WIDTH / 8;
+    localparam int ADDR_LSB = (AXI_DATA_WIDTH / 32) + 1;
+    localparam int REG_AXI_ADDR_WIDTH = AXI_ADDR_WIDTH - ADDR_LSB;
+    localparam int NUM_REGS = 2 ** REG_AXI_ADDR_WIDTH;
 
     logic clk;
     logic resetn;
@@ -16,8 +16,8 @@ module tb_axi4lite_slave ();
     // AXI interface
     // ========================================================================
     axi4lite_bus_ifc #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) axi_bus_ifc (
         .ACLK   (clk),
         .ARESETN(resetn)
@@ -27,25 +27,25 @@ module tb_axi4lite_slave ();
     // Register interface
     // ========================================================================
     axi4_reg_ifc #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH),
-        .NUM_REGS  (NUM_REGS)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH),
+        .NUM_REGS      (NUM_REGS)
     ) reg_ifc ();
 
     // ========================================================================
     // AXI master
     // ========================================================================
     axi4lite_master_model #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) axi_master;
 
     // ========================================================================
     // AXI slave - DUT
     // ========================================================================
     axi4lite_slave #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) dut (
         .bus_ifc(axi_bus_ifc),
         .reg_ifc(reg_ifc)
@@ -55,8 +55,8 @@ module tb_axi4lite_slave ();
     // Register model
     // ========================================================================
     axi4_reg_model #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) reg_model (
         .clk    (clk),
         .rst_n  (resetn),
@@ -77,12 +77,12 @@ module tb_axi4lite_slave ();
     // Write + Read test
     // ========================================================================
     task automatic test_write_read(
-        input logic [ADDR_WIDTH-1:0] addr, input logic [DATA_WIDTH-1:0] data,
+        input logic [AXI_ADDR_WIDTH-1:0] addr, input logic [AXI_DATA_WIDTH-1:0] data,
         input logic [STRB_WIDTH-1:0] strb, input axi4lite_write_mode_t mode);
 
-        logic             [           1:0] resp;
-        logic             [DATA_WIDTH-1:0] readback_data;
-        axi4lite_result_t                  result;
+        logic             [               1:0] resp;
+        logic             [AXI_DATA_WIDTH-1:0] readback_data;
+        axi4lite_result_t                      result;
 
         axi_master.write(addr, data, strb, mode, resp, result);
 
@@ -108,13 +108,13 @@ module tb_axi4lite_slave ();
     endtask
 
     task automatic test_wstrb();
-        logic             [DATA_WIDTH-1:0] readback_data;
-        logic             [DATA_WIDTH-1:0] initial_data;
-        logic             [DATA_WIDTH-1:0] write_data;
-        logic             [DATA_WIDTH-1:0] expected_data;
-        logic             [STRB_WIDTH-1:0] strb;
-        logic             [           1:0] resp;
-        axi4lite_result_t                  result;
+        logic             [AXI_DATA_WIDTH-1:0] readback_data;
+        logic             [AXI_DATA_WIDTH-1:0] initial_data;
+        logic             [AXI_DATA_WIDTH-1:0] write_data;
+        logic             [AXI_DATA_WIDTH-1:0] expected_data;
+        logic             [    STRB_WIDTH-1:0] strb;
+        logic             [               1:0] resp;
+        axi4lite_result_t                      result;
 
         initial_data  = 32'hDEADBEEF;
         write_data    = 32'h11223344;

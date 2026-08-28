@@ -1,21 +1,20 @@
 `include "axi4lite_master_model.svh"
 
 class axi4lite_master_model #(
-    parameter int DATA_WIDTH,
-    parameter int ADDR_WIDTH
+    parameter int AXI_DATA_WIDTH,
+    parameter int AXI_ADDR_WIDTH
 );
-    localparam int STRB_WIDTH = DATA_WIDTH / 8;
+    localparam int STRB_WIDTH = AXI_DATA_WIDTH / 8;
     localparam int TIMEOUT_CYCLES = 100;
 
     virtual axi4lite_bus_ifc #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ).MASTER vif;
 
-    function new(
-    virtual axi4lite_bus_ifc #(
-    .DATA_WIDTH(DATA_WIDTH),
-    .ADDR_WIDTH(ADDR_WIDTH)
+    function new(virtual axi4lite_bus_ifc #(
+                 .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+                 .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
                  ).MASTER vif);
         this.vif = vif;
     endfunction
@@ -34,7 +33,7 @@ class axi4lite_master_model #(
         vif.RREADY  = 1'b0;
     endtask
 
-    task write(input logic [ADDR_WIDTH-1:0] addr, input logic [DATA_WIDTH-1:0] data,
+    task write(input logic [AXI_ADDR_WIDTH-1:0] addr, input logic [AXI_DATA_WIDTH-1:0] data,
                input logic [STRB_WIDTH-1:0] strb, input axi4lite_write_mode_t mode = AW_THEN_W,
                output logic [1:0] resp, output axi4lite_result_t result);
         axi4lite_result_t aw_result, w_result, b_result;
@@ -73,7 +72,7 @@ class axi4lite_master_model #(
         result = AXI_SUCCESS;
     endtask
 
-    task read(input logic [ADDR_WIDTH-1:0] addr, output logic [DATA_WIDTH-1:0] data,
+    task read(input logic [AXI_ADDR_WIDTH-1:0] addr, output logic [AXI_DATA_WIDTH-1:0] data,
               output logic [1:0] resp, output axi4lite_result_t result);
         axi4lite_result_t ar_result, r_result;
 
@@ -89,7 +88,7 @@ class axi4lite_master_model #(
         result = AXI_SUCCESS;
     endtask
 
-    task send_aw(input logic [ADDR_WIDTH-1:0] addr, output axi4lite_result_t result);
+    task send_aw(input logic [AXI_ADDR_WIDTH-1:0] addr, output axi4lite_result_t result);
         vif.AWADDR  = addr;
         vif.AWPROT  = 3'b000;
         vif.AWVALID = 1'b1;
@@ -109,7 +108,7 @@ class axi4lite_master_model #(
         $error("AXI4-Lite AW channel timeout: addr=0x%0h after %0d cycles", addr, TIMEOUT_CYCLES);
     endtask
 
-    task send_w(input logic [DATA_WIDTH-1:0] data, input logic [STRB_WIDTH-1:0] strb,
+    task send_w(input logic [AXI_DATA_WIDTH-1:0] data, input logic [STRB_WIDTH-1:0] strb,
                 output axi4lite_result_t result);
         vif.WDATA  = data;
         vif.WSTRB  = strb;
@@ -150,7 +149,7 @@ class axi4lite_master_model #(
         $error("AXI4-Lite B channel timeout after %0d cycles", TIMEOUT_CYCLES);
     endtask
 
-    task send_ar(input logic [ADDR_WIDTH-1:0] addr, output axi4lite_result_t result);
+    task send_ar(input logic [AXI_ADDR_WIDTH-1:0] addr, output axi4lite_result_t result);
         vif.ARADDR  = addr;
         vif.ARPROT  = 3'b000;
         vif.ARVALID = 1'b1;
@@ -170,7 +169,7 @@ class axi4lite_master_model #(
         $error("AXI4-Lite AR channel timeout: addr=0x%0h after %0d cycles", addr, TIMEOUT_CYCLES);
     endtask
 
-    task get_r(output logic [DATA_WIDTH-1:0] data, output logic [1:0] resp,
+    task get_r(output logic [AXI_DATA_WIDTH-1:0] data, output logic [1:0] resp,
                output axi4lite_result_t result);
         vif.RREADY = 1'b1;
 

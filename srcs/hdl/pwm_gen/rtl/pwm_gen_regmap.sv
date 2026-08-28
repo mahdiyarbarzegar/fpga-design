@@ -1,5 +1,3 @@
-`include "pwm_gen_reg_pkg.sv"
-
 import pwm_gen_reg_pkg::*;
 
 module pwm_gen_regmap #(
@@ -26,12 +24,12 @@ module pwm_gen_regmap #(
 
     localparam int CCR_CH_WIDTH = (CHANNELS <= 1) ? 1 : $clog2(CHANNELS);
 
-    function logic [DATA_WIDTH-1:0] read_reg(input pwm_reg_id_t reg_id);
+    function logic [AXI_DATA_WIDTH-1:0] read_reg(input pwm_reg_id_t reg_id);
         return reg_ifc_rtl.regs[reg_id];
     endfunction
 
-    task automatic write_reg(input pwm_reg_id_t reg_id, input [DATA_WIDTH-1:0] data,
-                             input [STRB_WIDTH-1:0] strb = {STRB_WIDTH{1'b1}});
+    task automatic write_reg(input pwm_reg_id_t reg_id, input [AXI_DATA_WIDTH-1:0] data,
+                             input [AXI_STRB_WIDTH-1:0] strb = {AXI_STRB_WIDTH{1'b1}});
         reg_ifc_rtl.wr_en[reg_id]   <= 1'b1;
         reg_ifc_rtl.wr_inx[reg_id]  <= reg_id;
         reg_ifc_rtl.wr_data[reg_id] <= data;

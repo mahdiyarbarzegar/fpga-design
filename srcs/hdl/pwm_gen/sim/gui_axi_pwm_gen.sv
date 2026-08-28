@@ -1,10 +1,10 @@
-`include "pwm_gen.svh"
-`include "pwm_gen_reg_pkg.sv"
+`include "pwm_gen.vh"
 
 import pwm_gen_reg_pkg::*;
 
 module gui_axi_pwm_gen;
 
+    localparam INTERFACE_TYPE = "AXI4LITE_SLAVE";
     localparam TIMER_RESOLUTION = 32;
     localparam CHANNELS = 2;
 
@@ -15,8 +15,8 @@ module gui_axi_pwm_gen;
     // AXI interface
     // ========================================================================
     axi4lite_bus_ifc #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) axi_bus_ifc (
         .ACLK   (clk),
         .ARESETN(rst_n)
@@ -26,14 +26,15 @@ module gui_axi_pwm_gen;
     // AXI master model
     // ========================================================================
     axi4lite_master_model #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH)
     ) axi_master;
 
     // ========================================================================
     // PWM Generator
     // ========================================================================
     pwm_gen_w #(
+        .INTERFACE_TYPE  (INTERFACE_TYPE),
         .TIMER_RESOLUTION(TIMER_RESOLUTION),
         .CHANNELS        (CHANNELS)
     ) pwmgen (
