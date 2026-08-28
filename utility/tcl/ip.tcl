@@ -117,7 +117,17 @@ proc ::ip::internal::package_ip {part_number module_path {log_mode "quiet"}} {
             error "No module loaded."
         }
 
-        foreach f [::module::get rtl] {
+        set module_type [::module::get type]
+
+        if {$module_type eq "hdl"} {
+            set module_files [::module::get rtl]
+        } elseif {$module_type eq "lib"} {
+            set module_files [::module::get src]
+        } else {
+            error "The module type is not supported: $module_type"
+        }
+
+        foreach f $module_files {
             set abs_file [file join $node_module_path $f]
 
             switch -- [file extension $abs_file] {
@@ -139,10 +149,8 @@ proc ::ip::internal::package_ip {part_number module_path {log_mode "quiet"}} {
             }
         }
 
-        foreach f [::module::get constraints] {
-            if {$f eq "null"} {
-                break
-            }
+        foreach f [::module::get_default constraints ""] {
+            if {$f eq "null"} {break}
 
             set abs_file [file join $project_root_path $node_module_path $f]
 
@@ -181,9 +189,13 @@ proc ::ip::internal::package_ip {part_number module_path {log_mode "quiet"}} {
         project_root $project_root_path \
         quiet $log_opts]
 
-    ::ip::internal::run_package_append $ctx
-
     ::ipx::infer_user_parameters {*}$log_opts $core
+    ::ipx::infer_bus_interfaces {*}$log_opts $core
+
+    ::ip::internal::apply_params $core
+    ::ip::internal::apply_gui $core
+    ::ip::internal::apply_interfaces $core
+
     ::ipx::create_xgui_files {*}$log_opts $core
     ::ipx::update_checksums {*}$log_opts $core
     ::ipx::check_integrity {*}$log_opts $core
@@ -202,6 +214,538 @@ proc ::ip::internal::package_ip {part_number module_path {log_mode "quiet"}} {
     puts "VLNV:"
     puts "    $ip_vendor:$ip_library:$ip_name:$ip_version"
     puts "---------------------------------------"
+}
+
+proc ::ip::internal::apply_interfaces {core} {
+    set interfaces [::module::get_default interfaces ""]
+
+    if {$interfaces eq ""} {
+        return
+    }
+
+    foreach intf_all [get_property name [ipx::get_bus_interfaces -of_objects $core]] {
+        ipx::remove_bus_interface $intf_all $core
+    }
+
+    dict for {name config} $interfaces {
+        if {![dict exists $config type]} {
+            error "Interface '$name' is missing 'type'"
+        }
+
+        set type [string tolower [dict get $config type]]
+
+        switch -- $type {
+            clock {
+                ::ip::internal::apply_clock_interface $core $name $config
+            }
+
+            reset {
+                ::ip::internal::apply_reset_interface $core $name $config
+            }
+
+            axi4lite {
+                ::ip::internal::apply_axi4lite_interface $core $name $config
+            }
+
+            input -
+            output -
+            inout {
+                ::ip::internal::apply_io_port $core $name $config
+            }
+
+            default {
+                error "Unsupported interface type '$type' " "for interface '$name'"
+            }
+        }
+    }
+}
+
+proc ::ip::internal::apply_io_port {core name config} {
+    if {![dict exists $config port]} {
+        error "IO '$name' is missing 'port' definition"
+    }
+
+    set port_map [dict get $config port]
+
+    if {[dict size $port_map] != 1} {
+        error "IO '$name' must have exactly one port mapping"
+    }
+
+    dict for {logical_name physical_name} $port_map {
+        set port_name $physical_name
+    }
+
+    set port [ipx::get_ports $port_name -of_objects $core]
+
+    if {$port eq ""} {
+        error "Cannot find RTL port '$port_name' " "for IO '$name'"
+    }
+
+    ::ip::internal::apply_port_enablement $port $config
+}
+
+proc ::ip::internal::apply_reset_interface {core name config} {
+    if {![dict exists $config port]} {
+        error "Reset '$name' is missing 'port'"
+    }
+
+    set port_map [dict get $config port]
+
+    if {[dict size $port_map] != 1} {
+        error "Reset '$name' must have exactly one port mapping"
+    }
+
+    dict for {logical_name physical_name} $port_map {
+        set port_name $physical_name
+    }
+
+    set rst_if [ipx::add_bus_interface $name $core]
+
+    set_property interface_mode slave $rst_if
+
+    set_property bus_type_vlnv \
+        xilinx.com:signal:reset:1.0 \
+        $rst_if
+
+    set_property abstraction_type_vlnv \
+        xilinx.com:signal:reset_rtl:1.0 \
+        $rst_if
+
+    set_property display_name $name $rst_if
+
+    if {[dict exists $config polarity]} {
+        set polarity [dict get $config polarity]
+
+        set rst_param [ipx::add_bus_parameter POLARITY $rst_if]
+
+        switch -- $polarity {
+            active_low {
+                set_property value ACTIVE_LOW $rst_param
+            }
+
+            active_high {
+                set_property value ACTIVE_HIGH $rst_param
+            }
+
+            default {
+                error "Invalid reset polarity '$polarity' " \
+                    "for '$name'"
+            }
+        }
+    }
+
+    ipx::add_port_map RST $rst_if
+
+    set_property physical_name \
+        $port_name \
+        [ipx::get_port_maps RST -of_objects $rst_if]
+
+    set port [ipx::get_ports $port_name -of_objects $core]
+    if {$port eq ""} {
+        error "Cannot find reset port '$port_name'"
+    }
+
+    ::ip::internal::apply_port_enablement $port $config
+}
+
+proc ::ip::internal::apply_clock_interface {core name config} {
+    if {![dict exists $config port]} {
+        error "Clock '$name' is missing 'port'"
+    }
+
+    set port_map [dict get $config port]
+
+    if {[dict size $port_map] != 1} {
+        error "Clock '$name' must have exactly one port mapping"
+    }
+
+    dict for {logical_name physical_name} $port_map {
+        set port_name $physical_name
+    }
+
+    set port [ipx::get_ports $port_name -of_objects $core]
+
+    if {$port eq ""} {
+        error "Cannot find clock port '$port_name'"
+    }
+
+    set clk_if [ipx::add_bus_interface $name $core]
+
+    set_property interface_mode slave $clk_if
+
+    set_property bus_type_vlnv \
+        xilinx.com:signal:clock:1.0 \
+        $clk_if
+
+    set_property abstraction_type_vlnv \
+        xilinx.com:signal:clock_rtl:1.0 \
+        $clk_if
+
+    set_property display_name $name $clk_if
+
+    ipx::add_port_map CLK $clk_if
+
+    set_property physical_name \
+        $port_name \
+        [ipx::get_port_maps CLK -of_objects $clk_if]
+
+    if {[dict exists $config frequency]} {
+        set frequency [dict get $config frequency]
+        set freq_param [ipx::add_bus_parameter FREQ_HZ $clk_if]
+
+        set_property value $frequency $freq_param
+    }
+
+    set port [ipx::get_ports $port_name -of_objects $core]
+    if {$port eq ""} {
+        error "Cannot find clock port '$port_name'"
+    }
+
+    ::ip::internal::apply_port_enablement $port $config
+}
+
+proc ::ip::internal::apply_axi4lite_interface {core name config} {
+    if {![dict exists $config port]} {
+        error "AXI4-Lite interface '$name' is missing 'port'"
+    }
+
+    if {![dict exists $config mode]} {
+        error "AXI4-Lite interface '$name' is missing 'mode'"
+    }
+
+    set mode [dict get $config mode]
+
+    ipx::add_bus_interface $name $core
+    set axi_if [::ipx::get_bus_interfaces $name -of_objects $core]
+
+    set_property interface_mode $mode $axi_if
+
+    set_property bus_type_vlnv \
+        xilinx.com:interface:aximm:1.0 \
+        $axi_if
+
+    set_property abstraction_type_vlnv \
+        xilinx.com:interface:aximm_rtl:1.0 \
+        $axi_if
+
+    if {[dict exists $config bus_parameters]} {
+        dict for {param_name param_value} \
+            [dict get $config bus_parameters] {
+                set bus_param [ipx::add_bus_parameter $param_name $axi_if]
+                set_property value $param_value $bus_param
+            }
+    }
+
+    set port_map [dict get $config port]
+
+    foreach {logical_name physical_name} $port_map {
+        set port [ipx::get_ports $physical_name -of_objects $core]
+
+        if {$port eq ""} {
+            error "Cannot find RTL port '$physical_name' " "for interface '$name'"
+        }
+
+        ::ip::internal::apply_port_enablement $port $config
+
+        set port_map_obj [ipx::add_port_map $logical_name $axi_if]
+
+        set_property physical_name $physical_name $port_map_obj
+    }
+
+    ::ip::internal::apply_ifc_enablement $axi_if $config
+}
+
+proc ::ip::internal::apply_ifc_enablement {object config} {
+    if {![dict exists $config enablement]} {
+        return
+    }
+
+    set expression [dict get $config enablement]
+
+    set_property enablement_dependency $expression $object
+}
+
+proc ::ip::internal::apply_port_enablement {port config} {
+    if {![dict exists $config enablement]} {
+        return
+    }
+
+    set expression [dict get $config enablement]
+
+    set_property enablement_dependency $expression $port
+
+    set_property driver_value 0 $port
+}
+
+proc ::ip::internal::apply_params {core} {
+    set parameters [::module::get_default parameters ""]
+
+    if {$parameters eq ""} {return}
+
+    dict for {name config} $parameters {
+        ::ip::internal::add_parameter $core $name $config
+    }
+}
+
+proc ::ip::internal::add_parameter {core name config} {
+    set param [ipx::add_user_parameter $name $core]
+
+    set_property value_resolve_type user $param
+
+    set type [dict get $config type]
+
+    switch -- $type {
+        string {
+            set_property value_format string $param
+        }
+
+        integer {
+            set_property value_format long $param
+        }
+
+        boolean {
+            set_property value_format bool $param
+        }
+
+        default {
+            error "Unsupported parameter type '$type' for parameter '$name'"
+        }
+    }
+
+    if {[dict exists $config default]} {
+        set_property value [dict get $config default] $param
+    }
+
+    if {[dict exists $config validation]} {
+        set validation [dict get $config validation]
+        set validation_type [dict get $validation type]
+
+        switch -- $validation_type {
+            list {
+                if {![dict exists $validation values]} {
+                    error "Parameter '$name': list validation requires 'values'"
+                }
+
+                set values [dict get $validation values]
+
+                set_property value_validation_type list $param
+                set_property value_validation_list $values $param
+            }
+
+            range_long {
+                if {
+                    ![dict exists $validation min] ||
+                    ![dict exists $validation max]
+                } {
+                    error "Parameter '$name': " \
+                        "range_long validation requires 'min' and 'max'"
+                }
+
+                set minimum [dict get $validation min]
+                set maximum [dict get $validation max]
+
+                set_property value_validation_type range_long $param
+
+                set_property value_validation_range_minimum $minimum $param
+
+                set_property value_validation_range_maximum $maximum $param
+            }
+
+            range_float {
+                if {
+                    ![dict exists $validation min] ||
+                    ![dict exists $validation max]
+                } {
+                    error "Parameter '$name': " \
+                        "range_float validation requires 'min' and 'max'"
+                }
+
+                set minimum [dict get $validation min]
+                set maximum [dict get $validation max]
+
+                set_property value_validation_type range_float $param
+
+                set_property value_validation_range_minimum $minimum $param
+
+                set_property value_validation_range_maximum $maximum $param
+            }
+
+            default {
+                error "Unsupported validation type '$validation_type' " \
+                    "for parameter '$name'"
+            }
+        }
+    }
+
+    if {[dict exists $config enablement]} {
+        set expression [dict get $config enablement]
+
+        set_property enablement_value true $param
+        set_property enablement_tcl_expr $expression $param
+    }
+
+    if {[dict exists $config expression]} {
+        set expression [dict get $config expression]
+
+        set_property enablement_value false $param
+        set_property value_tcl_expr $expression $param
+    }
+
+    return $param
+}
+
+proc ::ip::internal::apply_gui {core} {
+    set page0_required 0
+
+    set parameters [::module::get_default parameters ""]
+
+    if {$parameters eq ""} {
+        return
+    }
+
+    set pages {}
+    set groups {}
+
+    dict for {name config} $parameters {
+        if {![dict exists $config gui]} {
+            set page0_required 1
+            continue
+        }
+
+        set gui [dict get $config gui]
+
+        if {[dict exists $gui page]} {
+            set page_name [dict get $gui page]
+        } else {
+            set page_name "Page 0"
+        }
+
+        set page_key $page_name
+
+        if {[lsearch -exact $pages $page_key] == -1} {
+            # Check whether the page already exists
+            set page [ipgui::get_pagespec \
+                -name $page_name \
+                -component $core \
+                -quiet]
+
+            if {$page eq ""} {
+                set page [ipgui::add_page \
+                    -name $page_name \
+                    -component $core \
+                    -display_name $page_name]
+            }
+
+            lappend pages $page_key
+        } else {
+            set page [ipgui::get_pagespec \
+                -name $page_name \
+                -component $core]
+        }
+
+        set parent $page
+
+        if {[dict exists $gui group]} {
+            set group_name [dict get $gui group]
+
+            set group_key "${page_name}::${group_name}"
+
+            if {[lsearch -exact $groups $group_key] == -1} {
+                set group [ipgui::get_groupspec \
+                    -name $group_name \
+                    -component $core \
+                    -quiet]
+
+                if {$group eq ""} {
+                    set group [ipgui::add_group \
+                        -name $group_name \
+                        -component $core \
+                        -parent $page \
+                        -display_name $group_name]
+                }
+
+                lappend groups $group_key
+            } else {
+                set group [ipgui::get_groupspec \
+                    -name $group_name \
+                    -component $core]
+            }
+
+            set parent $group
+        }
+
+        set gui_param [ipgui::get_guiparamspec \
+            -name $name \
+            -component $core \
+            -quiet]
+
+        if {$gui_param eq ""} {
+            error \
+                "GUI parameter '$name' does not exist in IP '$core'"
+        }
+
+        set parent_key $page_name
+
+        if {[dict exists $gui group]} {
+            set parent_key "${page_name}::[dict get $gui group]"
+        }
+
+        if {![info exists order($parent_key)]} {
+            set order($parent_key) 0
+        }
+
+        set param_order $order($parent_key)
+
+        ipgui::move_param \
+            -order $param_order \
+            -parent $parent \
+            -component $core \
+            $gui_param
+
+        incr order($parent_key)
+
+        if {[dict exists $gui display_name]} {
+            set display_name [dict get $gui display_name]
+
+            set_property display_name \
+                $display_name \
+                $gui_param
+        }
+
+        if {[dict exists $gui widget]} {
+            set widget [dict get $gui widget]
+
+            switch -- $widget {
+                text {
+                    set_property widget textEdit $gui_param
+                }
+
+                dropdown {
+                    set_property widget comboBox $gui_param
+                }
+
+                checkbox {
+                    set_property widget checkBox $gui_param
+                }
+
+                default {
+                    error "Unsupported GUI widget '$widget' " \
+                        "for parameter '$name'"
+                }
+            }
+        }
+    }
+
+    if {!$page0_required} {
+        set page0 [ipgui::get_pagespec \
+            -name "Page 0" \
+            -component $core \
+            -quiet]
+
+        if {$page0 ne ""} {
+            ipgui::remove_page -component $core $page0
+        }
+    }
 }
 
 proc ::ip::internal::generate_ip {part_number module_path variant {log_mode "quiet"}} {
