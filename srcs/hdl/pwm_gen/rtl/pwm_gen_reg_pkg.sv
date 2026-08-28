@@ -21,14 +21,17 @@ package pwm_gen_reg_pkg;
         NUM_REGS
     } pwm_reg_id_t;
 
+    // verilog_format: off
     localparam pwm_reg_desc_t PWM_GEN_REGMAP[NUM_REGS] = '{
-        REG_START: '{addr: 'h0, def: 'h0, access : REG_ACCESS_W},
-        REG_STOP: '{addr: 'h4, def: 'h0, access : REG_ACCESS_RW},
-        REG_MODE: '{addr: 'h8, def: 'h0, access : REG_ACCESS_RW},
-        REG_PRESCALER: '{addr: 'hC, def: 'h0, access : REG_ACCESS_RW},
-        REG_AUTO_RELOAD_REGISTER: '{addr: 'h10, def: 'h0, access : REG_ACCESS_RW},
-        REG_CCR_CH: '{addr: 'h14, def: 'h0, access : REG_ACCESS_RW},
-        REG_CCR_VALUE_RB: '{addr: 'h18, def: 'h0, access : REG_ACCESS_R},
-        REG_CCR_VALUE_W: '{addr: 'h1C, def: '1, access : REG_ACCESS_W}
+        REG_START:                  '{ addr: 'h0,    def: 'h0,   access: REG_ACCESS_W  },
+        REG_STOP:                   '{ addr: 'h4,    def: 'h0,   access: REG_ACCESS_RW },
+        REG_MODE:                   '{ addr: 'h8,    def: 'h0,   access: REG_ACCESS_RW },
+        REG_PRESCALER:              '{ addr: 'hC,    def: 'h0,   access: REG_ACCESS_RW },
+        REG_AUTO_RELOAD_REGISTER:   '{ addr: 'h10,   def: 'h0,   access: REG_ACCESS_RW },
+        REG_CCR_CH:                 '{ addr: 'h14,   def: 'h0,   access: REG_ACCESS_RW },
+        REG_CCR_VALUE_RB:           '{ addr: 'h18,   def: 'h0,   access: REG_ACCESS_R  },
+        REG_CCR_VALUE_W:            '{ addr: 'h1C,   def: '1,    access: REG_ACCESS_W  }
     };
+    // verilog_format: on
+
 endpackage
