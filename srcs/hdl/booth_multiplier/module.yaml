@@ -17,8 +17,8 @@ package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/booth_multiplier_w.v
-  - rtl/booth_multiplier.v
+  - rtl/vhdl/booth_multiplier.vhd
+  - rtl/vhdl/booth_multiplier_w.vhd
 
 include:
 

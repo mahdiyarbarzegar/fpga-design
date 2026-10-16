@@ -6,6 +6,10 @@
       <db_ref path="booth_multiplier_gui.wdb" id="1">
          <top_modules>
             <top_module name="gui_booth_multiplier" />
+            <top_module name="numeric_std" />
+            <top_module name="standard" />
+            <top_module name="std_logic_1164" />
+            <top_module name="textio" />
          </top_modules>
       </db_ref>
    </db_ref_list>
@@ -16,9 +20,9 @@
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="108"></ValueColumnWidth>
+      <ValueColumnWidth column_width="104"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="8" />
+   <WVObjectSize size="26" />
    <wvobject type="logic" fp_name="/gui_booth_multiplier/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -53,5 +57,77 @@
       <obj_property name="ElementShortName">y[7:0]</obj_property>
       <obj_property name="ObjectShortName">y[7:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_booth_multiplier/mul/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_booth_multiplier/mul/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_booth_multiplier/mul/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_booth_multiplier/mul/sign">
+      <obj_property name="ElementShortName">sign</obj_property>
+      <obj_property name="ObjectShortName">sign</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/data_in1">
+      <obj_property name="ElementShortName">data_in1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in1[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/data_in2">
+      <obj_property name="ElementShortName">data_in2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in2[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/data_out">
+      <obj_property name="ElementShortName">data_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_booth_multiplier/mul/ready">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/multiplicand">
+      <obj_property name="ElementShortName">multiplicand[4:0]</obj_property>
+      <obj_property name="ObjectShortName">multiplicand[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/product">
+      <obj_property name="ElementShortName">product[9:0]</obj_property>
+      <obj_property name="ObjectShortName">product[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_booth_multiplier/mul/running">
+      <obj_property name="ElementShortName">running</obj_property>
+      <obj_property name="ObjectShortName">running</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_booth_multiplier/mul/counter">
+      <obj_property name="ElementShortName">counter</obj_property>
+      <obj_property name="ObjectShortName">counter</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_booth_multiplier/mul/shift_right">
+      <obj_property name="ElementShortName">shift_right</obj_property>
+      <obj_property name="ObjectShortName">shift_right</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/in1">
+      <obj_property name="ElementShortName">in1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">in1[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/sum_result">
+      <obj_property name="ElementShortName">sum_result[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sum_result[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/sub_result">
+      <obj_property name="ElementShortName">sub_result[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sub_result[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_booth_multiplier/mul/booth_state">
+      <obj_property name="ElementShortName">booth_state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">booth_state[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_booth_multiplier/mul/MUL_WIDTH">
+      <obj_property name="ElementShortName">MUL_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">MUL_WIDTH</obj_property>
    </wvobject>
 </wave_config>
