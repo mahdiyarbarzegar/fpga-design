@@ -16,7 +16,7 @@ ip:
 package: { }
 
 rtl:
-  - rtl/full_adder.v
+  - rtl/full_adder.vhd
 
 include:
 
