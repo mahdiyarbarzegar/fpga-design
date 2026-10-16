@@ -17,8 +17,8 @@ package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/restoring_divider_w.v
-  - rtl/restoring_divider.v
+  - rtl/vhdl/restoring_divider.vhd
+  - rtl/vhdl/restoring_divider_w.vhd
 
 include:
 
