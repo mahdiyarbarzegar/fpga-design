@@ -8,12 +8,12 @@ module pwm_gen_w #(
     input clk,
     input rst_n,
 
-    input                        start,
-    input                        stop,
-    input [                 1:0] mode,
-    input [TIMER_RESOLUTION-1:0] psc,             // clk_cnt = clk / [pcs+1]
-    input [TIMER_RESOLUTION-1:0] arr,
-    input [TIMER_RESOLUTION-1:0] ccr  [CHANNELS],
+    input                                      start,
+    input                                      stop,
+    input               [                 1:0] mode,
+    input               [TIMER_RESOLUTION-1:0] psc,    // clk_cnt = clk / [pcs+1]
+    input               [TIMER_RESOLUTION-1:0] arr,
+    input [CHANNELS-1:0][TIMER_RESOLUTION-1:0] ccr,
 
     input  [    AXI_ADDR_WIDTH-1 : 0] s_axi_awaddr,
     input  [                   2 : 0] s_axi_awprot,

@@ -2,15 +2,15 @@ module pwm_gen_core #(
     parameter TIMER_RESOLUTION = 32,
     parameter CHANNELS         = 1
 ) (
-    input                               clk,
-    input                               rst_n,
-    input                               start,
-    input                               stop,
-    input        [                 1:0] mode,
-    input        [TIMER_RESOLUTION-1:0] psc,              // clk_cnt = clk / [pcs+1]
-    input        [TIMER_RESOLUTION-1:0] arr,
-    input        [TIMER_RESOLUTION-1:0] ccr  [CHANNELS],
-    output logic [        CHANNELS-1:0] oc
+    input                                             clk,
+    input                                             rst_n,
+    input                                             start,
+    input                                             stop,
+    input                      [                 1:0] mode,
+    input                      [TIMER_RESOLUTION-1:0] psc,    // clk_cnt = clk / [pcs+1]
+    input                      [TIMER_RESOLUTION-1:0] arr,
+    input        [CHANNELS-1:0][TIMER_RESOLUTION-1:0] ccr,
+    output logic               [        CHANNELS-1:0] oc
 );
 
     `include "pwm_gen.vh"

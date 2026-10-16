@@ -9,12 +9,12 @@ module pwm_gen_regmap #(
 
     axi4_reg_ifc.STORAGE reg_ifc_rtl,
 
-    output                        start,
-    output                        stop,
-    output [                 1:0] mode,
-    output [TIMER_RESOLUTION-1:0] psc,             // clk_cnt = clk / [pcs+1]
-    output [TIMER_RESOLUTION-1:0] arr,
-    output [TIMER_RESOLUTION-1:0] ccr  [CHANNELS]
+    output                                      start,
+    output                                      stop,
+    output               [                 1:0] mode,
+    output               [TIMER_RESOLUTION-1:0] psc,    // clk_cnt = clk / [pcs+1]
+    output               [TIMER_RESOLUTION-1:0] arr,
+    output [CHANNELS-1:0][TIMER_RESOLUTION-1:0] ccr
 );
 
     initial begin
@@ -39,12 +39,12 @@ module pwm_gen_regmap #(
     localparam int start_pulse_clk_length = 4;
 
     logic start_core, stop_core;
-    logic [                 1:0] mode_core;
-    logic [TIMER_RESOLUTION-1:0] psc_core;
-    logic [TIMER_RESOLUTION-1:0] arr_core;
-    logic [TIMER_RESOLUTION-1:0] ccr_core           [CHANNELS];
-    logic [    CCR_CH_WIDTH-1:0] ccr_ch;
-    logic [                 2:0] counter_start_core;
+    logic [                 1:0]                       mode_core;
+    logic [TIMER_RESOLUTION-1:0]                       psc_core;
+    logic [TIMER_RESOLUTION-1:0]                       arr_core;
+    logic [        CHANNELS-1:0][TIMER_RESOLUTION-1:0] ccr_core;
+    logic [    CCR_CH_WIDTH-1:0]                       ccr_ch;
+    logic [                 2:0]                       counter_start_core;
 
     assign start = start_core;
     assign stop  = stop_core;
