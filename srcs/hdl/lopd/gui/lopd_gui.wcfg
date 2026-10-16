@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="lopd_gui.wdb" id="1">
+         <top_modules>
+            <top_module name="attributes" />
+            <top_module name="env" />
+            <top_module name="math_real" />
+            <top_module name="numeric_std" />
+            <top_module name="standard" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_misc" />
+            <top_module name="tb_lopd" />
+            <top_module name="textio" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="70.000 ns"></ZoomEndTime>
+      <Cursor1Time time="70.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="92"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="23" />
+   <wvobject type="logic" fp_name="/tb_lopd/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_lopd/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/data">
+      <obj_property name="ElementShortName">data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_lopd/position">
+      <obj_property name="ElementShortName">position</obj_property>
+      <obj_property name="ObjectShortName">position</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/lopd_index">
+      <obj_property name="ElementShortName">lopd_index[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lopd_index[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_lopd/zero_flag">
+      <obj_property name="ElementShortName">zero_flag</obj_property>
+      <obj_property name="ObjectShortName">zero_flag</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_lopd/DATA_WIDTH">
+      <obj_property name="ElementShortName">DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_lopd/LOPD_SLICE_DATA_WIDTH">
+      <obj_property name="ElementShortName">LOPD_SLICE_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">LOPD_SLICE_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_lopd/dut/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_lopd/dut/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/dut/d_i">
+      <obj_property name="ElementShortName">d_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">d_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/dut/d_o">
+      <obj_property name="ElementShortName">d_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">d_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_lopd/dut/z_o">
+      <obj_property name="ElementShortName">z_o</obj_property>
+      <obj_property name="ObjectShortName">z_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_lopd/dut/z_s1">
+      <obj_property name="ElementShortName">z_s1</obj_property>
+      <obj_property name="ObjectShortName">z_s1</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_lopd/dut/z_s2">
+      <obj_property name="ElementShortName">z_s2</obj_property>
+      <obj_property name="ObjectShortName">z_s2</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/dut/lopd_slice_index_reg">
+      <obj_property name="ElementShortName">lopd_slice_index_reg[0:3][1:0]</obj_property>
+      <obj_property name="ObjectShortName">lopd_slice_index_reg[0:3][1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/dut/lopd_slice_zflag_reg">
+      <obj_property name="ElementShortName">lopd_slice_zflag_reg[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lopd_slice_zflag_reg[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/dut/lopd_slice_index">
+      <obj_property name="ElementShortName">lopd_slice_index[0:3][1:0]</obj_property>
+      <obj_property name="ObjectShortName">lopd_slice_index[0:3][1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_lopd/dut/lopd_slice_zflag">
+      <obj_property name="ElementShortName">lopd_slice_zflag[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lopd_slice_zflag[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_lopd/dut/DATA_WIDTH">
+      <obj_property name="ElementShortName">DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_lopd/dut/LOPD_SLICE_DATA_WIDTH">
+      <obj_property name="ElementShortName">LOPD_SLICE_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">LOPD_SLICE_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_lopd/dut/LOPD_SLICE_INDEX_WIDTH">
+      <obj_property name="ElementShortName">LOPD_SLICE_INDEX_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">LOPD_SLICE_INDEX_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_lopd/dut/NUMBER_OF_LOPD_SLICES">
+      <obj_property name="ElementShortName">NUMBER_OF_LOPD_SLICES</obj_property>
+      <obj_property name="ObjectShortName">NUMBER_OF_LOPD_SLICES</obj_property>
+   </wvobject>
+</wave_config>
