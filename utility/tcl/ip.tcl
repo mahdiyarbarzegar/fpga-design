@@ -852,34 +852,6 @@ proc ::ip::internal::list_props {part_number module_path} {
     puts "--INFO: Exported CONFIG properties of $ip_vlnv to $output_file"
 }
 
-proc ::ip::internal::run_package_append {ctx} {
-    set append_file [::module::get package.append]
-
-    if {$append_file eq ""} {
-        return
-    }
-
-    set module_path [dict get $ctx module_path]
-    set project_root [dict get $ctx project_root]
-    set quiet [dict get $ctx quiet]
-
-    set append_file [file join $project_root $module_path $append_file]
-
-    if {![file exists $append_file]} {
-        error "Package append file not found:\n$append_file"
-    }
-
-    source -quiet $append_file
-
-    if {![llength [info procs ::package_append::do_package_append]]} {
-        error "Procedure package_append::do_package_append not found in:\n$append_file"
-    }
-
-    ::package_append::do_package_append $ctx
-
-    namespace delete ::package_append
-}
-
 proc ::ip::internal::generate_one {part_number node {log_mode "quiet"}} {
     variable IP_PATH
     variable PACKAGE_PATH
