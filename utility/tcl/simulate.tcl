@@ -370,6 +370,7 @@ proc ::simulate::internal::compile_all {{opts ""}} {
         set cmd [list xvhdl \
             -L ${LIB_NAME}=${LIB_PATH} \
             -work ${LIB_NAME}=${LIB_PATH} \
+            -2019 \
             {*}$opts \
             {*}$vhdl_files]
 
