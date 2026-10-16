@@ -17,10 +17,10 @@ package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/carry_look_ahead_adder_w.v
-  - rtl/carry_look_ahead_adder.v
-  - rtl/carry_predictor.v
-  - rtl/cla_block.v
+  - rtl/vhdl/carry_predictor.vhd
+  - rtl/vhdl/cla_block.vhd
+  - rtl/vhdl/carry_look_ahead_adder.vhd
+  - rtl/vhdl/carry_look_ahead_adder_w.vhd
 
 include:
 
