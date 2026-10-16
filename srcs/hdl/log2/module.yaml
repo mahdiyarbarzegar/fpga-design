@@ -1,0 +1,70 @@
+name: log2
+
+type: hdl
+
+ip:
+  vlnv: user.org:user_ip:log2:0.1
+  vendor: user.org
+  library: user_ip
+  name: log2
+  version: 0.1
+  taxonomy: /UserIP
+  display_name: Logarithm 2
+  description: Logarithm 2 Calculator IP
+  top_module: log2_w
+
+package:
+  append: ip/package_append.tcl
+
+rtl:
+  - rtl/log2_pkg_utils.vhd
+  - rtl/log2_fp_lut_gen.vhd
+  - rtl/log2_fp_lut_core.vhd
+  - rtl/log2_w.vhd
+
+include:
+
+constraints:
+
+dependencies:
+  lib:
+  module:
+    - name: lopd
+      consume: rtl
+      variant:
+
+simulation:
+  batch:
+    top: tb_log2_lut
+    snapshot: log2_lut_batch
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_log2_lut.vhd
+    dependencies:
+      lib:
+      module:
+    timescale: 1ns/1ps
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts:
+  gui:
+    top: gui_log2_lut
+    snapshot: log2_lut_gui
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_log2_lut.vhd
+    dependencies:
+      lib:
+      module:
+    timescale: 1ns/1ps
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/log2_lut_gui.wcfg
+    xvlog_opts:
+    xelab_opts:
+    xsim_opts:
+
+variants:

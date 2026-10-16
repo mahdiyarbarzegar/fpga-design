@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="log2_lut_gui.wdb" id="1">
+         <top_modules>
+            <top_module name="attributes" />
+            <top_module name="env" />
+            <top_module name="gui_log2_lut" />
+            <top_module name="log2_pkg_utils" />
+            <top_module name="math_real" />
+            <top_module name="numeric_std" />
+            <top_module name="standard" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_misc" />
+            <top_module name="textio" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="95.001 ns"></ZoomEndTime>
+      <Cursor1Time time="95.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="84"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="38" />
+   <wvobject type="logic" fp_name="/gui_log2_lut/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/input_value">
+      <obj_property name="ElementShortName">input_value[15:0]</obj_property>
+      <obj_property name="ObjectShortName">input_value[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/output_value">
+      <obj_property name="ElementShortName">output_value[12:0]</obj_property>
+      <obj_property name="ObjectShortName">output_value[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log_result">
+      <obj_property name="ElementShortName">log_result[12:0]</obj_property>
+      <obj_property name="ObjectShortName">log_result[12:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/valid_i">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/valid_o">
+      <obj_property name="ElementShortName">valid_o</obj_property>
+      <obj_property name="ObjectShortName">valid_o</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/INPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">INPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/INPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">INPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/OUTPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/OUTPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/LUT_ADDR_SIZE">
+      <obj_property name="ElementShortName">LUT_ADDR_SIZE</obj_property>
+      <obj_property name="ObjectShortName">LUT_ADDR_SIZE</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/CLOCK_PERIOD">
+      <obj_property name="ElementShortName">CLOCK_PERIOD</obj_property>
+      <obj_property name="ObjectShortName">CLOCK_PERIOD</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/data_i">
+      <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/data_o">
+      <obj_property name="ElementShortName">data_o[12:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/valid_i">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/valid_o">
+      <obj_property name="ElementShortName">valid_o</obj_property>
+      <obj_property name="ObjectShortName">valid_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/valid_s1">
+      <obj_property name="ElementShortName">valid_s1</obj_property>
+      <obj_property name="ObjectShortName">valid_s1</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/data_s1">
+      <obj_property name="ElementShortName">data_s1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_s1[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/valid_s2">
+      <obj_property name="ElementShortName">valid_s2</obj_property>
+      <obj_property name="ObjectShortName">valid_s2</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/data_s2">
+      <obj_property name="ElementShortName">data_s2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_s2[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/data_lop_s2">
+      <obj_property name="ElementShortName">data_lop_s2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_lop_s2[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/data_lop_zflag_s2">
+      <obj_property name="ElementShortName">data_lop_zflag_s2</obj_property>
+      <obj_property name="ObjectShortName">data_lop_zflag_s2</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/valid_s3">
+      <obj_property name="ElementShortName">valid_s3</obj_property>
+      <obj_property name="ObjectShortName">valid_s3</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/exponent_k_s3">
+      <obj_property name="ElementShortName">exponent_k_s3[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s3[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/mantissa_index_s3">
+      <obj_property name="ElementShortName">mantissa_index_s3[6:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_index_s3[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/mantissa_log_s3">
+      <obj_property name="ElementShortName">mantissa_log_s3[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_s3[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_lut/log2/log2_lut/valid_s4">
+      <obj_property name="ElementShortName">valid_s4</obj_property>
+      <obj_property name="ObjectShortName">valid_s4</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_lut/log2/log2_lut/calc_result_s4">
+      <obj_property name="ElementShortName">calc_result_s4[12:0]</obj_property>
+      <obj_property name="ObjectShortName">calc_result_s4[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/log2/log2_lut/INPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">INPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/log2/log2_lut/INPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">INPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/log2/log2_lut/OUTPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/log2/log2_lut/OUTPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/log2/log2_lut/LUT_ADDR_SIZE">
+      <obj_property name="ElementShortName">LUT_ADDR_SIZE</obj_property>
+      <obj_property name="ObjectShortName">LUT_ADDR_SIZE</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/log2/log2_lut/INPUT_INTEGER_WIDTH">
+      <obj_property name="ElementShortName">INPUT_INTEGER_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_INTEGER_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_lut/log2/log2_lut/OUTPUT_INTEGER_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_INTEGER_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_INTEGER_WIDTH</obj_property>
+   </wvobject>
+</wave_config>
