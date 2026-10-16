@@ -17,9 +17,9 @@ package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/array_multiplier_w.v
-  - rtl/array_multiplier.v
-  - rtl/mul_slice.v
+  - rtl/vhdl/mul_slice.vhd
+  - rtl/vhdl/array_multiplier.vhd
+  - rtl/vhdl/array_multiplier_w.vhd
 
 include:
 
