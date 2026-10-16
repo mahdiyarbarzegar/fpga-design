@@ -17,8 +17,8 @@ package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/ripple_carry_adder_w.v
-  - rtl/ripple_carry_adder.v
+  - rtl/ripple_carry_adder.vhd
+  - rtl/ripple_carry_adder_w.vhd
 
 include:
 
