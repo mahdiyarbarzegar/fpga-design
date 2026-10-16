@@ -203,8 +203,17 @@ proc ::project::resolve {path} {
                         error "The dependent module does not exists: $dep_path"
                     }
 
-                    set dep_rtl [::module::get rtl]
-                    foreach rtl_file $dep_rtl {
+                    set module_type [::module::get type]
+
+                    if {$module_type eq "hdl"} {
+                        set module_files [::module::get rtl]
+                    } elseif {$module_type eq "lib"} {
+                        set module_files [::module::get src]
+                    } else {
+                        error "The module type is not supported: $module_type"
+                    }
+
+                    foreach rtl_file $module_files {
                         set abs_rtl_file_path [file join $dep_path $rtl_file]
 
                         if {![file exists $abs_rtl_file_path]} {
@@ -884,6 +893,11 @@ proc ::project::resolve {path} {
             path $dcp_metadata_path]
     }
 
+    # Prepare build directory
+    if {![file exists $project_build_path]} {
+        file mkdir $project_build_path
+    }
+
     set resolved 1
 
     set prj_name [::project::internal::name]
@@ -1102,6 +1116,7 @@ proc ::project::internal::prepare {{log_mode "quiet"}} {
     # ------------------------------------------------------------------
     set bd [::project::internal::get resources.bd]
 
+    puts ""
     if {[llength $bd] == 0} {
         puts "No block designs specified."
     } else {
@@ -2514,7 +2529,7 @@ proc ::project::internal::get_hash_files {} {
     }
 
     foreach constr [::project::internal::get resources.constraints] {
-        lappend files [dict get $constr path]
+        lappend files $constr
     }
 
     lappend files [::project::internal::get resources.bd.path]
