@@ -90,7 +90,7 @@ proc ::common::run {cmd {work_dir ""}} {
     return $output
 }
 
-proc ::common::log_option {{mode "quiet"}} {
+proc ::common::log_option {{mode "normal"}} {
     switch -- $mode {
         quiet {
             return {-quiet}
