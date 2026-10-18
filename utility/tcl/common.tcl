@@ -15,7 +15,7 @@ namespace eval ::common {
     variable LIB_NAME
 }
 
-set ::common::LIB_NAME "userlib"
+set ::common::LIB_NAME "work"
 
 set ::common::SCRIPT_DIR [file dirname [file normalize [info script]]]
 set ::common::ROOT_DIR [file normalize [file join $::common::SCRIPT_DIR ../..]]
