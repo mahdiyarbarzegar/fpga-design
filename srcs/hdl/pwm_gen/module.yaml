@@ -191,6 +191,7 @@ interfaces:
 parameters:
   INTERFACE_TYPE:
     type: string
+    resolve: user
     default: AXI4LITE_SLAVE
     validation:
       type: list
@@ -205,6 +206,7 @@ parameters:
 
   TIMER_RESOLUTION:
     type: integer
+    resolve: user
     default: 32
     validation:
       type: range_long
@@ -217,6 +219,7 @@ parameters:
 
   CHANNELS:
     type: integer
+    resolve: user
     default: 1
     validation:
       type: range_long
@@ -228,6 +231,3 @@ parameters:
       group: PWM Generator
 
 parameters_constraints:
-  - expression: 'expr {$TIMER_RESOLUTION <= $AXI_DATA_WIDTH}'
-    enablement: 'expr {$INTERFACE_TYPE == {AXI4LITE_SLAVE}}'
-    message: 'TIMER_RESOLUTION must be <= AXI_DATA_WIDTH'
