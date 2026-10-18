@@ -46,6 +46,24 @@ proc ::ip::generate_ip {part_number module_path variant {log_mode "quiet"}} {
     }
 }
 
+proc ::ip::synth_impl_ip {part_number module_path variant {log_mode "quiet"}} {
+    variable internal::IP_PATH
+
+    set module_path [file normalize $module_path]
+
+    try {
+        set init_path [::common::set_working_dir $IP_PATH]
+        ::ip::internal::synth_impl_ip $part_number $module_path $variant $log_mode
+    } on error {result options} {
+        ::ip::internal::close_prj
+        puts stderr "Operation failed:"
+        puts stderr $result
+        puts "Error occured during synthesis & implementation."
+    } finally {
+        ::common::set_working_dir $init_path
+    }
+}
+
 proc ::ip::list_props {part_number module_path} {
     variable internal::PROPS_PATH
 
@@ -141,7 +159,7 @@ proc ::ip::internal::package_ip {part_number module_path {log_mode "quiet"}} {
                 }
                 ".vhd" {
                     puts [format "  %-18s %s" "VHDL:" [file tail $f]]
-                    ::read_vhdl {*}$log_opts $abs_file
+                    ::read_vhdl {*}$log_opts -vhdl2008 $abs_file
                 }
                 default {
                     error "Unsupported HDL file"
@@ -490,7 +508,31 @@ proc ::ip::internal::apply_params {core} {
 proc ::ip::internal::add_parameter {core name config} {
     set param [ipx::add_user_parameter $name $core]
 
-    set_property value_resolve_type user $param
+    set resolve_type [dict get $config resolve]
+
+    set_property value_resolve_type $resolve_type $param
+
+    switch -- $resolve_type {
+        user {
+            if {[dict exists $config default]} {
+                set_property value [dict get $config default] $param
+            }
+        }
+
+        dependent {
+            if {![dict exists $config expression]} {
+                error "The resolve type = dependent, needs the expression field in yaml for parameter '$name'!"
+            }
+
+            set_property enablement_value false $param
+
+            set_property value_tcl_expr [dict get $config expression] $param
+        }
+
+        default {
+            error "Unsupported parameter resolve type '$resolve_type' for parameter '$name'"
+        }
+    }
 
     set type [dict get $config type]
 
@@ -510,10 +552,6 @@ proc ::ip::internal::add_parameter {core name config} {
         default {
             error "Unsupported parameter type '$type' for parameter '$name'"
         }
-    }
-
-    if {[dict exists $config default]} {
-        set_property value [dict get $config default] $param
     }
 
     if {[dict exists $config validation]} {
@@ -577,19 +615,19 @@ proc ::ip::internal::add_parameter {core name config} {
         }
     }
 
-    if {[dict exists $config enablement]} {
-        set expression [dict get $config enablement]
-
-        set_property enablement_value true $param
-        set_property enablement_tcl_expr $expression $param
-    }
-
-    if {[dict exists $config expression]} {
-        set expression [dict get $config expression]
-
-        set_property enablement_value false $param
-        set_property value_tcl_expr $expression $param
-    }
+    #    if {[dict exists $config enablement]} {
+    #        set expression [dict get $config enablement]
+    #
+    #        set_property enablement_value true $param
+    #        set_property enablement_tcl_expr $expression $param
+    #    }
+    #
+    #    if {[dict exists $config expression]} {
+    #        set expression [dict get $config expression]
+    #
+    #        set_property enablement_value false $param
+    #        set_property value_tcl_expr $expression $param
+    #    }
 
     return $param
 }
@@ -612,7 +650,18 @@ proc ::ip::internal::apply_gui {core} {
             continue
         }
 
+        set guiparam [ipgui::get_guiparamspec -name $name -component $core]
+
         set gui [dict get $config gui]
+
+        if {[dict exists $gui hidden]} {
+            set hidden [dict get $gui hidden]
+
+            if {$hidden eq "true"} {
+                ipgui::remove_param -component $core $guiparam
+                continue
+            }
+        }
 
         if {[dict exists $gui page]} {
             set page_name [dict get $gui page]
@@ -768,6 +817,185 @@ proc ::ip::internal::generate_ip {part_number module_path variant {log_mode "qui
     ::close_project {*}$log_opts
 }
 
+proc ::ip::internal::synth_impl_ip {part_number module_path variant {log_mode "quiet"}} {
+    variable PACKAGE_PATH
+    variable IP_PATH
+
+    set module_path [file normalize $module_path]
+
+    ::module::scan
+    ::module::load $module_path
+    if {![::module::is_loaded]} {
+        error "No module loaded."
+    }
+
+    set log_opts [::common::log_option $log_mode]
+
+    set ip_vlnv [::module::vlnv]
+    set ip_name [::module::name]
+    set ip_version [::module::version]
+    set variant_name [::module::variant_get $variant name]
+
+    set ip_dir "${ip_name}_v${ip_version}"
+
+    set ip_dir_path [file join $IP_PATH $ip_dir]
+    set variant_dir_path [file join $ip_dir_path $variant_name]
+    set report_path [file join $variant_dir_path reports]
+
+    file mkdir $report_path
+
+    set xci [file join $variant_dir_path "${variant_name}.xci"]
+
+    if {![file exists $xci]} {
+        error "The variant $variant_name .xci file not found!"
+    }
+
+    ::set_part {*}$log_opts $part_number
+
+    set_property {*}$log_opts ip_repo_paths [list $PACKAGE_PATH] [current_project]
+    update_ip_catalog {*}$log_opts
+
+    ::read_ip {*}$log_opts $xci
+
+    ::generate_target all [get_ips $variant_name]
+
+    # Synthesis the IP
+    puts "Synthesizing $variant_name..."
+    ::synth_ip {*}$log_opts -force [get_ips $variant_name]
+
+    set dcp_path [file join $variant_dir_path "$variant_name.dcp"]
+
+    if {![file exists $dcp_path]} {
+        error "Synthesized DCP not found: $dcp_path"
+    }
+
+    ::open_checkpoint {*}$log_opts $dcp_path
+
+    # Implement the IP
+    puts "Routing $variant_name ..."
+    ::opt_design {*}$log_opts
+    ::power_opt_design {*}$log_opts
+    ::place_design {*}$log_opts
+    ::power_opt_design {*}$log_opts
+    ::phys_opt_design {*}$log_opts
+    ::route_design {*}$log_opts
+    ::phys_opt_design {*}$log_opts
+
+    puts "Generate Reports..."
+    # Report Methodology
+    set filename "methodology"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    set path_file_name_rpx [file join $report_path [format "%s.rpx" $filename]]
+    ::report_methodology {*}$log_opts -rpx $path_file_name_rpx -file $path_file_name
+
+    # Report Timing Summary
+    set filename "timing_summary"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    set path_file_name_rpx [file join $report_path [format "%s.rpx" $filename]]
+    ::report_timing_summary {*}$log_opts -rpx $path_file_name_rpx -file $path_file_name
+
+    # Report Timing
+    set filename "timing"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    set path_file_name_rpx [file join $report_path [format "%s.rpx" $filename]]
+    ::report_timing {*}$log_opts -rpx $path_file_name_rpx -file $path_file_name
+
+    # Report Clock Networks
+    set filename "clock_networks"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_clock_networks {*}$log_opts -file $path_file_name
+
+    # Report Clock Interaction
+    set filename "clock_interaction"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_clock_interaction {*}$log_opts -file $path_file_name
+
+    # Report CDC
+    set filename "cdc"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_cdc {*}$log_opts -file $path_file_name
+
+    # Report Power
+    set filename "power"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    set path_file_name_rpx [file join $report_path [format "%s.rpx" $filename]]
+    set path_file_name_xpe [file join $report_path [format "%s.xpe" $filename]]
+    ::report_power {*}$log_opts -rpx $path_file_name_rpx -xpe $path_file_name_xpe -file $path_file_name
+
+    # Report Clock Utilization
+    set filename "clock_utilization"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_clock_utilization {*}$log_opts -file $path_file_name
+
+    # Report QOR Suggestions
+    set filename "qor_suggestions"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_qor_suggestions {*}$log_opts -file $path_file_name
+
+    # Report High Fanout Nets
+    set filename "high_fanout_nets"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_high_fanout_nets {*}$log_opts -file $path_file_name
+
+    # Report QOR Assessment
+    set filename "qor_assessment"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_qor_assessment {*}$log_opts -file $path_file_name
+
+    # Report Design Analysys
+    set filename "design_analysis"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_design_analysis {*}$log_opts -file $path_file_name
+
+    # Report Bus Skew
+    set filename "bus_skew"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    set path_file_name_rpx [file join $report_path [format "%s.rpx" $filename]]
+    ::report_bus_skew {*}$log_opts -rpx $path_file_name_rpx -file $path_file_name
+
+    # Report Datasheet
+    set filename "datasheet"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    set path_file_name_rpx [file join $report_path [format "%s.rpx" $filename]]
+    ::report_datasheet {*}$log_opts -rpx $path_file_name_rpx -file $path_file_name
+
+    # Report Route Status
+    set filename "route_status"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_route_status {*}$log_opts -file $path_file_name
+
+    # Report IO
+    set filename "io"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_io {*}$log_opts -file $path_file_name
+
+    # Report Utilization
+    set filename "utilization"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_utilization {*}$log_opts -file $path_file_name
+
+    # Report Control Sets
+    set filename "control_sets"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_control_sets {*}$log_opts -file $path_file_name
+
+    # Report RAM Utilization
+    set filename "ram_utilization"
+    set path_file_name [file join $report_path [format "%s.txt" $filename]]
+    ::report_ram_utilization {*}$log_opts -file $path_file_name
+
+    ::ip::internal::close_prj
+
+    puts ""
+    puts "---------------------------------------"
+    puts "IP synthesized & implemented."
+    puts "VLNV:"
+    puts "    $ip_vlnv"
+    puts "Variant:"
+    puts "    $variant_name"
+    puts "---------------------------------------"
+}
+
 proc ::ip::load_xml_fileset {xml_file} {
     variable internal::xml_path
     variable internal::xml_loaded
@@ -880,6 +1108,8 @@ proc ::ip::internal::generate_one {part_number node {log_mode "quiet"}} {
     set ip_dir "${ip_name}_v${ip_version}"
 
     set ip_dir_path [file join $IP_PATH $ip_dir]
+    set variant_dir_path [file join $ip_dir_path $variant_name]
+    set report_path [file join $variant_dir_path "reports"]
 
     set xci [file join $ip_dir_path $variant_name "${variant_name}.xci"]
 
@@ -898,6 +1128,8 @@ proc ::ip::internal::generate_one {part_number node {log_mode "quiet"}} {
 
     ::create_ip {*}$log_opts -vlnv $ip_vlnv -module_name $variant_name -dir $ip_dir_path -force
 
+    set_property GENERATE_SYNTH_CHECKPOINT true [get_files $xci]
+
     set ip_obj [get_ips $variant_name]
     set params [::module::variant_get $dep_variant parameters]
 
@@ -908,6 +1140,18 @@ proc ::ip::internal::generate_one {part_number node {log_mode "quiet"}} {
     ::generate_target {*}$log_opts -force all $ip_obj
 
     ::get_files {*}$log_opts -compile_order sources -used_in simulation
+
+    set ip_status_file [file join $report_path "ip_status.txt"]
+    ::report_ip_status {*}$log_opts -file $ip_status_file
+
+    puts ""
+    puts "---------------------------------------"
+    puts "IP generated."
+    puts "VLNV:"
+    puts "    $ip_vlnv"
+    puts "Variant:"
+    puts "    $variant_name"
+    puts "---------------------------------------"
 }
 
 proc ::ip::internal::get_xml_fileset {fileset_name} {
