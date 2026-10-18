@@ -42,14 +42,15 @@ architecture rtl of log2_fp_lut_core is
 
     component lopd is
         generic(
-            DATA_WIDTH: integer := 32;
-            LOPD_SLICE_DATA_WIDTH: integer := 4
+            INPUT_DATA_WIDTH: integer := 32;
+            LOPD_SLICE_DATA_WIDTH: integer := 4;
+            OUTPUT_DATA_WIDTH: integer := 5
         );
         port(
             clk: in std_logic;
             rst_n: in std_logic;
-            d_i: in std_logic_vector(DATA_WIDTH - 1 downto 0);
-            d_o: out std_logic_vector(integer(ceil(log2(real(DATA_WIDTH - 1)))) - 1 downto 0);
+            d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
+            d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
             z_o: out std_logic
         );
     end component;
@@ -93,8 +94,9 @@ begin
 
     lopd_ins: lopd
         generic map(
-            DATA_WIDTH => INPUT_DATA_WIDTH,
-            LOPD_SLICE_DATA_WIDTH => 4
+            INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
+            LOPD_SLICE_DATA_WIDTH => 4,
+            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))))
         )
         port map(
             clk => clk,

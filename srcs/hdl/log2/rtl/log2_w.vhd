@@ -3,13 +3,11 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-library userlib;
-use userlib.log2_pkg_utils.all;
-
 entity log2_w is
     generic(
         INPUT_DATA_WIDTH: positive := 16;
         INPUT_FRACTION_WIDTH: positive := 8;
+        OUTPUT_DATA_WIDTH: positive := 13;
         OUTPUT_FRACTION_WIDTH: positive := 8;
         LUT_ADDR_SIZE: positive := 7
     );
@@ -18,8 +16,7 @@ entity log2_w is
         rst_n: in std_logic;
 
         data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
-        data_o: out std_logic_vector(calc_out_data_width(INPUT_DATA_WIDTH, INPUT_FRACTION_WIDTH,
-            OUTPUT_FRACTION_WIDTH) - 1 downto 0);
+        data_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
 
         valid_i: in std_logic;
         valid_o: out std_logic
@@ -54,8 +51,7 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
-            OUTPUT_DATA_WIDTH => calc_out_data_width(INPUT_DATA_WIDTH, INPUT_FRACTION_WIDTH,
-                OUTPUT_FRACTION_WIDTH),
+            OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
             OUTPUT_FRACTION_WIDTH => OUTPUT_FRACTION_WIDTH,
             LUT_ADDR_SIZE => LUT_ADDR_SIZE
         )

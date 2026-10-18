@@ -4,8 +4,8 @@ use ieee.numeric_std.all;
 use std.env.all;
 use ieee.math_real.all;
 
-library userlib;
-use userlib.log2_pkg_utils.all;
+library work;
+use work.log2_pkg_utils.all;
 
 entity tb_log2_lut is
 end entity;
@@ -58,6 +58,7 @@ architecture sim of tb_log2_lut is
         generic(
             INPUT_DATA_WIDTH: positive := 16;
             INPUT_FRACTION_WIDTH: positive := 8;
+            OUTPUT_DATA_WIDTH: positive := 13;
             OUTPUT_FRACTION_WIDTH: positive := 8;
             LUT_ADDR_SIZE: positive := 7
         );
@@ -86,6 +87,7 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
+            OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
             OUTPUT_FRACTION_WIDTH => OUTPUT_FRACTION_WIDTH,
             LUT_ADDR_SIZE => LUT_ADDR_SIZE
         )
@@ -114,15 +116,6 @@ begin
         test_observe_counter := 0;
         test_passed_counter := 0;
         test_failed_counter := 0;
-
-        -- for i in dataset_t'range loop
-        --     report "in: " & integer'image(to_integer(dataset(i).data_in))
-        --             & ", out: " & integer'image(to_integer(dataset(i).data_out))
-        --             & ", valid: " & integer'image(dataset(i).valid_o)
-        --             severity note;
-        -- end loop;
-        --
-        -- finish;
 
         -- Restet the IP
 

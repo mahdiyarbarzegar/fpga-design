@@ -25,6 +25,7 @@ rtl:
 include:
 
 constraints:
+  - constr/package.xdc
 
 dependencies:
   lib:
@@ -68,3 +69,118 @@ simulation:
     xsim_opts:
 
 variants:
+  log2_iq16_8_of8:
+    name: log2_iq16_8_of8
+    display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, and 7-bit LUT Address
+    parameters:
+      CONFIG.INPUT_DATA_WIDTH: 16
+      CONFIG.INPUT_FRACTION_WIDTH: 8
+      CONFIG.LUT_ADDR_SIZE: 7
+
+interfaces:
+  clk:
+    type: clock
+    frequency: 100000000
+    port:
+      clk: clk
+
+  rst_n:
+    type: reset
+    polarity: active_low
+    port:
+      rst_n: rst_n
+
+  data_i:
+    type: input
+    port:
+      data_i: data_i
+
+  valid_i:
+    type: input
+    port:
+      valid_i: valid_i
+
+  data_o:
+    type: output
+    port:
+      data_o: data_o
+
+  valid_o:
+    type: output
+    port:
+      valid_o: valid_o
+
+parameters:
+  INPUT_DATA_WIDTH:
+    type: integer
+    resolve: user
+    default: 16
+    validation:
+      type: range_long
+      min: 8
+      max: 64
+    gui:
+      display_name: Input Data Width
+      page: General
+      group: Logarithm_2
+
+  INPUT_FRACTION_WIDTH:
+    type: integer
+    resolve: user
+    default: 8
+    validation:
+      type: range_long
+      min: 2
+      max: 32
+    gui:
+      display_name: Input Fraction Width
+      page: General
+      group: Logarithm_2
+
+  OUTPUT_FRACTION_WIDTH:
+    type: integer
+    resolve: user
+    default: 8
+    validation:
+      type: range_long
+      min: 2
+      max: 32
+    gui:
+      display_name: Output Fraction Width
+      page: General
+      group: Logarithm_2
+
+  LUT_ADDR_SIZE:
+    type: integer
+    resolve: user
+    default: 7
+    validation:
+      type: range_long
+      min: 4
+      max: 16
+    gui:
+      display_name: Lookup Table Adders Size
+      page: General
+      group: Logarithm_2
+
+  OUTPUT_DATA_WIDTH:
+    type: integer
+    resolve: dependent
+    expression: 'expr {
+        $OUTPUT_FRACTION_WIDTH +
+        max(
+            ceil(log($INPUT_FRACTION_WIDTH)/log(2)) + 1,
+            ceil(log(
+                    log(
+                        pow(2, $INPUT_DATA_WIDTH - $INPUT_FRACTION_WIDTH)
+                        - (1.0 / pow(2, $INPUT_FRACTION_WIDTH))
+                    )/log(2)
+                    + (1.0 / pow(2, $OUTPUT_FRACTION_WIDTH))
+                )/log(2)
+            ) + 1
+        )
+    }'
+    gui:
+      hidden: true
+
+parameters_constraints:

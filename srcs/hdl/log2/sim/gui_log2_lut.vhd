@@ -4,8 +4,8 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use std.env.all;
 
-library userlib;
-use userlib.log2_pkg_utils.all;
+library work;
+use work.log2_pkg_utils.all;
 
 entity gui_log2_lut is
 end entity;
@@ -25,6 +25,7 @@ architecture sim of gui_log2_lut is
         generic(
             INPUT_DATA_WIDTH: positive := 16;
             INPUT_FRACTION_WIDTH: positive := 8;
+            OUTPUT_DATA_WIDTH: positive := 13;
             OUTPUT_FRACTION_WIDTH: positive := 8;
             LUT_ADDR_SIZE: positive := 7
         );
@@ -53,6 +54,7 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
+            OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
             OUTPUT_FRACTION_WIDTH => OUTPUT_FRACTION_WIDTH,
             LUT_ADDR_SIZE => LUT_ADDR_SIZE
         )
