@@ -6,24 +6,24 @@ use ieee.std_logic_misc.all;
 
 entity lopd is
     generic(
-        DATA_WIDTH: integer := 32;
-        LOPD_SLICE_DATA_WIDTH: integer := 4
+        INPUT_DATA_WIDTH: integer := 32;
+        LOPD_SLICE_DATA_WIDTH: integer := 4;
+        OUTPUT_DATA_WIDTH: integer := 5
     );
     port(
         clk: in std_logic;
         rst_n: in std_logic;
-        d_i: in std_logic_vector(DATA_WIDTH - 1 downto 0);
-        d_o: out std_logic_vector(integer(ceil(log2(real(DATA_WIDTH - 1)))) - 1 downto 0);
+        d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
+        d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
         z_o: out std_logic
     );
 end entity;
 
 architecture rtl of lopd is
 
-    constant OUTPUT_DATA_WIDTH: positive := integer(ceil(log2(real(DATA_WIDTH - 1))));
     constant LOPD_SLICE_INDEX_WIDTH: positive := integer(
         ceil(log2(real(LOPD_SLICE_DATA_WIDTH - 1))));
-    constant NUMBER_OF_LOPD_SLICES: positive := DATA_WIDTH / LOPD_SLICE_DATA_WIDTH;
+    constant NUMBER_OF_LOPD_SLICES: positive := INPUT_DATA_WIDTH / LOPD_SLICE_DATA_WIDTH;
 
     component lopd_slice is
         generic (
@@ -49,8 +49,8 @@ architecture rtl of lopd is
         NUMBER_OF_LOPD_SLICES - 1 downto 0);
 begin
 
-    assert (DATA_WIDTH mod LOPD_SLICE_DATA_WIDTH) = 0
-        report "DATA_WIDTH / LOPD_SLICE_DATA_WIDTH must be an integer"
+    assert (INPUT_DATA_WIDTH mod LOPD_SLICE_DATA_WIDTH) = 0
+        report "INPUT_DATA_WIDTH / LOPD_SLICE_DATA_WIDTH must be an integer"
         severity failure;
 
     z_o <= z_s2;

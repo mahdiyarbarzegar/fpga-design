@@ -9,35 +9,38 @@ end entity;
 
 architecture sim of tb_lopd is
 
-    constant DATA_WIDTH: positive := 16;
+    constant INPUT_DATA_WIDTH: positive := 16;
     constant LOPD_SLICE_DATA_WIDTH: positive := 4;
+    constant OUTPUT_DATA_WIDTH: positive := integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))));
 
     component lopd is
         generic(
-            DATA_WIDTH: positive := 32;
-            LOPD_SLICE_DATA_WIDTH: positive := 4
+            INPUT_DATA_WIDTH: integer := 32;
+            LOPD_SLICE_DATA_WIDTH: integer := 4;
+            OUTPUT_DATA_WIDTH: integer := 5
         );
         port(
-            rst_n: in std_logic;
             clk: in std_logic;
-            d_i: in std_logic_vector(DATA_WIDTH - 1 downto 0);
-            d_o: out std_logic_vector(integer(ceil(log2(real(DATA_WIDTH - 1)))) - 1 downto 0);
+            rst_n: in std_logic;
+            d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
+            d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
             z_o: out std_logic
         );
     end component;
 
     signal clk: std_logic := '0';
     signal rst_n: std_logic := '1';
-    signal data: unsigned(DATA_WIDTH - 1 downto 0) := (others => '0');
-    signal position: integer range 0 to DATA_WIDTH := 0;
-    signal lopd_index: std_logic_vector(integer(ceil(log2(real(DATA_WIDTH - 1)))) - 1 downto 0);
+    signal data: unsigned(INPUT_DATA_WIDTH - 1 downto 0) := (others => '0');
+    signal position: integer range 0 to INPUT_DATA_WIDTH := 0;
+    signal lopd_index: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
     signal zero_flag: std_logic := '0';
 begin
 
     dut: lopd
         generic map(
-            DATA_WIDTH => DATA_WIDTH,
-            LOPD_SLICE_DATA_WIDTH => LOPD_SLICE_DATA_WIDTH
+            INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
+            LOPD_SLICE_DATA_WIDTH => LOPD_SLICE_DATA_WIDTH,
+            OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH
         )
         port map(
             rst_n => rst_n,

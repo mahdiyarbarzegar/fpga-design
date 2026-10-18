@@ -23,6 +23,7 @@ rtl:
 include:
 
 constraints:
+  - constr/package.xdc
 
 dependencies:
   lib:
@@ -65,3 +66,74 @@ simulation:
     xsim_opts:
 
 variants:
+  lopd_16b:
+    name: lopd_16b
+    display_name: Leading One Position Detector 16bit
+    parameters:
+      CONFIG.INPUT_DATA_WIDTH: 16
+      CONFIG.LOPD_SLICE_DATA_WIDTH: 8
+
+interfaces:
+  clk:
+    type: clock
+    frequency: 100000000
+    port:
+      clk: clk
+
+  rst_n:
+    type: reset
+    polarity: active_low
+    port:
+      rst_n: rst_n
+
+  d_i:
+    type: input
+    port:
+      d_i: d_i
+
+  d_o:
+    type: output
+    port:
+      d_o: d_o
+
+  z_o:
+    type: output
+    port:
+      z_o: z_o
+
+parameters:
+  INPUT_DATA_WIDTH:
+    type: integer
+    resolve: user
+    default: 16
+    validation:
+      type: range_long
+      min: 8
+      max: 64
+    gui:
+      display_name: Data Width
+      page: General
+      group: LOPD
+
+  LOPD_SLICE_DATA_WIDTH:
+    type: integer
+    resolve: user
+    default: 8
+    validation:
+      type: list
+      values:
+        - 4
+        - 8
+        - 16
+    gui:
+      display_name: LOPD Slice Data Width
+      page: General
+      group: LOPD
+
+  OUTPUT_DATA_WIDTH:
+    type: integer
+    resolve: dependent
+    expression: 'expr { ceil(log($INPUT_DATA_WIDTH - 1)/log(2)) }'
+    gui:
+      hidden: true
+
