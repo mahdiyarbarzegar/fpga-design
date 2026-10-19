@@ -1,0 +1,53 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.math_real.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
+
+entity log2_fp_lut_gen_dual_port is
+    generic (
+        ADDR_WIDTH: positive := 7;
+        DATA_WIDTH: positive := 8
+    );
+    port(
+        index: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
+        data: out std_logic_vector(DATA_WIDTH - 1 downto 0);
+        data_n: out std_logic_vector(DATA_WIDTH downto 0)
+    );
+end entity;
+
+architecture rtl of log2_fp_lut_gen_dual_port is
+    constant LUT_SIZE: integer := 2 ** ADDR_WIDTH;
+
+    type lut_type_t is array (0 to LUT_SIZE - 1) of std_logic_vector(DATA_WIDTH - 1 downto 0);
+
+    impure function init_lut_fp return lut_type_t is
+        variable lut: lut_type_t;
+    begin
+        for i in lut_type_t'range loop
+            lut(i) := std_logic_vector(to_unsigned(
+                integer(trunc(log2(1.0 + real(i) / LUT_SIZE) * real(2 ** DATA_WIDTH))),
+                lut(i)'length));
+        end loop;
+
+        return lut;
+    end function;
+
+    signal LUT: lut_type_t := init_lut_fp;
+begin
+
+    process(all)
+        variable i: unsigned(index'range);
+    begin
+        i := unsigned(index);
+
+        data <= std_logic_vector(unsigned(LUT(to_integer(i))));
+
+        if and_reduce(index) = '0' then
+            data_n <= std_logic_vector('0' & unsigned(LUT(to_integer(i) + 1)));
+        else
+            data_n <= ('1', others => '0');
+        end if;
+    end process;
+
+end rtl;
