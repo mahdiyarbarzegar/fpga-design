@@ -17,25 +17,25 @@ architecture sim of gui_log2_lut is
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_DATA_WIDTH: positive := calc_out_data_width(INPUT_DATA_WIDTH,
         INPUT_FRACTION_WIDTH, OUTPUT_FRACTION_WIDTH);
-    constant LUT_ADDR_SIZE: positive := 7;
+    constant LUT_ADDR_SIZE: positive := 4;
 
     constant CLOCK_PERIOD: time := 10 ns;
 
     component log2_w is
         generic(
-            INPUT_DATA_WIDTH: positive := 16;
-            INPUT_FRACTION_WIDTH: positive := 8;
-            OUTPUT_DATA_WIDTH: positive := 13;
-            OUTPUT_FRACTION_WIDTH: positive := 8;
-            LUT_ADDR_SIZE: positive := 7
+            STRATEGY: string;
+            INPUT_DATA_WIDTH: positive;
+            INPUT_FRACTION_WIDTH: positive;
+            OUTPUT_DATA_WIDTH: positive;
+            OUTPUT_FRACTION_WIDTH: positive;
+            LUT_ADDR_SIZE: positive
         );
         port(
             clk: in std_logic;
             rst_n: in std_logic;
 
             data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
-            data_o: out std_logic_vector(calc_out_data_width(INPUT_DATA_WIDTH, INPUT_FRACTION_WIDTH,
-                OUTPUT_FRACTION_WIDTH) - 1 downto 0);
+            data_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
 
             valid_i: in std_logic;
             valid_o: out std_logic
@@ -83,6 +83,7 @@ begin
         wait for 2 * CLOCK_PERIOD;
 
         wait until falling_edge(clk);
+        wait until rising_edge(clk);
         rst_n <= '1';
 
         wait until falling_edge(clk);
