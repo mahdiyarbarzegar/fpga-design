@@ -1113,10 +1113,12 @@ proc ::ip::internal::generate_one {part_number node {log_mode "quiet"}} {
 
     set xci [file join $ip_dir_path $variant_name "${variant_name}.xci"]
 
-    if {[file exists $xci]} {
-        puts "Skipping $variant_name"
-        return
-    }
+    catch {file delete -force "$variant_dir_path"}
+
+    #if {[file exists $xci]} {
+    #    puts "Skipping $variant_name"
+    #    return
+    #}
 
     puts "Generating $variant_name"
 
