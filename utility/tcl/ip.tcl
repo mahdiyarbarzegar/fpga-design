@@ -615,13 +615,13 @@ proc ::ip::internal::add_parameter {core name config} {
         }
     }
 
-    #    if {[dict exists $config enablement]} {
-    #        set expression [dict get $config enablement]
-    #
-    #        set_property enablement_value true $param
-    #        set_property enablement_tcl_expr $expression $param
-    #    }
-    #
+    if {[dict exists $config enablement]} {
+        set expression [dict get $config enablement]
+
+        #    set_property enablement_value true $param
+        set_property enablement_tcl_expr $expression $param
+    }
+
     #    if {[dict exists $config expression]} {
     #        set expression [dict get $config expression]
     #
