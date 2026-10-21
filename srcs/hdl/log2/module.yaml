@@ -20,6 +20,7 @@ rtl:
   - rtl/log2_pkg_utils.vhd
   - rtl/log2_fp_lut_gen.vhd
   - rtl/log2_fp_lut_gen_dual_port.vhd
+  - rtl/log2_dsp_slice.vhd
   - rtl/log2_fp_lut_core.vhd
   - rtl/log2_fp_lut_lintrpl_core.vhd
   - rtl/log2_w.vhd
@@ -76,6 +77,7 @@ variants:
     display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, and 7-bit LUT Address
     parameters:
       CONFIG.STRATEGY: "LUT"
+      CONFIG.USE_DSP: false
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
       CONFIG.LUT_ADDR_SIZE: 7
@@ -85,6 +87,7 @@ variants:
     display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, 6-bit LUT Address, and Linear Interpolation
     parameters:
       CONFIG.STRATEGY: "LUT_LINEAR_INTRPL"
+      CONFIG.USE_DSP: true
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
       CONFIG.LUT_ADDR_SIZE: 6
@@ -135,6 +138,17 @@ parameters:
     gui:
       display_name: Strategy
       widget: dropdown
+      page: General
+      group: Logarithm_2
+
+  USE_DSP:
+    type: boolean
+    resolve: user
+    default: false
+    enablement: 'expr {$STRATEGY == "LUT_LINEAR_INTRPL"}'
+    gui:
+      display_name: USE DSP
+      widget: checkbox
       page: General
       group: Logarithm_2
 

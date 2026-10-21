@@ -24,6 +24,7 @@ architecture sim of gui_log2_lut is
     component log2_w is
         generic(
             STRATEGY: string;
+            USE_DSP: boolean := true;
             INPUT_DATA_WIDTH: positive;
             INPUT_FRACTION_WIDTH: positive;
             OUTPUT_DATA_WIDTH: positive;

@@ -13,6 +13,7 @@ end entity;
 architecture sim of tb_log2_lut is
 
     constant STRATEGY: string := "LUT_LINEAR_INTRPL";
+    constant USE_DSP: boolean := true;
     -- constant STRATEGY: string := "LUT";
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
@@ -59,12 +60,13 @@ architecture sim of tb_log2_lut is
 
     component log2_w is
         generic(
-            STRATEGY: string;
-            INPUT_DATA_WIDTH: positive;
-            INPUT_FRACTION_WIDTH: positive;
-            OUTPUT_DATA_WIDTH: positive;
-            OUTPUT_FRACTION_WIDTH: positive;
-            LUT_ADDR_SIZE: positive
+            STRATEGY: string := "LUT";
+            USE_DSP: boolean := true;
+            INPUT_DATA_WIDTH: positive := 16;
+            INPUT_FRACTION_WIDTH: positive := 8;
+            OUTPUT_DATA_WIDTH: positive := 13;
+            OUTPUT_FRACTION_WIDTH: positive := 8;
+            LUT_ADDR_SIZE: positive := 6
         );
         port(
             clk: in std_logic;
@@ -89,6 +91,7 @@ begin
     log2: log2_w
         generic map(
             STRATEGY => STRATEGY,
+            USE_DSP => USE_DSP,
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
             OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
