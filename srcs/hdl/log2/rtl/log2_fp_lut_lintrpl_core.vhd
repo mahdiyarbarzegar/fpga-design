@@ -232,7 +232,7 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
     constant REMAIN_MANTISSA_WIDTH: positive := INPUT_DATA_WIDTH - LUT_ADDR_SIZE - 1;
     constant MUL_RESULT_WIDTH: positive := REMAIN_MANTISSA_WIDTH + OUTPUT_FRACTION_WIDTH;
     constant DSP48E1_A_PORT_WIDTH: positive := OUTPUT_FRACTION_WIDTH + 2;
-    constant DSP48E1_B_PORT_WIDTH: positive := OUTPUT_FRACTION_WIDTH + 2;
+    constant DSP48E1_B_PORT_WIDTH: positive := REMAIN_MANTISSA_WIDTH + 1;
     constant DSP48E1_C_PORT_WIDTH: positive := MUL_RESULT_WIDTH + 1;
     constant DSP48E1_D_PORT_WIDTH: positive := OUTPUT_FRACTION_WIDTH + 2;
     constant DSP48E1_P_PORT_WIDTH: positive := maximum(
