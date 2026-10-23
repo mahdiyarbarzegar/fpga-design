@@ -100,7 +100,7 @@ architecture rtl_lut of log2_fp_lut_lintrpl_core is
 
     -- Wires
     signal position: integer;
-    signal norm_mantissa, norm_mantissa_remain: std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
+    signal norm_mantissa: std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
     signal exponent_k_added: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
 
 begin
@@ -132,8 +132,6 @@ begin
 
     position <= to_integer(unsigned(data_lop_s2));
     norm_mantissa <= std_logic_vector(shift_left(unsigned(data_s2), data_s2'length - position - 1));
-    norm_mantissa_remain <= std_logic_vector(
-        shift_left(unsigned(data_s2), data_s2'length - position + LUT_ADDR_SIZE));
 
     mantissa_diff_s3 <= std_logic_vector(
         resize(unsigned(mantissa_log_n_s3) - unsigned(('0' & mantissa_log_s3)),
@@ -174,8 +172,7 @@ begin
             mantissa_index_s3 <= norm_mantissa(
                 norm_mantissa'length - 2 downto norm_mantissa'length - LUT_ADDR_SIZE - 1);
 
-            mantissa_remain_s3 <= norm_mantissa_remain(
-                norm_mantissa_remain'length - 1 downto norm_mantissa_remain'length - REMAIN_MANTISSA_WIDTH);
+            mantissa_remain_s3 <= norm_mantissa(REMAIN_MANTISSA_WIDTH - 1 downto 0);
 
             ----------------------------------- Stage 4
             valid_s4 <= valid_s3;
