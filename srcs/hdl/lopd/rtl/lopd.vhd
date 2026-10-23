@@ -41,7 +41,6 @@ architecture rtl of lopd is
     type lopd_array_slice_index_t is array (integer range <>) of lopd_index_t;
     type lopd_array_slice_index_offset_t is array (integer range <>) of lopd_index_offset_t;
 
-    signal z_s1, z_s2: std_logic;
     signal lopd_slice_index: lopd_array_slice_index_t(0 to NUMBER_OF_LOPD_SLICES - 1);
     signal lopd_slice_index_ofsset_reg: lopd_array_slice_index_offset_t(
         0 to NUMBER_OF_LOPD_SLICES - 1);
@@ -52,8 +51,6 @@ begin
     assert (INPUT_DATA_WIDTH mod LOPD_SLICE_DATA_WIDTH) = 0
         report "INPUT_DATA_WIDTH / LOPD_SLICE_DATA_WIDTH must be an integer"
         severity failure;
-
-    z_o <= z_s2;
 
     dut_slice: for i in NUMBER_OF_LOPD_SLICES - 1 downto 0 generate
 
@@ -86,7 +83,6 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-
             d_o <= (others => '0');
 
             for i in NUMBER_OF_LOPD_SLICES - 1 downto 0 loop
@@ -96,13 +92,11 @@ begin
                 end if;
             end loop;
 
-            z_s1 <= not or_reduce(d_i);
-            z_s2 <= z_s1;
+            z_o <= and_reduce(lopd_slice_zflag_reg);
 
             if rst_n = '0' then
                 d_o <= (others => '0');
-                z_s1 <= '0';
-                z_s2 <= '0';
+                z_o <= '1';
             end if;
         end if;
     end process;
