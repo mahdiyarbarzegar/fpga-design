@@ -55,10 +55,10 @@ module pwm_gen_bus_axi4lite #(
     );
 
     axi4_reg_ifc #(
-        .AXI_DATA_WIDTH(AXI_DATA_WIDTH),
-        .AXI_ADDR_WIDTH(AXI_ADDR_WIDTH),
-        .CHANNELS      (NUM_REGS),
-        .NUM_REGS      (NUM_REGS)
+        .AXI_DATA_WIDTH     (AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH     (AXI_ADDR_WIDTH),
+        .NUM_REGS           (NUM_REGS),
+        .USE_CHANNEL_PER_REG(1)
     ) reg_ifc_rtl ();
 
     axi4_reg_bank #(
