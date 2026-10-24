@@ -1,4 +1,4 @@
-`include "pwm_gen.svh"
+`include "pwm_gen.vh"
 
 module gui_pwm_gen;
 

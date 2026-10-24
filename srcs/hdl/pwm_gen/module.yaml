@@ -55,19 +55,20 @@ simulation:
     xelab_opts:
     xsim_opts:
   gui:
-    top: gui_axi_pwm_gen
-    snapshot: axi_pwm_gen_gui
+    top: gui_axi_pwm_gen #gui_axi_pwm_gen #gui_pwm_gen
+    snapshot: axi_pwm_gen_gui #axi_pwm_gen_gui #pwm_gen_gui
     consume: rtl
     variant:
     files:
+#      - sim/gui_pwm_gen.sv
       - sim/gui_axi_pwm_gen.sv
     dependencies:
       lib:
         - axi4lite_master_model
       module:
     timescale: 1ns/1ps
-    tclbatch: gui/gui_axi_sim.tcl
-    waveform: gui/gui_axi_sim.wcfg
+    tclbatch: gui/gui_axi_sim.tcl #gui/gui_axi_sim.tcl #gui/gui_sim.tcl
+    waveform: gui/gui_axi_sim.wcfg #gui/gui_axi_sim.wcfg #gui/gui_sim.wcfg
     xvlog_opts:
       - --relax
     xelab_opts:

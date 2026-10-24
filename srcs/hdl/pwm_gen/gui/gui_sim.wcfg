@@ -11,14 +11,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="8.135000 us"></ZoomEndTime>
+      <ZoomEndTime time="8.135001 us"></ZoomEndTime>
       <Cursor1Time time="8.135000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="104"></ValueColumnWidth>
+      <ValueColumnWidth column_width="96"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="36" />
    <wvobject type="logic" fp_name="/gui_pwm_gen/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -38,31 +38,132 @@
    <wvobject type="array" fp_name="/gui_pwm_gen/mode">
       <obj_property name="ElementShortName">mode[1:0]</obj_property>
       <obj_property name="ObjectShortName">mode[1:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/gui_pwm_gen/clk_div">
       <obj_property name="ElementShortName">clk_div[31:0]</obj_property>
       <obj_property name="ObjectShortName">clk_div[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/gui_pwm_gen/cnt_top">
       <obj_property name="ElementShortName">cnt_top[31:0]</obj_property>
       <obj_property name="ObjectShortName">cnt_top[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/gui_pwm_gen/ccr">
       <obj_property name="ElementShortName">ccr[1:0][31:0]</obj_property>
       <obj_property name="ObjectShortName">ccr[1:0][31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/gui_pwm_gen/pwm">
       <obj_property name="ElementShortName">pwm[1:0]</obj_property>
       <obj_property name="ObjectShortName">pwm[1:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_pwm_gen/clk">
+   <wvobject type="array" fp_name="/gui_pwm_gen/i">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/INTERFACE_TYPE">
+      <obj_property name="ElementShortName">INTERFACE_TYPE[47:0]</obj_property>
+      <obj_property name="ObjectShortName">INTERFACE_TYPE[47:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/TIMER_RESOLUTION">
+      <obj_property name="ElementShortName">TIMER_RESOLUTION[31:0]</obj_property>
+      <obj_property name="ObjectShortName">TIMER_RESOLUTION[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/CHANNELS">
+      <obj_property name="ElementShortName">CHANNELS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CHANNELS[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/stop">
+      <obj_property name="ElementShortName">stop</obj_property>
+      <obj_property name="ObjectShortName">stop</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/mode">
+      <obj_property name="ElementShortName">mode[1:0]</obj_property>
+      <obj_property name="ObjectShortName">mode[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/psc">
+      <obj_property name="ElementShortName">psc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psc[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/arr">
+      <obj_property name="ElementShortName">arr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">arr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/ccr">
+      <obj_property name="ElementShortName">ccr[1:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">ccr[1:0][31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/oc">
+      <obj_property name="ElementShortName">oc[1:0]</obj_property>
+      <obj_property name="ObjectShortName">oc[1:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/state">
+      <obj_property name="ElementShortName">state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">state[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/next_state">
+      <obj_property name="ElementShortName">next_state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/arr_shadow">
+      <obj_property name="ElementShortName">arr_shadow[31:0]</obj_property>
+      <obj_property name="ObjectShortName">arr_shadow[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/ccr_shadow">
+      <obj_property name="ElementShortName">ccr_shadow[1:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">ccr_shadow[1:0][31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/clk_cnt">
+      <obj_property name="ElementShortName">clk_cnt[31:0]</obj_property>
+      <obj_property name="ObjectShortName">clk_cnt[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/cnt">
+      <obj_property name="ElementShortName">cnt[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/oc_shadow">
+      <obj_property name="ElementShortName">oc_shadow[1:0]</obj_property>
+      <obj_property name="ObjectShortName">oc_shadow[1:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/cnt_inc_dec_b">
+      <obj_property name="ElementShortName">cnt_inc_dec_b</obj_property>
+      <obj_property name="ObjectShortName">cnt_inc_dec_b</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/TIMER_RESOLUTION">
+      <obj_property name="ElementShortName">TIMER_RESOLUTION[31:0]</obj_property>
+      <obj_property name="ObjectShortName">TIMER_RESOLUTION[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/CHANNELS">
+      <obj_property name="ElementShortName">CHANNELS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CHANNELS[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/IDLE">
+      <obj_property name="ElementShortName">IDLE[1:0]</obj_property>
+      <obj_property name="ObjectShortName">IDLE[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/LOADING">
+      <obj_property name="ElementShortName">LOADING[1:0]</obj_property>
+      <obj_property name="ObjectShortName">LOADING[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/WORKING">
+      <obj_property name="ElementShortName">WORKING[1:0]</obj_property>
+      <obj_property name="ObjectShortName">WORKING[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_pwm_gen/pwmgen/g_simple.pwmgen/pwmgen_c/STOPPED">
+      <obj_property name="ElementShortName">STOPPED[1:0]</obj_property>
+      <obj_property name="ObjectShortName">STOPPED[1:0]</obj_property>
    </wvobject>
 </wave_config>
