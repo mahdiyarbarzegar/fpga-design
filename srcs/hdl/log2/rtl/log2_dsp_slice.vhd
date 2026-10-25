@@ -184,12 +184,12 @@ begin
           C_HAS_CONCAT => 0,
           C_HAS_C => 1,
           C_SQUARE_FCN => 0,
-          C_A_WIDTH => 10,
-          C_B_WIDTH => 10,
-          C_C_WIDTH => 18,
-          C_D_WIDTH => 10,
+          C_A_WIDTH => A_WIDTH,
+          C_B_WIDTH => B_WIDTH,
+          C_C_WIDTH => C_WIDTH,
+          C_D_WIDTH => D_WIDTH,
           C_CONCAT_WIDTH => 48,
-          C_P_MSB => 21,
+          C_P_MSB => (P_WIDTH - 1),
           C_P_LSB => 0,
           C_SEL_WIDTH => 0,
           C_HAS_ACOUT => 0,
@@ -200,7 +200,7 @@ begin
           C_CONSTANT_1 => 1,
           C_LATENCY => 128,
           C_OPMODES => "000000000011010100011000",
-          C_REG_CONFIG => "00000000000000000011100011000000",
+          C_REG_CONFIG => "00000000000000000011100011000100",
           C_TEST_CORE => 0
         )
         PORT MAP (

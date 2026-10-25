@@ -27,9 +27,9 @@ package body log2_pkg_utils is
     function get_pipeline_stage_count(STRATEGY: string) return natural is
     begin
         if STRATEGY = "LUT" then
-            return 4;
+            return 5;
         elsif STRATEGY = "LUT_LINEAR_INTRPL" then
-            return 6;
+            return 8;
         else
             return 0;
         end if;

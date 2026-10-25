@@ -90,7 +90,7 @@ variants:
       CONFIG.USE_DSP: true
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
-      CONFIG.LUT_ADDR_SIZE: 6
+      CONFIG.LUT_ADDR_SIZE: 7
 
 interfaces:
   clk:

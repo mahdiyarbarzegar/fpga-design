@@ -35,8 +35,10 @@ architecture rtl of log2_fp_lut_core is
             DATA_WIDTH: positive := 8
         );
         port(
-            index: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
-            data: out std_logic_vector(DATA_WIDTH - 1 downto 0)
+            clk: in std_logic;
+            rst_n: in std_logic;
+            addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
+            data_o: out std_logic_vector(DATA_WIDTH - 1 downto 0)
         );
     end component;
 
@@ -70,11 +72,15 @@ architecture rtl of log2_fp_lut_core is
     signal valid_s3: std_logic;
     signal exponent_k_s3: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
     signal mantissa_index_s3: std_logic_vector(LUT_ADDR_SIZE - 1 downto 0);
-    signal mantissa_log_s3: std_logic_vector(OUTPUT_FRACTION_WIDTH - 1 downto 0);
 
     -- Stage 4 Signals
     signal valid_s4: std_logic;
-    signal calc_result_s4: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
+    signal exponent_k_s4: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
+    signal mantissa_log_s4: std_logic_vector(OUTPUT_FRACTION_WIDTH - 1 downto 0);
+
+    -- Stage 4 Signals
+    signal valid_s5: std_logic;
+    signal calc_result_s5: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
 
     -- Wires
     signal position: integer;
@@ -88,8 +94,10 @@ begin
             DATA_WIDTH => OUTPUT_FRACTION_WIDTH
         )
         port map(
-            index => mantissa_index_s3,
-            data => mantissa_log_s3
+            clk => clk,
+            rst_n => rst_n,
+            addr_i => mantissa_index_s3,
+            data_o => mantissa_log_s4
         );
 
     lopd_ins: lopd
@@ -109,20 +117,15 @@ begin
     position <= to_integer(unsigned(data_lop_s2));
     norm_mantissa <= std_logic_vector(shift_left(unsigned(data_s2), data_s2'length - position - 1));
 
-    data_o <= calc_result_s4;
-    valid_o <= valid_s4;
+    data_o <= calc_result_s5;
+    valid_o <= valid_s5;
 
     process(clk)
     begin
         if rising_edge(clk) then
 
             ----------------------------------- Stage 1
-            if valid_i = '0' or or_reduce(data_i) = '0' then
-                valid_s1 <= '0';
-            else
-                valid_s1 <= '1';
-            end if;
-
+            valid_s1 <= valid_i;
             data_s1 <= data_i;
 
             ----------------------------------- Stage 2
@@ -130,7 +133,8 @@ begin
             data_s2 <= data_s1;
 
             ----------------------------------- Stage 3
-            valid_s3 <= valid_s2;
+            valid_s3 <= '0' when data_lop_zflag_s2 = '1' else valid_s2;
+
             exponent_k_s3 <= to_signed(integer(position) - integer(INPUT_FRACTION_WIDTH),
                 exponent_k_s3'length);
 
@@ -139,19 +143,25 @@ begin
 
             ----------------------------------- Stage 4
             valid_s4 <= valid_s3;
-            calc_result_s4 <= std_logic_vector(exponent_k_s3) & mantissa_log_s3;
+            exponent_k_s4 <= exponent_k_s3;
+
+            ----------------------------------- Stage 5
+            valid_s5 <= valid_s4;
+            calc_result_s5 <= std_logic_vector(exponent_k_s4) & mantissa_log_s4;
 
             if rst_n = '0' then
                 valid_s1 <= '0';
                 valid_s2 <= '0';
                 valid_s3 <= '0';
                 valid_s4 <= '0';
+                valid_s5 <= '0';
                 data_s1 <= (others => '0');
                 data_s2 <= (others => '0');
                 exponent_k_s3 <= (others => '0');
                 mantissa_index_s3 <= (others => '0');
                 exponent_k_s3 <= (others => '0');
-                calc_result_s4 <= (others => '0');
+                exponent_k_s4 <= (others => '0');
+                calc_result_s5 <= (others => '0');
             end if;
 
         end if;

@@ -10,9 +10,10 @@ entity log2_fp_lut_gen_dual_port is
         DATA_WIDTH: positive := 8
     );
     port(
-        index: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
-        data: out std_logic_vector(DATA_WIDTH - 1 downto 0);
-        data_n: out std_logic_vector(DATA_WIDTH downto 0)
+        clk: in std_logic;
+        rst_n: in std_logic;
+        addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
+        data_o: out std_logic_vector(2 * DATA_WIDTH + 1 downto 0)
     );
 end entity;
 
@@ -34,19 +35,31 @@ architecture rtl of log2_fp_lut_gen_dual_port is
     end function;
 
     signal LUT: lut_type_t := init_lut_fp;
+
+    attribute ram_style: string;
+    attribute ram_style of LUT: signal is "block";
 begin
 
-    process(all)
-        variable i: unsigned(index'range);
+    process(clk)
+        variable i: unsigned(addr_i'range);
+        variable data, data_next: std_logic_vector(DATA_WIDTH downto 0);
     begin
-        i := unsigned(index);
+        if rising_edge(clk) then
+            i := unsigned(addr_i);
 
-        data <= std_logic_vector(unsigned(LUT(to_integer(i))));
+            data := '0' & LUT(to_integer(i));
 
-        if and_reduce(index) = '0' then
-            data_n <= std_logic_vector('0' & unsigned(LUT(to_integer(i) + 1)));
-        else
-            data_n <= ('1', others => '0');
+            if and_reduce(addr_i) = '0' then
+                data_next := '0' & LUT(to_integer(i) + 1);
+            else
+                data_next := ('1', others => '0');
+            end if;
+
+            data_o <= data_next & data;
+
+            if (rst_n = '0') then
+                data_o <= (others => '0');
+            end if;
         end if;
     end process;
 

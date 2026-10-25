@@ -9,8 +9,10 @@ entity log2_fp_lut_gen is
         DATA_WIDTH: positive := 8
     );
     port(
-        index: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
-        data: out std_logic_vector(DATA_WIDTH - 1 downto 0)
+        clk: in std_logic;
+        rst_n: in std_logic;
+        addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
+        data_o: out std_logic_vector(DATA_WIDTH - 1 downto 0)
     );
 end entity;
 
@@ -32,8 +34,20 @@ architecture rtl of log2_fp_lut_gen is
     end function;
 
     signal LUT: lut_type_t := init_lut_fp;
+
+    attribute ram_style: string;
+    attribute ram_style of LUT: signal is "block";
 begin
 
-    data <= LUT(to_integer(unsigned(index)));
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            data_o <= LUT(to_integer(unsigned(addr_i)));
+
+            if (rst_n = '0') then
+                data_o <= (others => '0');
+            end if;
+        end if;
+    end process;
 
 end rtl;
