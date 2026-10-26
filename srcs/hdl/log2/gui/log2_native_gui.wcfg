@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="log2_native_gui.wdb" id="1">
+         <top_modules>
+            <top_module name="attributes" />
+            <top_module name="env" />
+            <top_module name="gui_log2_native" />
+            <top_module name="log2_pkg_utils" />
+            <top_module name="math_real" />
+            <top_module name="numeric_std" />
+            <top_module name="standard" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_misc" />
+            <top_module name="textio" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="135.001 ns"></ZoomEndTime>
+      <Cursor1Time time="135.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="76"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="68" />
+   <wvobject type="logic" fp_name="/gui_log2_native/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/input_value">
+      <obj_property name="ElementShortName">input_value[15:0]</obj_property>
+      <obj_property name="ObjectShortName">input_value[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/output_value">
+      <obj_property name="ElementShortName">output_value[12:0]</obj_property>
+      <obj_property name="ObjectShortName">output_value[12:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log_result">
+      <obj_property name="ElementShortName">log_result[12:0]</obj_property>
+      <obj_property name="ObjectShortName">log_result[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/valid_i">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/valid_o">
+      <obj_property name="ElementShortName">valid_o</obj_property>
+      <obj_property name="ObjectShortName">valid_o</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/INTERFACE_TYPE">
+      <obj_property name="ElementShortName">INTERFACE_TYPE[1:6]</obj_property>
+      <obj_property name="ObjectShortName">INTERFACE_TYPE[1:6]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/STRATEGY">
+      <obj_property name="ElementShortName">STRATEGY[1:17]</obj_property>
+      <obj_property name="ObjectShortName">STRATEGY[1:17]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/USE_DSP">
+      <obj_property name="ElementShortName">USE_DSP</obj_property>
+      <obj_property name="ObjectShortName">USE_DSP</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/INPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">INPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/INPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">INPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/OUTPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/OUTPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/LUT_ADDR_SIZE">
+      <obj_property name="ElementShortName">LUT_ADDR_SIZE</obj_property>
+      <obj_property name="ObjectShortName">LUT_ADDR_SIZE</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/CLOCK_PERIOD">
+      <obj_property name="ElementShortName">CLOCK_PERIOD</obj_property>
+      <obj_property name="ObjectShortName">CLOCK_PERIOD</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/ce">
+      <obj_property name="ElementShortName">ce</obj_property>
+      <obj_property name="ObjectShortName">ce</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/data_i">
+      <obj_property name="ElementShortName">data_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/data_o">
+      <obj_property name="ElementShortName">data_o[12:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_i">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_o">
+      <obj_property name="ElementShortName">valid_o</obj_property>
+      <obj_property name="ObjectShortName">valid_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s1">
+      <obj_property name="ElementShortName">valid_s1</obj_property>
+      <obj_property name="ObjectShortName">valid_s1</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/data_s1">
+      <obj_property name="ElementShortName">data_s1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_s1[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s2">
+      <obj_property name="ElementShortName">valid_s2</obj_property>
+      <obj_property name="ObjectShortName">valid_s2</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/data_s2">
+      <obj_property name="ElementShortName">data_s2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_s2[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/data_lop_s2">
+      <obj_property name="ElementShortName">data_lop_s2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_lop_s2[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/data_lop_zflag_s2">
+      <obj_property name="ElementShortName">data_lop_zflag_s2</obj_property>
+      <obj_property name="ObjectShortName">data_lop_zflag_s2</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s3">
+      <obj_property name="ElementShortName">valid_s3</obj_property>
+      <obj_property name="ObjectShortName">valid_s3</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/exponent_k_s3">
+      <obj_property name="ElementShortName">exponent_k_s3[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s3[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_index_s3">
+      <obj_property name="ElementShortName">mantissa_index_s3[5:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_index_s3[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_remain_s3">
+      <obj_property name="ElementShortName">mantissa_remain_s3[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_remain_s3[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s4">
+      <obj_property name="ElementShortName">valid_s4</obj_property>
+      <obj_property name="ObjectShortName">valid_s4</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/exponent_k_s4">
+      <obj_property name="ElementShortName">exponent_k_s4[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s4[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_remain_s4">
+      <obj_property name="ElementShortName">mantissa_remain_s4[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_remain_s4[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/lut_data_s4">
+      <obj_property name="ElementShortName">lut_data_s4[17:0]</obj_property>
+      <obj_property name="ObjectShortName">lut_data_s4[17:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_log_s4">
+      <obj_property name="ElementShortName">mantissa_log_s4[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_s4[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_diff_s4">
+      <obj_property name="ElementShortName">mantissa_diff_s4[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_diff_s4[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s5">
+      <obj_property name="ElementShortName">valid_s5</obj_property>
+      <obj_property name="ObjectShortName">valid_s5</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/exponent_k_s5">
+      <obj_property name="ElementShortName">exponent_k_s5[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s5[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_remain_s5">
+      <obj_property name="ElementShortName">mantissa_remain_s5[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_remain_s5[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_log_s5">
+      <obj_property name="ElementShortName">mantissa_log_s5[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_s5[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_diff_s5">
+      <obj_property name="ElementShortName">mantissa_diff_s5[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_diff_s5[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mul_result_s5">
+      <obj_property name="ElementShortName">mul_result_s5[16:0]</obj_property>
+      <obj_property name="ObjectShortName">mul_result_s5[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s6">
+      <obj_property name="ElementShortName">valid_s6</obj_property>
+      <obj_property name="ObjectShortName">valid_s6</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/exponent_k_s6">
+      <obj_property name="ElementShortName">exponent_k_s6[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s6[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_log_s6">
+      <obj_property name="ElementShortName">mantissa_log_s6[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_s6[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mul_result_s6">
+      <obj_property name="ElementShortName">mul_result_s6[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mul_result_s6[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_add_result_s6">
+      <obj_property name="ElementShortName">mantissa_add_result_s6[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_add_result_s6[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s7">
+      <obj_property name="ElementShortName">valid_s7</obj_property>
+      <obj_property name="ObjectShortName">valid_s7</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/exponent_k_s7">
+      <obj_property name="ElementShortName">exponent_k_s7[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s7[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/mantissa_add_result_s7">
+      <obj_property name="ElementShortName">mantissa_add_result_s7[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_add_result_s7[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/valid_s8">
+      <obj_property name="ElementShortName">valid_s8</obj_property>
+      <obj_property name="ObjectShortName">valid_s8</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/calc_result_s8">
+      <obj_property name="ElementShortName">calc_result_s8[12:0]</obj_property>
+      <obj_property name="ObjectShortName">calc_result_s8[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/position">
+      <obj_property name="ElementShortName">position</obj_property>
+      <obj_property name="ObjectShortName">position</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/norm_mantissa">
+      <obj_property name="ElementShortName">norm_mantissa[15:0]</obj_property>
+      <obj_property name="ObjectShortName">norm_mantissa[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/exponent_k_added">
+      <obj_property name="ElementShortName">exponent_k_added[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_added[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/INPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">INPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/INPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">INPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/OUTPUT_DATA_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/OUTPUT_FRACTION_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_FRACTION_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/LUT_ADDR_SIZE">
+      <obj_property name="ElementShortName">LUT_ADDR_SIZE</obj_property>
+      <obj_property name="ObjectShortName">LUT_ADDR_SIZE</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/USE_CLOCK_EN">
+      <obj_property name="ElementShortName">USE_CLOCK_EN</obj_property>
+      <obj_property name="ObjectShortName">USE_CLOCK_EN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/INPUT_INTEGER_WIDTH">
+      <obj_property name="ElementShortName">INPUT_INTEGER_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">INPUT_INTEGER_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/OUTPUT_INTEGER_WIDTH">
+      <obj_property name="ElementShortName">OUTPUT_INTEGER_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OUTPUT_INTEGER_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/REMAIN_MANTISSA_WIDTH">
+      <obj_property name="ElementShortName">REMAIN_MANTISSA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">REMAIN_MANTISSA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_native/log2/native_bus/native_bus_core/log2_lut_lintrpl/log2_lut_lintrpl_lut/log2_lut_lintrpl/MUL_RESULT_WIDTH">
+      <obj_property name="ElementShortName">MUL_RESULT_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">MUL_RESULT_WIDTH</obj_property>
+   </wvobject>
+</wave_config>

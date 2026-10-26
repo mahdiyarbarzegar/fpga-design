@@ -7,6 +7,7 @@ use dsp_macro_v1_0_9.dsp_macro_v1_0_9;
 
 entity log2_dsp_slice is
     generic (
+        USE_CLOCK_EN: boolean := false;
         A_WIDTH: positive;
         B_WIDTH: positive;
         C_WIDTH: positive;
@@ -15,6 +16,7 @@ entity log2_dsp_slice is
     );
     port (
         clk: in std_logic;
+        ce: in std_logic;
         a: in std_logic_vector(A_WIDTH - 1 downto 0);
         b: in std_logic_vector(B_WIDTH - 1 downto 0);
         c: in std_logic_vector(C_WIDTH - 1 downto 0);
@@ -153,7 +155,7 @@ begin
           C_VERBOSITY => 0,
           C_MODEL_TYPE => 0,
           C_XDEVICEFAMILY => "zynq",
-          C_HAS_CE => 0,
+          C_HAS_CE => 1 when USE_CLOCK_EN else 0,
           C_HAS_INDEP_CE => 0,
           C_HAS_CED => 0,
           C_HAS_CEA => 0,
@@ -205,7 +207,7 @@ begin
         )
         PORT MAP (
           CLK => clk,
-          CE => '1',
+          CE => ce,
           SCLR => '0',
           SEL => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 1)),
           CARRYCASCIN => '0',

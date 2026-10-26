@@ -23,6 +23,8 @@ rtl:
   - rtl/log2_dsp_slice.vhd
   - rtl/log2_fp_lut_core.vhd
   - rtl/log2_fp_lut_lintrpl_core.vhd
+  - rtl/log2_core.vhd
+  - rtl/log2_bus_axi4stream.vhd
   - rtl/log2_w.vhd
 
 include:
@@ -39,12 +41,13 @@ dependencies:
 
 simulation:
   batch:
-    top: tb_log2_lut
-    snapshot: log2_lut_batch
+    top: tb_log2_axis #tb_log2_native #tb_log2_axis
+    snapshot: log2_axis_batch #log2_native_batch #log2_axis_batch
     consume: rtl
     variant:
     files:
-      - sim/tb_log2_lut.vhd
+      - sim/tb_log2_axis.vhd
+#      - sim/tb_log2_native.vhd
     dependencies:
       lib:
       module:
@@ -55,18 +58,20 @@ simulation:
     xelab_opts: [ ]
     xsim_opts:
   gui:
-    top: gui_log2_lut
-    snapshot: log2_lut_gui
+    top: gui_log2_axis #gui_log2_axis #gui_log2_native
+    snapshot: log2_axis_gui #log2_axis_gui #log2_native_gui
     consume: rtl
     variant:
     files:
-      - sim/gui_log2_lut.vhd
+      - sim/gui_log2_axis.vhd
+#      - sim/gui_log2_native.vhd
     dependencies:
       lib:
+        - axi4stream_model
       module:
     timescale: 1ns/1ps
     tclbatch: gui/gui_sim.tcl
-    waveform: gui/log2_lut_gui.wcfg
+    waveform: gui/log2_axis_gui.wcfg #gui/log2_native_gui.wcfg #gui/log2_axis_gui.wcfg
     xvlog_opts:
     xelab_opts:
     xsim_opts:
@@ -76,6 +81,7 @@ variants:
     name: log2_iq16_8_of8
     display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, and 7-bit LUT Address
     parameters:
+      CONFIG.INTERFACE_TYPE: "NATIVE"
       CONFIG.STRATEGY: "LUT"
       CONFIG.USE_DSP: false
       CONFIG.INPUT_DATA_WIDTH: 16
@@ -86,6 +92,18 @@ variants:
     name: log2_iq16_8_of8_lintrpl
     display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, 6-bit LUT Address, and Linear Interpolation
     parameters:
+      CONFIG.INTERFACE_TYPE: "NATIVE"
+      CONFIG.STRATEGY: "LUT_LINEAR_INTRPL"
+      CONFIG.USE_DSP: true
+      CONFIG.INPUT_DATA_WIDTH: 16
+      CONFIG.INPUT_FRACTION_WIDTH: 8
+      CONFIG.LUT_ADDR_SIZE: 7
+
+  axi_log2_iq16_8_of8_lintrpl:
+    name: axi_log2_iq16_8_of8_lintrpl
+    display_name: AXI-Stream Log2 IP with Input Q16_8, 8-bit Out Fraction, 6-bit LUT Address, and Linear Interpolation
+    parameters:
+      CONFIG.INTERFACE_TYPE: "AXI4_STREAM"
       CONFIG.STRATEGY: "LUT_LINEAR_INTRPL"
       CONFIG.USE_DSP: true
       CONFIG.INPUT_DATA_WIDTH: 16
@@ -107,25 +125,78 @@ interfaces:
 
   data_i:
     type: input
+    enablement: '$INTERFACE_TYPE == "NATIVE"'
     port:
       data_i: data_i
 
   valid_i:
     type: input
+    enablement: '$INTERFACE_TYPE == "NATIVE"'
     port:
       valid_i: valid_i
 
   data_o:
     type: output
+    enablement: '$INTERFACE_TYPE == "NATIVE"'
     port:
       data_o: data_o
 
   valid_o:
     type: output
+    enablement: '$INTERFACE_TYPE == "NATIVE"'
     port:
       valid_o: valid_o
 
+  S_AXIS:
+    type: axi4stream
+    mode: slave
+    enablement: '$INTERFACE_TYPE == "AXI4_STREAM"'
+    bus_parameters:
+      AXIS_DATA_WIDTH: $AXIS_DATA_WIDTH
+    port:
+      TDATA: s_axis_tdata
+      TVALID: s_axis_tvalid
+      TREADY: s_axis_tready
+      TKEEP: s_axis_tkeep
+#      TLAST:
+
+  M_AXIS:
+    type: axi4stream
+    mode: master
+    enablement: '$INTERFACE_TYPE == "AXI4_STREAM"'
+    bus_parameters:
+      AXIS_DATA_WIDTH: $AXIS_DATA_WIDTH
+    port:
+      TDATA: m_axis_tdata
+      TVALID: m_axis_tvalid
+      TREADY: m_axis_tready
+      TKEEP: m_axis_tkeep
+#      TLAST:
+
 parameters:
+  INTERFACE_TYPE:
+    type: string
+    resolve: user
+    default: NATIVE
+    validation:
+      type: list
+      values:
+        - NATIVE
+        - AXI4_STREAM
+    gui:
+      display_name: Interface Type
+      widget: dropdown
+      page: General
+      group: Interface
+
+  AXIS_DATA_WIDTH:
+    type: integer
+    resolve: dependent
+    enablement: 'expr {$INTERFACE_TYPE == "AXI4_STREAM"}'
+    expression: 'expr { (($INPUT_DATA_WIDTH + 15) / 16) * 16 }'
+    gui:
+      hidden: true
+
   STRATEGY:
     type: string
     resolve: user

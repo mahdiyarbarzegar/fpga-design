@@ -6,11 +6,13 @@ use ieee.numeric_std.all;
 entity log2_fp_lut_gen is
     generic (
         ADDR_WIDTH: positive := 7;
-        DATA_WIDTH: positive := 8
+        DATA_WIDTH: positive := 8;
+        USE_CLOCK_EN: boolean := false
     );
     port(
         clk: in std_logic;
         rst_n: in std_logic;
+        ce: in std_logic;
         addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
         data_o: out std_logic_vector(DATA_WIDTH - 1 downto 0)
     );
@@ -42,7 +44,9 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            data_o <= LUT(to_integer(unsigned(addr_i)));
+            if (not USE_CLOCK_EN) or ce = '1' then
+                data_o <= LUT(to_integer(unsigned(addr_i)));
+            end if;
 
             if (rst_n = '0') then
                 data_o <= (others => '0');

@@ -7,14 +7,14 @@ use ieee.math_real.all;
 library work;
 use work.log2_pkg_utils.all;
 
-entity tb_log2_lut is
+entity tb_log2_native is
 end entity;
 
-architecture sim of tb_log2_lut is
+architecture sim of tb_log2_native is
 
-    constant STRATEGY: string := "LUT_LINEAR_INTRPL";
+    constant INTERFACE_TYPE: string := "NATIVE";
+    constant STRATEGY: string := "LUT_LINEAR_INTRPL"; -- "LUT"
     constant USE_DSP: boolean := true;
-    -- constant STRATEGY: string := "LUT";
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
@@ -58,28 +58,6 @@ architecture sim of tb_log2_lut is
         return dataset;
     end function;
 
-    component log2_w is
-        generic(
-            STRATEGY: string := "LUT";
-            USE_DSP: boolean := true;
-            INPUT_DATA_WIDTH: positive := 16;
-            INPUT_FRACTION_WIDTH: positive := 8;
-            OUTPUT_DATA_WIDTH: positive := 13;
-            OUTPUT_FRACTION_WIDTH: positive := 8;
-            LUT_ADDR_SIZE: positive := 6
-        );
-        port(
-            clk: in std_logic;
-            rst_n: in std_logic;
-
-            data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
-            data_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
-
-            valid_i: in std_logic;
-            valid_o: out std_logic
-        );
-    end component;
-
     signal dataset : dataset_t := init_dataset;
 
     signal clk, rst_n : std_logic := '0';
@@ -88,8 +66,9 @@ architecture sim of tb_log2_lut is
     signal data_output: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
 
 begin
-    log2: log2_w
+    log2: entity work.log2_w
         generic map(
+            INTERFACE_TYPE => INTERFACE_TYPE,
             STRATEGY => STRATEGY,
             USE_DSP => USE_DSP,
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
@@ -104,7 +83,11 @@ begin
             data_i => data_input,
             data_o => data_output,
             valid_i => valid_i,
-            valid_o => valid_o
+            valid_o => valid_o,
+            s_axis_tdata => (others => '0'),
+            s_axis_tkeep => (others => '0'),
+            s_axis_tvalid => '0',
+            m_axis_tready => '0'
         );
 
     clk <= not clk after CLOCK_PERIOD / 2;

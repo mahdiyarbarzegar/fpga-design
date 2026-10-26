@@ -10,11 +10,13 @@ entity log2_fp_lut_lintrpl_core is
         INPUT_FRACTION_WIDTH: positive;
         OUTPUT_DATA_WIDTH: positive;
         OUTPUT_FRACTION_WIDTH: positive;
-        LUT_ADDR_SIZE: positive
+        LUT_ADDR_SIZE: positive;
+        USE_CLOCK_EN: boolean := false
     );
     port(
         clk: in std_logic;
         rst_n: in std_logic;
+        ce: in std_logic;
 
         data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
         data_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
@@ -34,11 +36,13 @@ architecture rtl_lut of log2_fp_lut_lintrpl_core is
     component log2_fp_lut_gen_dual_port is
         generic (
             ADDR_WIDTH: positive := 7;
-            DATA_WIDTH: positive := 8
+            DATA_WIDTH: positive := 8;
+            USE_CLOCK_EN: boolean := false
         );
         port(
             clk: in std_logic;
             rst_n: in std_logic;
+            ce: in std_logic;
             addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
             data_o: out std_logic_vector(2 * DATA_WIDTH + 1 downto 0)
         );
@@ -48,11 +52,13 @@ architecture rtl_lut of log2_fp_lut_lintrpl_core is
         generic(
             INPUT_DATA_WIDTH: integer := 32;
             LOPD_SLICE_DATA_WIDTH: integer := 4;
-            OUTPUT_DATA_WIDTH: integer := 5
+            OUTPUT_DATA_WIDTH: integer := 5;
+            USE_CLOCK_EN: boolean := false
         );
         port(
             clk: in std_logic;
             rst_n: in std_logic;
+            ce: in std_logic;
             d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
             d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
             z_o: out std_logic
@@ -117,11 +123,13 @@ begin
     lut_gen: log2_fp_lut_gen_dual_port
         generic map(
             ADDR_WIDTH => LUT_ADDR_SIZE,
-            DATA_WIDTH => OUTPUT_FRACTION_WIDTH
+            DATA_WIDTH => OUTPUT_FRACTION_WIDTH,
+            USE_CLOCK_EN => USE_CLOCK_EN
         )
         port map(
             clk => clk,
             rst_n => rst_n,
+            ce => ce,
             addr_i => mantissa_index_s3,
             data_o => lut_data_s4
         );
@@ -130,11 +138,13 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             LOPD_SLICE_DATA_WIDTH => 4,
-            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))))
+            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1)))),
+            USE_CLOCK_EN => USE_CLOCK_EN
         )
         port map(
             clk => clk,
             rst_n => rst_n,
+            ce => ce,
             d_i => data_i,
             d_o => data_lop_s2,
             z_o => data_lop_zflag_s2
@@ -163,53 +173,54 @@ begin
     begin
         if rising_edge(clk) then
 
-            ----------------------------------- Stage 1
-            valid_s1 <= valid_i;
-            data_s1 <= data_i;
+            if (not USE_CLOCK_EN) or ce = '1' then
+                ----------------------------------- Stage 1
+                valid_s1 <= valid_i;
+                data_s1 <= data_i;
 
-            ----------------------------------- Stage 2
-            valid_s2 <= valid_s1;
-            data_s2 <= data_s1;
+                ----------------------------------- Stage 2
+                valid_s2 <= valid_s1;
+                data_s2 <= data_s1;
 
-            ----------------------------------- Stage 3
-            valid_s3 <= '0' when data_lop_zflag_s2 = '1' else valid_s2;
-            exponent_k_s3 <= to_signed(integer(position) - integer(INPUT_FRACTION_WIDTH),
-                exponent_k_s3'length);
+                ----------------------------------- Stage 3
+                valid_s3 <= '0' when data_lop_zflag_s2 = '1' else valid_s2;
+                exponent_k_s3 <= to_signed(integer(position) - integer(INPUT_FRACTION_WIDTH),
+                    exponent_k_s3'length);
 
-            mantissa_index_s3 <= norm_mantissa(
-                norm_mantissa'length - 2 downto norm_mantissa'length - LUT_ADDR_SIZE - 1);
+                mantissa_index_s3 <= norm_mantissa(
+                    norm_mantissa'length - 2 downto norm_mantissa'length - LUT_ADDR_SIZE - 1);
 
-            mantissa_remain_s3 <= norm_mantissa(REMAIN_MANTISSA_WIDTH - 1 downto 0);
+                mantissa_remain_s3 <= norm_mantissa(REMAIN_MANTISSA_WIDTH - 1 downto 0);
 
-            ----------------------------------- Stage 4
-            valid_s4 <= valid_s3;
-            exponent_k_s4 <= exponent_k_s3;
-            mantissa_remain_s4 <= mantissa_remain_s3;
+                ----------------------------------- Stage 4
+                valid_s4 <= valid_s3;
+                exponent_k_s4 <= exponent_k_s3;
+                mantissa_remain_s4 <= mantissa_remain_s3;
 
-            ----------------------------------- Stage 5
-            valid_s5 <= valid_s4;
-            exponent_k_s5 <= exponent_k_s4;
-            mantissa_remain_s5 <= mantissa_remain_s4;
-            mantissa_log_s5 <= mantissa_log_s4;
-            mantissa_diff_s5 <= mantissa_diff_s4(OUTPUT_FRACTION_WIDTH - 1 downto 0);
+                ----------------------------------- Stage 5
+                valid_s5 <= valid_s4;
+                exponent_k_s5 <= exponent_k_s4;
+                mantissa_remain_s5 <= mantissa_remain_s4;
+                mantissa_log_s5 <= mantissa_log_s4;
+                mantissa_diff_s5 <= mantissa_diff_s4(OUTPUT_FRACTION_WIDTH - 1 downto 0);
 
-            ----------------------------------- Stage 6
-            valid_s6 <= valid_s5;
-            exponent_k_s6 <= exponent_k_s5;
-            mantissa_log_s6 <= mantissa_log_s5;
-            mul_result_s6 <= std_logic_vector(
-                mul_result_s5(MUL_RESULT_WIDTH - 1 downto REMAIN_MANTISSA_WIDTH));
+                ----------------------------------- Stage 6
+                valid_s6 <= valid_s5;
+                exponent_k_s6 <= exponent_k_s5;
+                mantissa_log_s6 <= mantissa_log_s5;
+                mul_result_s6 <= std_logic_vector(
+                    mul_result_s5(MUL_RESULT_WIDTH - 1 downto REMAIN_MANTISSA_WIDTH));
 
-            ----------------------------------- Stage 7
-            valid_s7 <= valid_s6;
-            exponent_k_s7 <= exponent_k_s6;
-            mantissa_add_result_s7 <= mantissa_add_result_s6;
+                ----------------------------------- Stage 7
+                valid_s7 <= valid_s6;
+                exponent_k_s7 <= exponent_k_s6;
+                mantissa_add_result_s7 <= mantissa_add_result_s6;
 
-            ----------------------------------- Stage 8
-            valid_s8 <= valid_s7;
-            calc_result_s8 <= std_logic_vector(exponent_k_added) & mantissa_add_result_s7(
-                OUTPUT_FRACTION_WIDTH - 1 downto 0);
-
+                ----------------------------------- Stage 8
+                valid_s8 <= valid_s7;
+                calc_result_s8 <= std_logic_vector(exponent_k_added) & mantissa_add_result_s7(
+                    OUTPUT_FRACTION_WIDTH - 1 downto 0);
+            end if;
 
             if rst_n = '0' then
                 valid_s1 <= '0';
@@ -262,11 +273,13 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
     component log2_fp_lut_gen_dual_port is
         generic (
             ADDR_WIDTH: positive := 7;
-            DATA_WIDTH: positive := 8
+            DATA_WIDTH: positive := 8;
+            USE_CLOCK_EN: boolean := false
         );
         port(
             clk: in std_logic;
             rst_n: in std_logic;
+            ce: in std_logic;
             addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
             data_o: out std_logic_vector(2 * DATA_WIDTH + 1 downto 0)
         );
@@ -276,11 +289,13 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
         generic(
             INPUT_DATA_WIDTH: integer := 32;
             LOPD_SLICE_DATA_WIDTH: integer := 4;
-            OUTPUT_DATA_WIDTH: integer := 5
+            OUTPUT_DATA_WIDTH: integer := 5;
+            USE_CLOCK_EN: boolean := false
         );
         port(
             clk: in std_logic;
             rst_n: in std_logic;
+            ce: in std_logic;
             d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
             d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
             z_o: out std_logic
@@ -289,6 +304,7 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
 
     component log2_dsp_slice is
         generic (
+            USE_CLOCK_EN: boolean := false;
             A_WIDTH: positive;
             B_WIDTH: positive;
             C_WIDTH: positive;
@@ -297,6 +313,7 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
         );
         port (
             clk: in std_logic;
+            ce: in std_logic;
             a: in std_logic_vector(A_WIDTH - 1 downto 0);
             b: in std_logic_vector(B_WIDTH - 1 downto 0);
             c: in std_logic_vector(C_WIDTH - 1 downto 0);
@@ -358,11 +375,13 @@ begin
     lut_gen: log2_fp_lut_gen_dual_port
         generic map(
             ADDR_WIDTH => LUT_ADDR_SIZE,
-            DATA_WIDTH => OUTPUT_FRACTION_WIDTH
+            DATA_WIDTH => OUTPUT_FRACTION_WIDTH,
+            USE_CLOCK_EN => USE_CLOCK_EN
         )
         port map(
             clk => clk,
             rst_n => rst_n,
+            ce => ce,
             addr_i => mantissa_index_s3,
             data_o => lut_data_s4
         );
@@ -371,11 +390,13 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             LOPD_SLICE_DATA_WIDTH => 4,
-            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))))
+            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1)))),
+            USE_CLOCK_EN => USE_CLOCK_EN
         )
         port map(
             clk => clk,
             rst_n => rst_n,
+            ce => ce,
             d_i => data_i,
             d_o => data_lop_s2,
             z_o => data_lop_zflag_s2
@@ -383,6 +404,7 @@ begin
 
     dsp_slice: log2_dsp_slice
         generic map(
+            USE_CLOCK_EN => USE_CLOCK_EN,
             A_WIDTH => DSP48E1_A_PORT_WIDTH,
             B_WIDTH => DSP48E1_B_PORT_WIDTH,
             C_WIDTH => DSP48E1_C_PORT_WIDTH,
@@ -391,6 +413,7 @@ begin
         )
         port map(
             clk => clk,
+            ce => ce,
             a => std_logic_vector(resize(unsigned(mantissa_log_s4), DSP48E1_A_PORT_WIDTH)),
             b => std_logic_vector(resize(unsigned(mantissa_remain_s4), DSP48E1_B_PORT_WIDTH)),
             c => std_logic_vector(
@@ -420,47 +443,49 @@ begin
     begin
         if rising_edge(clk) then
 
-            ----------------------------------- Stage 1
-            valid_s1 <= valid_i;
-            data_s1 <= data_i;
+            if (not USE_CLOCK_EN) or ce = '1' then
+                ----------------------------------- Stage 1
+                valid_s1 <= valid_i;
+                data_s1 <= data_i;
 
-            ----------------------------------- Stage 2
-            valid_s2 <= valid_s1;
-            data_s2 <= data_s1;
+                ----------------------------------- Stage 2
+                valid_s2 <= valid_s1;
+                data_s2 <= data_s1;
 
-            ----------------------------------- Stage 3
-            valid_s3 <= '0' when data_lop_zflag_s2 = '1' else valid_s2;
+                ----------------------------------- Stage 3
+                valid_s3 <= '0' when data_lop_zflag_s2 = '1' else valid_s2;
 
-            exponent_k_s3 <= to_signed(integer(position) - integer(INPUT_FRACTION_WIDTH),
-                exponent_k_s3'length);
+                exponent_k_s3 <= to_signed(integer(position) - integer(INPUT_FRACTION_WIDTH),
+                    exponent_k_s3'length);
 
-            mantissa_index_s3 <= norm_mantissa(
-                norm_mantissa'length - 2 downto norm_mantissa'length - LUT_ADDR_SIZE - 1);
+                mantissa_index_s3 <= norm_mantissa(
+                    norm_mantissa'length - 2 downto norm_mantissa'length - LUT_ADDR_SIZE - 1);
 
-            mantissa_remain_s3 <= norm_mantissa_remain(
-                norm_mantissa_remain'length - 1 downto norm_mantissa_remain'length - REMAIN_MANTISSA_WIDTH);
+                mantissa_remain_s3 <= norm_mantissa_remain(
+                    norm_mantissa_remain'length - 1 downto norm_mantissa_remain'length - REMAIN_MANTISSA_WIDTH);
 
-            ----------------------------------- Stage 4
-            valid_s4 <= valid_s3;
-            exponent_k_s4 <= exponent_k_s3;
-            mantissa_remain_s4 <= mantissa_remain_s3;
+                ----------------------------------- Stage 4
+                valid_s4 <= valid_s3;
+                exponent_k_s4 <= exponent_k_s3;
+                mantissa_remain_s4 <= mantissa_remain_s3;
 
-            ----------------------------------- Stage 5
-            valid_s5 <= valid_s4;
-            exponent_k_s5 <= exponent_k_s4;
+                ----------------------------------- Stage 5
+                valid_s5 <= valid_s4;
+                exponent_k_s5 <= exponent_k_s4;
 
-            ----------------------------------- Stage 6
-            valid_s6 <= valid_s5;
-            exponent_k_s6 <= exponent_k_s5;
+                ----------------------------------- Stage 6
+                valid_s6 <= valid_s5;
+                exponent_k_s6 <= exponent_k_s5;
 
-            ----------------------------------- Stage 7
-            valid_s7 <= valid_s6;
-            exponent_k_s7 <= exponent_k_s6;
+                ----------------------------------- Stage 7
+                valid_s7 <= valid_s6;
+                exponent_k_s7 <= exponent_k_s6;
 
-            ----------------------------------- Stage 8
-            valid_s8 <= valid_s7;
-            calc_result_s8 <= std_logic_vector(exponent_k_added) & mantissa_add_result_s7(
-                OUTPUT_FRACTION_WIDTH - 1 downto 0);
+                ----------------------------------- Stage 8
+                valid_s8 <= valid_s7;
+                calc_result_s8 <= std_logic_vector(exponent_k_added) & mantissa_add_result_s7(
+                    OUTPUT_FRACTION_WIDTH - 1 downto 0);
+            end if;
 
             if rst_n = '0' then
                 valid_s1 <= '0';

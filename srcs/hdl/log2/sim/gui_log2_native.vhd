@@ -7,41 +7,22 @@ use std.env.all;
 library work;
 use work.log2_pkg_utils.all;
 
-entity gui_log2_lut is
+entity gui_log2_native is
 end entity;
 
-architecture sim of gui_log2_lut is
+architecture sim of gui_log2_native is
 
+    constant INTERFACE_TYPE: string := "NATIVE";
+    constant STRATEGY: string := "LUT_LINEAR_INTRPL"; --"LUT_LINEAR_INTRPL"
+    constant USE_DSP: boolean := false;
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_DATA_WIDTH: positive := calc_out_data_width(INPUT_DATA_WIDTH,
         INPUT_FRACTION_WIDTH, OUTPUT_FRACTION_WIDTH);
-    constant LUT_ADDR_SIZE: positive := 4;
+    constant LUT_ADDR_SIZE: positive := 6;
 
     constant CLOCK_PERIOD: time := 10 ns;
-
-    component log2_w is
-        generic(
-            STRATEGY: string;
-            USE_DSP: boolean := true;
-            INPUT_DATA_WIDTH: positive;
-            INPUT_FRACTION_WIDTH: positive;
-            OUTPUT_DATA_WIDTH: positive;
-            OUTPUT_FRACTION_WIDTH: positive;
-            LUT_ADDR_SIZE: positive
-        );
-        port(
-            clk: in std_logic;
-            rst_n: in std_logic;
-
-            data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
-            data_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
-
-            valid_i: in std_logic;
-            valid_o: out std_logic
-        );
-    end component;
 
     signal clk: std_logic := '0';
     signal rst_n: std_logic := '0';
@@ -51,8 +32,11 @@ architecture sim of gui_log2_lut is
     signal valid_i, valid_o: std_logic;
 
 begin
-    log2: log2_w
+    log2: entity work.log2_w
         generic map(
+            INTERFACE_TYPE => INTERFACE_TYPE,
+            STRATEGY => STRATEGY,
+            USE_DSP => USE_DSP,
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
             OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
@@ -65,7 +49,11 @@ begin
             data_i => std_logic_vector(input_value),
             data_o => output_value,
             valid_i => valid_i,
-            valid_o => valid_o
+            valid_o => valid_o,
+            s_axis_tdata => (others => '0'),
+            s_axis_tkeep => (others => '0'),
+            s_axis_tvalid => '0',
+            m_axis_tready => '0'
         );
 
     log_result <= signed(output_value);
