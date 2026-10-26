@@ -1,0 +1,10 @@
+name: axi4stream_model
+
+type: lib
+
+src:
+  - src/axi4stream_model.vhd
+
+include:
+
+dependencies:
