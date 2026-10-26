@@ -8,11 +8,13 @@ entity lopd is
     generic(
         INPUT_DATA_WIDTH: integer := 32;
         LOPD_SLICE_DATA_WIDTH: integer := 4;
-        OUTPUT_DATA_WIDTH: integer := 5
+        OUTPUT_DATA_WIDTH: integer := 5;
+        USE_CLOCK_EN: boolean := false
     );
     port(
         clk: in std_logic;
         rst_n: in std_logic;
+        ce: in std_logic;
         d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
         d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
         z_o: out std_logic
@@ -67,10 +69,12 @@ begin
             process(clk)
             begin
                 if rising_edge(clk) then
-                    lopd_slice_index_ofsset_reg(i) <= std_logic_vector(
-                        unsigned(lopd_slice_index(i)) + to_unsigned(
-                            i * LOPD_SLICE_DATA_WIDTH, lopd_slice_index_ofsset_reg(i)'length));
-                    lopd_slice_zflag_reg(i) <= lopd_slice_zflag(i);
+                    if (not USE_CLOCK_EN) or ce = '1' then
+                        lopd_slice_index_ofsset_reg(i) <= std_logic_vector(
+                            unsigned(lopd_slice_index(i)) + to_unsigned(
+                                i * LOPD_SLICE_DATA_WIDTH, lopd_slice_index_ofsset_reg(i)'length));
+                        lopd_slice_zflag_reg(i) <= lopd_slice_zflag(i);
+                    end if;
 
                     if rst_n = '0' then
                         lopd_slice_index_ofsset_reg(i) <= (others => '0');
@@ -83,16 +87,18 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            d_o <= (others => '0');
+            if (not USE_CLOCK_EN) or ce = '1' then
+                d_o <= (others => '0');
 
-            for i in NUMBER_OF_LOPD_SLICES - 1 downto 0 loop
-                if lopd_slice_zflag_reg(i) = '0' then
-                    d_o <= lopd_slice_index_ofsset_reg(i);
-                    exit;
-                end if;
-            end loop;
+                for i in NUMBER_OF_LOPD_SLICES - 1 downto 0 loop
+                    if lopd_slice_zflag_reg(i) = '0' then
+                        d_o <= lopd_slice_index_ofsset_reg(i);
+                        exit;
+                    end if;
+                end loop;
 
-            z_o <= and_reduce(lopd_slice_zflag_reg);
+                z_o <= and_reduce(lopd_slice_zflag_reg);
+            end if;
 
             if rst_n = '0' then
                 d_o <= (others => '0');

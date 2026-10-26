@@ -22,6 +22,7 @@ architecture sim of tb_lopd is
         port(
             clk: in std_logic;
             rst_n: in std_logic;
+            ce: in std_logic;
             d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
             d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
             z_o: out std_logic
@@ -45,6 +46,7 @@ begin
         port map(
             rst_n => rst_n,
             clk => clk,
+            ce => '0',
             d_i => std_logic_vector(data),
             d_o => lopd_index,
             z_o => zero_flag
