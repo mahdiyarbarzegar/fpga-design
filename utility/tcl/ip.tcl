@@ -265,6 +265,10 @@ proc ::ip::internal::apply_interfaces {core} {
                 ::ip::internal::apply_axi4lite_interface $core $name $config
             }
 
+            axi4stream {
+                ::ip::internal::apply_axi4stream_interface $core $name $config
+            }
+
             input -
             output -
             inout {
@@ -471,6 +475,57 @@ proc ::ip::internal::apply_axi4lite_interface {core name config} {
     }
 
     ::ip::internal::apply_ifc_enablement $axi_if $config
+}
+
+proc ::ip::internal::apply_axi4stream_interface {core name config} {
+    if {![dict exists $config port]} {
+        error "AXI4-Stream interface '$name' is missing 'port'"
+    }
+
+    if {![dict exists $config mode]} {
+        error "AXI4-Stream interface '$name' is missing 'mode'"
+    }
+
+    set mode [dict get $config mode]
+
+    if {$mode ni {master slave}} {
+        error "Invalid mode '$mode' for AXI4-Stream interface '$name'. " "Expected 'master' or 'slave'."
+    }
+
+    ipx::add_bus_interface $name $core
+    set axis_if [ipx::get_bus_interfaces $name -of_objects $core]
+
+    set_property interface_mode $mode $axis_if
+
+    set_property bus_type_vlnv xilinx.com:interface:axis:1.0 $axis_if
+
+    set_property abstraction_type_vlnv xilinx.com:interface:axis_rtl:1.0 $axis_if
+
+    if {[dict exists $config bus_parameters]} {
+        dict for {param_name param_value} [dict get $config bus_parameters] {
+            set bus_param [ipx::add_bus_parameter $param_name $axis_if]
+            set_property value $param_value $bus_param
+        }
+    }
+
+    set port_map [dict get $config port]
+
+    dict for {logical_name physical_name} $port_map {
+        set port [ipx::get_ports $physical_name -of_objects $core]
+
+        if {$port eq ""} {
+            error "Cannot find RTL port '$physical_name' " "for AXI4-Stream interface '$name'"
+        }
+
+        ::ip::internal::apply_port_enablement $port $config
+
+        set port_map_obj [ipx::add_port_map $logical_name $axis_if]
+
+        set_property physical_name $physical_name $port_map_obj
+    }
+
+    # Apply the interface-level enablement expression.
+    ::ip::internal::apply_ifc_enablement $axis_if $config
 }
 
 proc ::ip::internal::apply_ifc_enablement {object config} {
