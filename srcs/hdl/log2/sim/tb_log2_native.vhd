@@ -13,7 +13,7 @@ end entity;
 architecture sim of tb_log2_native is
 
     constant INTERFACE_TYPE: string := "NATIVE";
-    constant STRATEGY: string := "LUT_LINEAR_INTRPL"; -- "LUT"
+    constant STRATEGY: string := "LUT_LINEAR_INTRPL"; -- "LUT" "LUT_LINEAR_INTRPL"
     constant USE_DSP: boolean := true;
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;

@@ -3,7 +3,7 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="gui_log2_axis_gui.wdb" id="1">
+      <db_ref path="log2_axis_gui.wdb" id="1">
          <top_modules>
             <top_module name="attributes" />
             <top_module name="axi4stream_model" />
@@ -14,21 +14,30 @@
             <top_module name="numeric_std" />
             <top_module name="standard" />
             <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
             <top_module name="std_logic_misc" />
+            <top_module name="std_logic_signed" />
+            <top_module name="std_logic_unsigned" />
             <top_module name="textio" />
+            <top_module name="vcomponents" />
+            <top_module name="vital_primitives" />
+            <top_module name="vital_timing" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="147.017 ns"></ZoomStartTime>
-      <ZoomEndTime time="441.018 ns"></ZoomEndTime>
-      <Cursor1Time time="287.017 ns"></Cursor1Time>
+      <ZoomStartTime time="177.387 ns"></ZoomStartTime>
+      <ZoomEndTime time="316.728 ns"></ZoomEndTime>
+      <Cursor1Time time="234.646 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="100"></ValueColumnWidth>
+      <ValueColumnWidth column_width="88"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="91" />
+   <WVObjectSize size="154" />
+   <wave_markers>
+      <marker label="" time="275075" />
+   </wave_markers>
    <wvobject type="logic" fp_name="/gui_log2_axis/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -76,8 +85,8 @@
       <obj_property name="ObjectShortName">INTERFACE_TYPE[1:11]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/gui_log2_axis/STRATEGY">
-      <obj_property name="ElementShortName">STRATEGY[1:3]</obj_property>
-      <obj_property name="ObjectShortName">STRATEGY[1:3]</obj_property>
+      <obj_property name="ElementShortName">STRATEGY[1:17]</obj_property>
+      <obj_property name="ObjectShortName">STRATEGY[1:17]</obj_property>
    </wvobject>
    <wvobject type="other" fp_name="/gui_log2_axis/USE_DSP">
       <obj_property name="ElementShortName">USE_DSP</obj_property>
@@ -175,17 +184,13 @@
       <obj_property name="ElementShortName">core_valid_out</obj_property>
       <obj_property name="ObjectShortName">core_valid_out</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/core_stall">
-      <obj_property name="ElementShortName">core_stall</obj_property>
-      <obj_property name="ObjectShortName">core_stall</obj_property>
-   </wvobject>
    <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/AXIS_DATA_WIDTH">
       <obj_property name="ElementShortName">AXIS_DATA_WIDTH</obj_property>
       <obj_property name="ObjectShortName">AXIS_DATA_WIDTH</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/STRATEGY">
-      <obj_property name="ElementShortName">STRATEGY[1:3]</obj_property>
-      <obj_property name="ObjectShortName">STRATEGY[1:3]</obj_property>
+      <obj_property name="ElementShortName">STRATEGY[1:17]</obj_property>
+      <obj_property name="ObjectShortName">STRATEGY[1:17]</obj_property>
    </wvobject>
    <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/USE_DSP">
       <obj_property name="ElementShortName">USE_DSP</obj_property>
@@ -227,10 +232,6 @@
       <obj_property name="ElementShortName">rst_n</obj_property>
       <obj_property name="ObjectShortName">rst_n</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/stall_i">
-      <obj_property name="ElementShortName">stall_i</obj_property>
-      <obj_property name="ObjectShortName">stall_i</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/data_i">
       <obj_property name="ElementShortName">data_i[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
@@ -250,8 +251,8 @@
       <obj_property name="ObjectShortName">valid_o</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/STRATEGY">
-      <obj_property name="ElementShortName">STRATEGY[1:3]</obj_property>
-      <obj_property name="ObjectShortName">STRATEGY[1:3]</obj_property>
+      <obj_property name="ElementShortName">STRATEGY[1:17]</obj_property>
+      <obj_property name="ObjectShortName">STRATEGY[1:17]</obj_property>
    </wvobject>
    <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/USE_DSP">
       <obj_property name="ElementShortName">USE_DSP</obj_property>
@@ -277,124 +278,388 @@
       <obj_property name="ElementShortName">LUT_ADDR_SIZE</obj_property>
       <obj_property name="ObjectShortName">LUT_ADDR_SIZE</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/clk">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/rst_n">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/rst_n">
       <obj_property name="ElementShortName">rst_n</obj_property>
       <obj_property name="ObjectShortName">rst_n</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/stall_i">
-      <obj_property name="ElementShortName">stall_i</obj_property>
-      <obj_property name="ObjectShortName">stall_i</obj_property>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/ce">
+      <obj_property name="ElementShortName">ce</obj_property>
+      <obj_property name="ObjectShortName">ce</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/data_i">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/data_i">
       <obj_property name="ElementShortName">data_i[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_i[15:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/data_o">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/data_o">
       <obj_property name="ElementShortName">data_o[12:0]</obj_property>
       <obj_property name="ObjectShortName">data_o[12:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/valid_i">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_i">
       <obj_property name="ElementShortName">valid_i</obj_property>
       <obj_property name="ObjectShortName">valid_i</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/valid_o">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_o">
       <obj_property name="ElementShortName">valid_o</obj_property>
       <obj_property name="ObjectShortName">valid_o</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/valid_s1">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s1">
       <obj_property name="ElementShortName">valid_s1</obj_property>
       <obj_property name="ObjectShortName">valid_s1</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/data_s1">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/data_s1">
       <obj_property name="ElementShortName">data_s1[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_s1[15:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/valid_s2">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s2">
       <obj_property name="ElementShortName">valid_s2</obj_property>
       <obj_property name="ObjectShortName">valid_s2</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/data_s2">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/data_s2">
       <obj_property name="ElementShortName">data_s2[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_s2[15:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/data_lop_s2">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/data_lop_s2">
       <obj_property name="ElementShortName">data_lop_s2[3:0]</obj_property>
       <obj_property name="ObjectShortName">data_lop_s2[3:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/data_lop_zflag_s2">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/data_lop_zflag_s2">
       <obj_property name="ElementShortName">data_lop_zflag_s2</obj_property>
       <obj_property name="ObjectShortName">data_lop_zflag_s2</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/valid_s3">
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s3">
       <obj_property name="ElementShortName">valid_s3</obj_property>
       <obj_property name="ObjectShortName">valid_s3</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/exponent_k_s3">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/exponent_k_s3">
       <obj_property name="ElementShortName">exponent_k_s3[4:0]</obj_property>
       <obj_property name="ObjectShortName">exponent_k_s3[4:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/mantissa_index_s3">
-      <obj_property name="ElementShortName">mantissa_index_s3[6:0]</obj_property>
-      <obj_property name="ObjectShortName">mantissa_index_s3[6:0]</obj_property>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_index_s3">
+      <obj_property name="ElementShortName">mantissa_index_s3[3:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_index_s3[3:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/valid_s4">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_remain_s3">
+      <obj_property name="ElementShortName">mantissa_remain_s3[10:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_remain_s3[10:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s4">
       <obj_property name="ElementShortName">valid_s4</obj_property>
       <obj_property name="ObjectShortName">valid_s4</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/exponent_k_s4">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/exponent_k_s4">
       <obj_property name="ElementShortName">exponent_k_s4[4:0]</obj_property>
       <obj_property name="ObjectShortName">exponent_k_s4[4:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/mantissa_log_s4">
-      <obj_property name="ElementShortName">mantissa_log_s4[7:0]</obj_property>
-      <obj_property name="ObjectShortName">mantissa_log_s4[7:0]</obj_property>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_remain_s4">
+      <obj_property name="ElementShortName">mantissa_remain_s4[10:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_remain_s4[10:0]</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/valid_s5">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/lut_data_s4">
+      <obj_property name="ElementShortName">lut_data_s4[17:0]</obj_property>
+      <obj_property name="ObjectShortName">lut_data_s4[17:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_log_s4">
+      <obj_property name="ElementShortName">mantissa_log_s4[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_s4[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_log_n_s4">
+      <obj_property name="ElementShortName">mantissa_log_n_s4[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_n_s4[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s5">
       <obj_property name="ElementShortName">valid_s5</obj_property>
       <obj_property name="ObjectShortName">valid_s5</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/calc_result_s5">
-      <obj_property name="ElementShortName">calc_result_s5[12:0]</obj_property>
-      <obj_property name="ObjectShortName">calc_result_s5[12:0]</obj_property>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/exponent_k_s5">
+      <obj_property name="ElementShortName">exponent_k_s5[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s5[4:0]</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/position">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_log_s5">
+      <obj_property name="ElementShortName">mantissa_log_s5[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_s5[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s6">
+      <obj_property name="ElementShortName">valid_s6</obj_property>
+      <obj_property name="ObjectShortName">valid_s6</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/exponent_k_s6">
+      <obj_property name="ElementShortName">exponent_k_s6[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s6[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_log_s6">
+      <obj_property name="ElementShortName">mantissa_log_s6[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_log_s6[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s7">
+      <obj_property name="ElementShortName">valid_s7</obj_property>
+      <obj_property name="ObjectShortName">valid_s7</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/exponent_k_s7">
+      <obj_property name="ElementShortName">exponent_k_s7[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s7[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/dsp_slice_result_s8">
+      <obj_property name="ElementShortName">dsp_slice_result_s8[23:0]</obj_property>
+      <obj_property name="ObjectShortName">dsp_slice_result_s8[23:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/mantissa_add_result_s8">
+      <obj_property name="ElementShortName">mantissa_add_result_s8[8:0]</obj_property>
+      <obj_property name="ObjectShortName">mantissa_add_result_s8[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s8">
+      <obj_property name="ElementShortName">valid_s8</obj_property>
+      <obj_property name="ObjectShortName">valid_s8</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/exponent_k_s8">
+      <obj_property name="ElementShortName">exponent_k_s8[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_s8[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/valid_s9">
+      <obj_property name="ElementShortName">valid_s9</obj_property>
+      <obj_property name="ObjectShortName">valid_s9</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/calc_result_s9">
+      <obj_property name="ElementShortName">calc_result_s9[12:0]</obj_property>
+      <obj_property name="ObjectShortName">calc_result_s9[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/position">
       <obj_property name="ElementShortName">position</obj_property>
       <obj_property name="ObjectShortName">position</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/norm_mantissa">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/norm_mantissa">
       <obj_property name="ElementShortName">norm_mantissa[15:0]</obj_property>
       <obj_property name="ObjectShortName">norm_mantissa[15:0]</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/INPUT_DATA_WIDTH">
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/norm_mantissa_remain">
+      <obj_property name="ElementShortName">norm_mantissa_remain[15:0]</obj_property>
+      <obj_property name="ObjectShortName">norm_mantissa_remain[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/exponent_k_added">
+      <obj_property name="ElementShortName">exponent_k_added[4:0]</obj_property>
+      <obj_property name="ObjectShortName">exponent_k_added[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/INPUT_DATA_WIDTH">
       <obj_property name="ElementShortName">INPUT_DATA_WIDTH</obj_property>
       <obj_property name="ObjectShortName">INPUT_DATA_WIDTH</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/INPUT_FRACTION_WIDTH">
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/INPUT_FRACTION_WIDTH">
       <obj_property name="ElementShortName">INPUT_FRACTION_WIDTH</obj_property>
       <obj_property name="ObjectShortName">INPUT_FRACTION_WIDTH</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/OUTPUT_DATA_WIDTH">
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/OUTPUT_DATA_WIDTH">
       <obj_property name="ElementShortName">OUTPUT_DATA_WIDTH</obj_property>
       <obj_property name="ObjectShortName">OUTPUT_DATA_WIDTH</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/OUTPUT_FRACTION_WIDTH">
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/OUTPUT_FRACTION_WIDTH">
       <obj_property name="ElementShortName">OUTPUT_FRACTION_WIDTH</obj_property>
       <obj_property name="ObjectShortName">OUTPUT_FRACTION_WIDTH</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/LUT_ADDR_SIZE">
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/LUT_ADDR_SIZE">
       <obj_property name="ElementShortName">LUT_ADDR_SIZE</obj_property>
       <obj_property name="ObjectShortName">LUT_ADDR_SIZE</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/INPUT_INTEGER_WIDTH">
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/USE_CLOCK_EN">
+      <obj_property name="ElementShortName">USE_CLOCK_EN</obj_property>
+      <obj_property name="ObjectShortName">USE_CLOCK_EN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/INPUT_INTEGER_WIDTH">
       <obj_property name="ElementShortName">INPUT_INTEGER_WIDTH</obj_property>
       <obj_property name="ObjectShortName">INPUT_INTEGER_WIDTH</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut/log2_lut/OUTPUT_INTEGER_WIDTH">
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/OUTPUT_INTEGER_WIDTH">
       <obj_property name="ElementShortName">OUTPUT_INTEGER_WIDTH</obj_property>
       <obj_property name="ObjectShortName">OUTPUT_INTEGER_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/REMAIN_MANTISSA_WIDTH">
+      <obj_property name="ElementShortName">REMAIN_MANTISSA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">REMAIN_MANTISSA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MUL_RESULT_WIDTH">
+      <obj_property name="ElementShortName">MUL_RESULT_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">MUL_RESULT_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/DSP48E1_A_PORT_WIDTH">
+      <obj_property name="ElementShortName">DSP48E1_A_PORT_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">DSP48E1_A_PORT_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/DSP48E1_B_PORT_WIDTH">
+      <obj_property name="ElementShortName">DSP48E1_B_PORT_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">DSP48E1_B_PORT_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/DSP48E1_C_PORT_WIDTH">
+      <obj_property name="ElementShortName">DSP48E1_C_PORT_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">DSP48E1_C_PORT_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/DSP48E1_D_PORT_WIDTH">
+      <obj_property name="ElementShortName">DSP48E1_D_PORT_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">DSP48E1_D_PORT_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/DSP48E1_P_PORT_WIDTH">
+      <obj_property name="ElementShortName">DSP48E1_P_PORT_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">DSP48E1_P_PORT_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/ADDSUB">
+      <obj_property name="ElementShortName">ADDSUB</obj_property>
+      <obj_property name="ObjectShortName">ADDSUB</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/CLK">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/A">
+      <obj_property name="ElementShortName">A[9:0]</obj_property>
+      <obj_property name="ObjectShortName">A[9:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/B">
+      <obj_property name="ElementShortName">B[11:0]</obj_property>
+      <obj_property name="ObjectShortName">B[11:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/LOAD_DATA">
+      <obj_property name="ElementShortName">LOAD_DATA[23:0]</obj_property>
+      <obj_property name="ObjectShortName">LOAD_DATA[23:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/P">
+      <obj_property name="ElementShortName">P[23:0]</obj_property>
+      <obj_property name="ObjectShortName">P[23:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/CARRYIN">
+      <obj_property name="ElementShortName">CARRYIN</obj_property>
+      <obj_property name="ObjectShortName">CARRYIN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/CE">
+      <obj_property name="ElementShortName">CE</obj_property>
+      <obj_property name="ObjectShortName">CE</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/LOAD">
+      <obj_property name="ElementShortName">LOAD</obj_property>
+      <obj_property name="ObjectShortName">LOAD</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/RST">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/A_INP">
+      <obj_property name="ElementShortName">A_INP[24:0]</obj_property>
+      <obj_property name="ObjectShortName">A_INP[24:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/A_IN">
+      <obj_property name="ElementShortName">A_IN[29:0]</obj_property>
+      <obj_property name="ObjectShortName">A_IN[29:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/B_IN">
+      <obj_property name="ElementShortName">B_IN[17:0]</obj_property>
+      <obj_property name="ObjectShortName">B_IN[17:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/RESULT_OUT">
+      <obj_property name="ElementShortName">RESULT_OUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">RESULT_OUT[47:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/LOAD_DATA_IN">
+      <obj_property name="ElementShortName">LOAD_DATA_IN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">LOAD_DATA_IN[47:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/OPMODE_IN">
+      <obj_property name="ElementShortName">OPMODE_IN[6:0]</obj_property>
+      <obj_property name="ObjectShortName">OPMODE_IN[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/ALUMODE_IN">
+      <obj_property name="ElementShortName">ALUMODE_IN[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ALUMODE_IN[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/CEA1_IN">
+      <obj_property name="ElementShortName">CEA1_IN</obj_property>
+      <obj_property name="ObjectShortName">CEA1_IN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/CEA2_IN">
+      <obj_property name="ElementShortName">CEA2_IN</obj_property>
+      <obj_property name="ObjectShortName">CEA2_IN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/CEB1_IN">
+      <obj_property name="ElementShortName">CEB1_IN</obj_property>
+      <obj_property name="ObjectShortName">CEB1_IN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/CEB2_IN">
+      <obj_property name="ElementShortName">CEB2_IN</obj_property>
+      <obj_property name="ObjectShortName">CEB2_IN</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/DEVICE">
+      <obj_property name="ElementShortName">DEVICE[1:7]</obj_property>
+      <obj_property name="ObjectShortName">DEVICE[1:7]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/LATENCY">
+      <obj_property name="ElementShortName">LATENCY</obj_property>
+      <obj_property name="ObjectShortName">LATENCY</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/WIDTH_A">
+      <obj_property name="ElementShortName">WIDTH_A</obj_property>
+      <obj_property name="ObjectShortName">WIDTH_A</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/WIDTH_B">
+      <obj_property name="ElementShortName">WIDTH_B</obj_property>
+      <obj_property name="ObjectShortName">WIDTH_B</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/WIDTH_P">
+      <obj_property name="ElementShortName">WIDTH_P</obj_property>
+      <obj_property name="ObjectShortName">WIDTH_P</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/OPMODE_WIDTH">
+      <obj_property name="ElementShortName">OPMODE_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">OPMODE_WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/ChkDevice">
+      <obj_property name="ElementShortName">ChkDevice</obj_property>
+      <obj_property name="ObjectShortName">ChkDevice</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/ChkWidthA">
+      <obj_property name="ElementShortName">ChkWidthA</obj_property>
+      <obj_property name="ObjectShortName">ChkWidthA</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/ChkWidthB">
+      <obj_property name="ElementShortName">ChkWidthB</obj_property>
+      <obj_property name="ObjectShortName">ChkWidthB</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/MaxWidthA">
+      <obj_property name="ElementShortName">MaxWidthA</obj_property>
+      <obj_property name="ObjectShortName">MaxWidthA</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/AREG_IN">
+      <obj_property name="ElementShortName">AREG_IN</obj_property>
+      <obj_property name="ObjectShortName">AREG_IN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/BREG_IN">
+      <obj_property name="ElementShortName">BREG_IN</obj_property>
+      <obj_property name="ObjectShortName">BREG_IN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/A0REG_IN">
+      <obj_property name="ElementShortName">A0REG_IN</obj_property>
+      <obj_property name="ObjectShortName">A0REG_IN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/B0REG_IN">
+      <obj_property name="ElementShortName">B0REG_IN</obj_property>
+      <obj_property name="ObjectShortName">B0REG_IN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/A1REG_IN">
+      <obj_property name="ElementShortName">A1REG_IN</obj_property>
+      <obj_property name="ObjectShortName">A1REG_IN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/B1REG_IN">
+      <obj_property name="ElementShortName">B1REG_IN</obj_property>
+      <obj_property name="ObjectShortName">B1REG_IN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/MREG_IN">
+      <obj_property name="ElementShortName">MREG_IN</obj_property>
+      <obj_property name="ObjectShortName">MREG_IN</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/gui_log2_axis/log2/axis_bus/axis_bus_core/log2_strategy/log2_lut_lintrpl/log2_lut_lintrpl_dsp/log2_lut_lintrpl/MACC_MACRO_inst/PREG_IN">
+      <obj_property name="ElementShortName">PREG_IN</obj_property>
+      <obj_property name="ObjectShortName">PREG_IN</obj_property>
    </wvobject>
 </wave_config>

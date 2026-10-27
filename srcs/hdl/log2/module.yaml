@@ -46,8 +46,8 @@ simulation:
     consume: rtl
     variant:
     files:
-      - sim/tb_log2_axis.vhd
 #      - sim/tb_log2_native.vhd
+      - sim/tb_log2_axis.vhd
     dependencies:
       lib:
       module:
@@ -158,7 +158,6 @@ interfaces:
       TVALID: s_axis_tvalid
       TREADY: s_axis_tready
       TKEEP: s_axis_tkeep
-#      TLAST:
 
   M_AXIS:
     type: axi4stream
@@ -171,7 +170,6 @@ interfaces:
       TVALID: m_axis_tvalid
       TREADY: m_axis_tready
       TKEEP: m_axis_tkeep
-#      TLAST:
 
 parameters:
   INTERFACE_TYPE:

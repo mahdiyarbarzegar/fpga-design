@@ -54,7 +54,7 @@ begin
             port map(
                 clk => clk,
                 rst_n => rst_n,
-                ce => '0',
+                ce => '1',
                 data_i => data_i,
                 data_o => data_o,
                 valid_i => valid_i,

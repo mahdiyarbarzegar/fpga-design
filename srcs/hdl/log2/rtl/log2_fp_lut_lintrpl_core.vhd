@@ -4,6 +4,12 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use ieee.std_logic_misc.all;
 
+Library UNISIM;
+use UNISIM.vcomponents.all;
+
+Library UNIMACRO;
+use UNIMACRO.vcomponents.all;
+
 entity log2_fp_lut_lintrpl_core is
     generic(
         INPUT_DATA_WIDTH: positive;
@@ -262,13 +268,10 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
     constant OUTPUT_INTEGER_WIDTH: positive := OUTPUT_DATA_WIDTH - OUTPUT_FRACTION_WIDTH;
     constant REMAIN_MANTISSA_WIDTH: positive := INPUT_DATA_WIDTH - LUT_ADDR_SIZE - 1;
     constant MUL_RESULT_WIDTH: positive := REMAIN_MANTISSA_WIDTH + OUTPUT_FRACTION_WIDTH;
-    constant DSP48E1_A_PORT_WIDTH: positive := OUTPUT_FRACTION_WIDTH + 2;
-    constant DSP48E1_B_PORT_WIDTH: positive := REMAIN_MANTISSA_WIDTH + 1;
-    constant DSP48E1_C_PORT_WIDTH: positive := MUL_RESULT_WIDTH + 1;
-    constant DSP48E1_D_PORT_WIDTH: positive := OUTPUT_FRACTION_WIDTH + 2;
-    constant DSP48E1_P_PORT_WIDTH: positive := maximum(
-        maximum(DSP48E1_A_PORT_WIDTH, DSP48E1_D_PORT_WIDTH) + 1 + DSP48E1_B_PORT_WIDTH,
-        DSP48E1_C_PORT_WIDTH) + 1;
+
+    constant DSPMACRO_A_PORT_WIDTH: positive := OUTPUT_FRACTION_WIDTH + 2;
+    constant DSPMACRO_B_PORT_WIDTH: positive := REMAIN_MANTISSA_WIDTH + 1;
+    constant DSPMACRO_P_PORT_WIDTH: positive := DSPMACRO_A_PORT_WIDTH + DSPMACRO_B_PORT_WIDTH + 1;
 
     component log2_fp_lut_gen_dual_port is
         generic (
@@ -302,26 +305,6 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
         );
     end component;
 
-    component log2_dsp_slice is
-        generic (
-            USE_CLOCK_EN: boolean := false;
-            A_WIDTH: positive;
-            B_WIDTH: positive;
-            C_WIDTH: positive;
-            D_WIDTH: positive;
-            P_WIDTH: positive
-        );
-        port (
-            clk: in std_logic;
-            ce: in std_logic;
-            a: in std_logic_vector(A_WIDTH - 1 downto 0);
-            b: in std_logic_vector(B_WIDTH - 1 downto 0);
-            c: in std_logic_vector(C_WIDTH - 1 downto 0);
-            d: in std_logic_vector(D_WIDTH - 1 downto 0);
-            p: out std_logic_vector(P_WIDTH - 1 downto 0)
-        );
-    end component;
-
     -- Stage 1 Signals
     signal valid_s1: std_logic;
     signal data_s1: std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
@@ -346,10 +329,12 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
     signal lut_data_s4: std_logic_vector(2 * OUTPUT_FRACTION_WIDTH + 1 downto 0);
     signal mantissa_log_s4: std_logic_vector(OUTPUT_FRACTION_WIDTH downto 0);
     signal mantissa_log_n_s4: std_logic_vector(OUTPUT_FRACTION_WIDTH downto 0);
+    signal mantissa_log_diff_s4: unsigned(OUTPUT_FRACTION_WIDTH downto 0);
 
     -- Stage 5 Signals
     signal valid_s5: std_logic;
     signal exponent_k_s5: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
+    signal mantissa_log_s5: std_logic_vector(OUTPUT_FRACTION_WIDTH downto 0);
 
     -- Stage 6 Signals
     signal valid_s6: std_logic;
@@ -358,7 +343,7 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
     -- Stage 7 Signals
     signal valid_s7: std_logic;
     signal exponent_k_s7: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
-    signal dsp_slice_result_s7: std_logic_vector(DSP48E1_P_PORT_WIDTH - 1 downto 0);
+    signal dsp_slice_result_s7: std_logic_vector(DSPMACRO_P_PORT_WIDTH - 1 downto 0);
     signal mantissa_add_result_s7: std_logic_vector(OUTPUT_FRACTION_WIDTH downto 0);
 
     -- Stage 8 Signals
@@ -402,24 +387,26 @@ begin
             z_o => data_lop_zflag_s2
         );
 
-    dsp_slice: log2_dsp_slice
-        generic map(
-            USE_CLOCK_EN => USE_CLOCK_EN,
-            A_WIDTH => DSP48E1_A_PORT_WIDTH,
-            B_WIDTH => DSP48E1_B_PORT_WIDTH,
-            C_WIDTH => DSP48E1_C_PORT_WIDTH,
-            D_WIDTH => DSP48E1_D_PORT_WIDTH,
-            P_WIDTH => DSP48E1_P_PORT_WIDTH
+    mac_macro_0: MACC_MACRO
+        generic map (
+            DEVICE => "7SERIES",
+            LATENCY => 3,
+            WIDTH_A => DSPMACRO_A_PORT_WIDTH,
+            WIDTH_B => DSPMACRO_B_PORT_WIDTH,
+            WIDTH_P => DSPMACRO_P_PORT_WIDTH
         )
-        port map(
-            clk => clk,
-            ce => ce,
-            a => std_logic_vector(resize(unsigned(mantissa_log_s4), DSP48E1_A_PORT_WIDTH)),
-            b => std_logic_vector(resize(unsigned(mantissa_remain_s4), DSP48E1_B_PORT_WIDTH)),
-            c => std_logic_vector(
-                resize(unsigned(mantissa_log_s4), DSP48E1_C_PORT_WIDTH) sll REMAIN_MANTISSA_WIDTH),
-            d => std_logic_vector(resize(unsigned(mantissa_log_n_s4), DSP48E1_D_PORT_WIDTH)),
-            p => dsp_slice_result_s7
+        port map (
+            CLK => clk,
+            RST => not rst_n,
+            CE => ce,
+            ADDSUB => '1',
+            CARRYIN => '0',
+            LOAD => '1',
+            A => std_logic_vector(resize(unsigned(mantissa_log_diff_s4), DSPMACRO_A_PORT_WIDTH)),
+            B => std_logic_vector(resize(unsigned(mantissa_remain_s4), DSPMACRO_B_PORT_WIDTH)),
+            LOAD_DATA => std_logic_vector(
+                resize(unsigned(mantissa_log_s5), DSPMACRO_P_PORT_WIDTH) sll REMAIN_MANTISSA_WIDTH),
+            P => dsp_slice_result_s7
         );
 
     position <= to_integer(unsigned(data_lop_s2));
@@ -430,6 +417,7 @@ begin
     mantissa_log_s4 <= lut_data_s4(OUTPUT_FRACTION_WIDTH downto 0);
     mantissa_log_n_s4 <= lut_data_s4(
         2 * OUTPUT_FRACTION_WIDTH + 1 downto OUTPUT_FRACTION_WIDTH + 1);
+    mantissa_log_diff_s4 <= unsigned(mantissa_log_n_s4) - unsigned(mantissa_log_s4);
 
     mantissa_add_result_s7 <= dsp_slice_result_s7(
         MUL_RESULT_WIDTH downto MUL_RESULT_WIDTH - OUTPUT_FRACTION_WIDTH);
@@ -472,6 +460,7 @@ begin
                 ----------------------------------- Stage 5
                 valid_s5 <= valid_s4;
                 exponent_k_s5 <= exponent_k_s4;
+                mantissa_log_s5 <= mantissa_log_s4;
 
                 ----------------------------------- Stage 6
                 valid_s6 <= valid_s5;
@@ -506,6 +495,7 @@ begin
                 mantissa_index_s3 <= (others => '0');
                 mantissa_remain_s3 <= (others => '0');
                 mantissa_remain_s4 <= (others => '0');
+                mantissa_log_s5 <= (others => '0');
                 calc_result_s8 <= (others => '0');
             end if;
 
