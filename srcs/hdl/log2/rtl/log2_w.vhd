@@ -38,6 +38,31 @@ entity log2_w is
 end entity;
 
 architecture lut_based of log2_w is
+
+    ATTRIBUTE X_INTERFACE_INFO : STRING;
+    ATTRIBUTE X_INTERFACE_PARAMETER : STRING;
+
+    -- Declare the clk attributes
+    ATTRIBUTE X_INTERFACE_INFO of clk: SIGNAL is "xilinx.com:signal:clock:1.0 clk CLK";
+    ATTRIBUTE X_INTERFACE_PARAMETER of clk: SIGNAL is "ASSOCIATED_RESET rst_n, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 100";
+
+    -- Declare the rst_n attributes
+    ATTRIBUTE X_INTERFACE_INFO of rst_n: SIGNAL is "xilinx.com:signal:reset:1.0 rst_n RST";
+    ATTRIBUTE X_INTERFACE_PARAMETER of rst_n: SIGNAL is "POLARITY ACTIVE_LOW";
+
+    -- Declare the s-axis, m-axis attributes
+    ATTRIBUTE X_INTERFACE_INFO of s_axis_tdata: SIGNAL is "xilinx.com:interface:axis:1.0 S_AXIS TDATA";
+    ATTRIBUTE X_INTERFACE_INFO of s_axis_tkeep: SIGNAL is "xilinx.com:interface:axis:1.0 S_AXIS TKEEP";
+    ATTRIBUTE X_INTERFACE_INFO of s_axis_tvalid: SIGNAL is "xilinx.com:interface:axis:1.0 S_AXIS TVALID";
+    ATTRIBUTE X_INTERFACE_INFO of s_axis_tready: SIGNAL is "xilinx.com:interface:axis:1.0 S_AXIS TREADY";
+    ATTRIBUTE X_INTERFACE_INFO of m_axis_tdata: SIGNAL is "xilinx.com:interface:axis:1.0 M_AXIS TDATA";
+    ATTRIBUTE X_INTERFACE_INFO of m_axis_tkeep: SIGNAL is "xilinx.com:interface:axis:1.0 M_AXIS TKEEP";
+    ATTRIBUTE X_INTERFACE_INFO of m_axis_tvalid: SIGNAL is "xilinx.com:interface:axis:1.0 M_AXIS TVALID";
+    ATTRIBUTE X_INTERFACE_INFO of m_axis_tready: SIGNAL is "xilinx.com:interface:axis:1.0 M_AXIS TREADY";
+
+    ATTRIBUTE X_INTERFACE_PARAMETER of s_axis_tdata: SIGNAL is "FREQ_HZ 100000000,HAS_TLAST 0,HAS_TKEEP 1,HAS_TSTRB 0,HAS_TREADY 1";
+    ATTRIBUTE X_INTERFACE_PARAMETER of m_axis_tdata: SIGNAL is "FREQ_HZ 100000000,HAS_TLAST 0,HAS_TKEEP 1,HAS_TSTRB 0,HAS_TREADY 1";
+
 begin
 
     native_bus: if INTERFACE_TYPE = "NATIVE" generate
