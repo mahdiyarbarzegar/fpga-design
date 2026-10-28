@@ -269,7 +269,7 @@ parameters:
       min: 4
       max: 16
     gui:
-      display_name: Lookup Table Adders Size
+      display_name: Lookup Table Address Size
       page: General
       group: Logarithm_2
 
