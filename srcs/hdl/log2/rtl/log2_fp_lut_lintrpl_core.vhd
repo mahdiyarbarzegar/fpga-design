@@ -4,12 +4,6 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use ieee.std_logic_misc.all;
 
-Library UNISIM;
-use UNISIM.vcomponents.all;
-
-Library UNIMACRO;
-use UNIMACRO.vcomponents.all;
-
 entity log2_fp_lut_lintrpl_core is
     generic(
         INPUT_DATA_WIDTH: positive;
@@ -261,6 +255,12 @@ begin
     end process;
 
 end rtl_lut;
+
+Library UNISIM;
+use UNISIM.vcomponents.all;
+
+Library UNIMACRO;
+use UNIMACRO.vcomponents.all;
 
 architecture rtl_dsp of log2_fp_lut_lintrpl_core is
 

@@ -20,7 +20,6 @@ rtl:
   - rtl/log2_pkg_utils.vhd
   - rtl/log2_fp_lut_gen.vhd
   - rtl/log2_fp_lut_gen_dual_port.vhd
-  - rtl/log2_dsp_slice.vhd
   - rtl/log2_fp_lut_core.vhd
   - rtl/log2_fp_lut_lintrpl_core.vhd
   - rtl/log2_core.vhd
