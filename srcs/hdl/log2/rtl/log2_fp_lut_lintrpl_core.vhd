@@ -109,14 +109,9 @@ architecture rtl_lut of log2_fp_lut_lintrpl_core is
     signal exponent_k_s7: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
     signal mantissa_add_result_s7: std_logic_vector(OUTPUT_FRACTION_WIDTH downto 0);
 
-    -- Stage 8 Signals
-    signal valid_s8: std_logic;
-    signal calc_result_s8: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
-
     -- Wires
     signal position: integer;
     signal norm_mantissa: std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
-    signal exponent_k_added: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
 
 begin
 
@@ -164,10 +159,9 @@ begin
     mantissa_add_result_s6 <= std_logic_vector(
         ('0' & unsigned(mul_result_s6)) + ('0' & unsigned(mantissa_log_s6)));
 
-    exponent_k_added <= exponent_k_s7 + mantissa_add_result_s7(OUTPUT_FRACTION_WIDTH);
-
-    data_o <= calc_result_s8;
-    valid_o <= valid_s8;
+    data_o <= std_logic_vector(exponent_k_s7) & mantissa_add_result_s7(
+        OUTPUT_FRACTION_WIDTH - 1 downto 0);
+    valid_o <= valid_s7;
 
     process(clk)
     begin
@@ -188,7 +182,7 @@ begin
                     exponent_k_s3'length);
 
                 mantissa_index_s3 <= norm_mantissa(
-                    norm_mantissa'length - 2 downto norm_mantissa'length - LUT_ADDR_SIZE - 1);
+                    norm_mantissa'high - 1 downto norm_mantissa'high - LUT_ADDR_SIZE);
 
                 mantissa_remain_s3 <= norm_mantissa(REMAIN_MANTISSA_WIDTH - 1 downto 0);
 
@@ -216,10 +210,6 @@ begin
                 exponent_k_s7 <= exponent_k_s6;
                 mantissa_add_result_s7 <= mantissa_add_result_s6;
 
-                ----------------------------------- Stage 8
-                valid_s8 <= valid_s7;
-                calc_result_s8 <= std_logic_vector(exponent_k_added) & mantissa_add_result_s7(
-                    OUTPUT_FRACTION_WIDTH - 1 downto 0);
             end if;
 
             if rst_n = '0' then
@@ -230,7 +220,6 @@ begin
                 valid_s5 <= '0';
                 valid_s6 <= '0';
                 valid_s7 <= '0';
-                valid_s8 <= '0';
                 data_s1 <= (others => '0');
                 data_s2 <= (others => '0');
                 exponent_k_s3 <= (others => '0');
@@ -248,7 +237,6 @@ begin
                 mantissa_log_s6 <= (others => '0');
                 mul_result_s6 <= (others => '0');
                 mantissa_add_result_s7 <= (others => '0');
-                calc_result_s8 <= (others => '0');
             end if;
 
         end if;
@@ -346,14 +334,9 @@ architecture rtl_dsp of log2_fp_lut_lintrpl_core is
     signal dsp_slice_result_s7: std_logic_vector(DSPMACRO_P_PORT_WIDTH - 1 downto 0);
     signal mantissa_add_result_s7: std_logic_vector(OUTPUT_FRACTION_WIDTH downto 0);
 
-    -- Stage 8 Signals
-    signal valid_s8: std_logic;
-    signal calc_result_s8: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
-
     -- Wires
     signal position: integer;
-    signal norm_mantissa, norm_mantissa_remain: std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
-    signal exponent_k_added: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
+    signal norm_mantissa: std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
 
 begin
 
@@ -411,8 +394,6 @@ begin
 
     position <= to_integer(unsigned(data_lop_s2));
     norm_mantissa <= std_logic_vector(shift_left(unsigned(data_s2), data_s2'length - position - 1));
-    norm_mantissa_remain <= std_logic_vector(
-        shift_left(unsigned(data_s2), data_s2'length - position + LUT_ADDR_SIZE));
 
     mantissa_log_s4 <= lut_data_s4(OUTPUT_FRACTION_WIDTH downto 0);
     mantissa_log_n_s4 <= lut_data_s4(
@@ -422,10 +403,9 @@ begin
     mantissa_add_result_s7 <= dsp_slice_result_s7(
         MUL_RESULT_WIDTH downto MUL_RESULT_WIDTH - OUTPUT_FRACTION_WIDTH);
 
-    exponent_k_added <= exponent_k_s7 + mantissa_add_result_s7(OUTPUT_FRACTION_WIDTH);
-
-    data_o <= calc_result_s8;
-    valid_o <= valid_s8;
+    data_o <= std_logic_vector(exponent_k_s7) & mantissa_add_result_s7(
+        OUTPUT_FRACTION_WIDTH - 1 downto 0);
+    valid_o <= valid_s7;
 
     process(clk)
     begin
@@ -447,10 +427,9 @@ begin
                     exponent_k_s3'length);
 
                 mantissa_index_s3 <= norm_mantissa(
-                    norm_mantissa'length - 2 downto norm_mantissa'length - LUT_ADDR_SIZE - 1);
+                    norm_mantissa'high - 1 downto norm_mantissa'high - LUT_ADDR_SIZE);
 
-                mantissa_remain_s3 <= norm_mantissa_remain(
-                    norm_mantissa_remain'length - 1 downto norm_mantissa_remain'length - REMAIN_MANTISSA_WIDTH);
+                mantissa_remain_s3 <= norm_mantissa(REMAIN_MANTISSA_WIDTH - 1 downto 0);
 
                 ----------------------------------- Stage 4
                 valid_s4 <= valid_s3;
@@ -470,10 +449,6 @@ begin
                 valid_s7 <= valid_s6;
                 exponent_k_s7 <= exponent_k_s6;
 
-                ----------------------------------- Stage 8
-                valid_s8 <= valid_s7;
-                calc_result_s8 <= std_logic_vector(exponent_k_added) & mantissa_add_result_s7(
-                    OUTPUT_FRACTION_WIDTH - 1 downto 0);
             end if;
 
             if rst_n = '0' then
@@ -484,7 +459,6 @@ begin
                 valid_s5 <= '0';
                 valid_s6 <= '0';
                 valid_s7 <= '0';
-                valid_s8 <= '0';
                 data_s1 <= (others => '0');
                 data_s2 <= (others => '0');
                 exponent_k_s3 <= (others => '0');
@@ -496,7 +470,6 @@ begin
                 mantissa_remain_s3 <= (others => '0');
                 mantissa_remain_s4 <= (others => '0');
                 mantissa_log_s5 <= (others => '0');
-                calc_result_s8 <= (others => '0');
             end if;
 
         end if;

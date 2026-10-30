@@ -31,6 +31,7 @@ package body log2_pkg_utils is
         if STRATEGY = "LUT" then
             return 5;
         elsif STRATEGY = "LUT_LINEAR_INTRPL" then
+            return 7;
             return 8;
         else
             return 0;
