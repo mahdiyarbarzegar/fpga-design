@@ -4,7 +4,6 @@ use ieee.std_logic_1164.all;
 entity log2_core is
     generic(
         STRATEGY: string;
-        USE_DSP: boolean;
         INPUT_DATA_WIDTH: positive;
         INPUT_FRACTION_WIDTH: positive;
         OUTPUT_DATA_WIDTH: positive;
@@ -50,27 +49,25 @@ begin
         end generate;
 
     log2_lut_lintrpl: if STRATEGY = "LUT_LINEAR_INTRPL" generate
-
-        log2_lut_lintrpl_dsp: if USE_DSP = true generate
-            log2_lut_lintrpl: entity work.log2_fp_lut_lintrpl_core(rtl_dsp)
-                generic map(
-                    INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
-                    INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
-                    OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
-                    OUTPUT_FRACTION_WIDTH => OUTPUT_FRACTION_WIDTH,
-                    LUT_ADDR_SIZE => LUT_ADDR_SIZE,
-                    USE_CLOCK_EN => USE_CLOCK_EN
-                )
-                port map(
-                    clk => clk,
-                    rst_n => rst_n,
-                    ce => ce,
-                    data_i => data_i,
-                    data_o => data_o,
-                    valid_i => valid_i,
-                    valid_o => valid_o
-                );
-            end generate;
+        log2_lut_lintrpl: entity work.log2_fp_lut_lintrpl_core(rtl_dsp)
+            generic map(
+                INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
+                INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
+                OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
+                OUTPUT_FRACTION_WIDTH => OUTPUT_FRACTION_WIDTH,
+                LUT_ADDR_SIZE => LUT_ADDR_SIZE,
+                USE_CLOCK_EN => USE_CLOCK_EN
+            )
+            port map(
+                clk => clk,
+                rst_n => rst_n,
+                ce => ce,
+                data_i => data_i,
+                data_o => data_o,
+                valid_i => valid_i,
+                valid_o => valid_o
+            );
+        end generate;
 
             log2_lut_lintrpl_lut: if USE_DSP = false generate
                 log2_lut_lintrpl: entity work.log2_fp_lut_lintrpl_core(rtl_lut)

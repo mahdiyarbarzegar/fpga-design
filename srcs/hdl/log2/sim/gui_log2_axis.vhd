@@ -15,7 +15,6 @@ architecture sim of gui_log2_axis is
 
     constant INTERFACE_TYPE: string := "AXI4_STREAM";
     constant STRATEGY: string := "LUT_LINEAR_INTRPL"; --"LUT_LINEAR_INTRPL"
-    constant USE_DSP: boolean := false;
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
@@ -49,7 +48,6 @@ begin
             INTERFACE_TYPE => INTERFACE_TYPE,
             AXIS_DATA_WIDTH => AXIS_DATA_WIDTH,
             STRATEGY => STRATEGY,
-            USE_DSP => USE_DSP,
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
             OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,

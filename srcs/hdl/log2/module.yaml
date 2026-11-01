@@ -93,7 +93,6 @@ variants:
     parameters:
       CONFIG.INTERFACE_TYPE: "NATIVE"
       CONFIG.STRATEGY: "LUT_LINEAR_INTRPL"
-      CONFIG.USE_DSP: true
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
       CONFIG.LUT_ADDR_SIZE: 7
@@ -104,7 +103,6 @@ variants:
     parameters:
       CONFIG.INTERFACE_TYPE: "AXI4_STREAM"
       CONFIG.STRATEGY: "LUT_LINEAR_INTRPL"
-      CONFIG.USE_DSP: true
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
       CONFIG.LUT_ADDR_SIZE: 7
@@ -206,17 +204,6 @@ parameters:
     gui:
       display_name: Strategy
       widget: dropdown
-      page: General
-      group: Logarithm_2
-
-  USE_DSP:
-    type: boolean
-    resolve: user
-    default: false
-    enablement: 'expr {$STRATEGY == "LUT_LINEAR_INTRPL"}'
-    gui:
-      display_name: USE DSP
-      widget: checkbox
       page: General
       group: Logarithm_2
 

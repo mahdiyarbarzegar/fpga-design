@@ -9,7 +9,6 @@ entity log2_w is
         AXIS_DATA_WIDTH: positive := 16;
 
         STRATEGY: string := "LUT";
-        USE_DSP: boolean := true;
         INPUT_DATA_WIDTH: positive := 16;
         INPUT_FRACTION_WIDTH: positive := 8;
         OUTPUT_DATA_WIDTH: positive := 13;
@@ -69,7 +68,6 @@ begin
         native_bus_core: entity work.log2_core
             generic map(
                 STRATEGY => STRATEGY,
-                USE_DSP => USE_DSP,
                 INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
                 INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
                 OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
@@ -92,7 +90,6 @@ begin
             generic map(
                 AXIS_DATA_WIDTH => AXIS_DATA_WIDTH,
                 STRATEGY => STRATEGY,
-                USE_DSP => USE_DSP,
                 INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
                 INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
                 OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,

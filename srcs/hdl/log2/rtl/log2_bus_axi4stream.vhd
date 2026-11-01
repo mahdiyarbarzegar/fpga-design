@@ -11,7 +11,6 @@ entity log2_bus_axi4stream is
         AXIS_DATA_WIDTH: positive;
 
         STRATEGY: string;
-        USE_DSP: boolean;
         INPUT_DATA_WIDTH: positive;
         INPUT_FRACTION_WIDTH: positive;
         OUTPUT_DATA_WIDTH: positive;
@@ -51,7 +50,6 @@ begin
     log2_strategy: entity work.log2_core
         generic map(
             STRATEGY => STRATEGY,
-            USE_DSP => USE_DSP,
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
             OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,

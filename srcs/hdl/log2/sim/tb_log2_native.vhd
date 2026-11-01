@@ -14,7 +14,6 @@ architecture sim of tb_log2_native is
 
     constant INTERFACE_TYPE: string := "NATIVE";
     constant STRATEGY: string := "LUT_LINEAR_INTRPL"; -- "LUT" "LUT_LINEAR_INTRPL"
-    constant USE_DSP: boolean := true;
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
@@ -70,7 +69,6 @@ begin
         generic map(
             INTERFACE_TYPE => INTERFACE_TYPE,
             STRATEGY => STRATEGY,
-            USE_DSP => USE_DSP,
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
             OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
