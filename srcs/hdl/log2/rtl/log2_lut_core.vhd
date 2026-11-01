@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use ieee.std_logic_misc.all;
 
-entity log2_fp_lut_core is
+entity log2_lut_core is
     generic(
         INPUT_DATA_WIDTH: positive := 16;
         INPUT_FRACTION_WIDTH: positive := 8;
@@ -26,7 +26,7 @@ entity log2_fp_lut_core is
     );
 end entity;
 
-architecture rtl of log2_fp_lut_core is
+architecture rtl of log2_lut_core is
 
     constant INPUT_INTEGER_WIDTH: positive := INPUT_DATA_WIDTH - INPUT_FRACTION_WIDTH;
     constant OUTPUT_INTEGER_WIDTH: positive := OUTPUT_DATA_WIDTH - OUTPUT_FRACTION_WIDTH;

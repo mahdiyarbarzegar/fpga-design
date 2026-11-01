@@ -13,7 +13,7 @@ end entity;
 architecture sim of tb_log2_native is
 
     constant INTERFACE_TYPE: string := "NATIVE";
-    constant STRATEGY: string := "LUT_LINEAR_INTRPL"; -- "LUT" "LUT_LINEAR_INTRPL"
+    constant STRATEGY: string := "LINEAR_INTRPL"; -- "LUT" "LINEAR_INTRPL"
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
@@ -23,7 +23,7 @@ architecture sim of tb_log2_native is
 
     constant CLOCK_PERIOD: time := 10 ns;
 
-    constant FIXED_TOLERANCE_LSB: natural := 3;
+    constant FIXED_TOLERANCE_LSB: natural := 2;
     constant PIPELINE_LATENCY: positive := get_pipeline_stage_count(STRATEGY);
 
 

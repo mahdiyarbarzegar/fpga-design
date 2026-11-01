@@ -13,13 +13,13 @@ end entity;
 architecture sim of gui_log2_native is
 
     constant INTERFACE_TYPE: string := "NATIVE";
-    constant STRATEGY: string := "LUT_LINEAR_INTRPL"; --"LUT_LINEAR_INTRPL"
+    constant STRATEGY: string := "QUADRATIC_POLYNOMIAL_INTRPL"; --"LINEAR_INTRPL"
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_DATA_WIDTH: positive := calc_out_data_width(INPUT_DATA_WIDTH,
         INPUT_FRACTION_WIDTH, OUTPUT_FRACTION_WIDTH);
-    constant LUT_ADDR_SIZE: positive := 6;
+    constant LUT_ADDR_SIZE: positive := 4;
 
     constant CLOCK_PERIOD: time := 10 ns;
 

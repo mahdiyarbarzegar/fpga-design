@@ -4,7 +4,7 @@ use ieee.math_real.all;
 use ieee.numeric_std.all;
 use ieee.std_logic_misc.all;
 
-entity log2_fp_lut_gen_dual_port is
+entity log2_linear_intrpl_gen_lut is
     generic (
         ADDR_WIDTH: positive := 7;
         DATA_WIDTH: positive := 8;
@@ -19,7 +19,7 @@ entity log2_fp_lut_gen_dual_port is
     );
 end entity;
 
-architecture rtl of log2_fp_lut_gen_dual_port is
+architecture rtl of log2_linear_intrpl_gen_lut is
     constant LUT_SIZE: integer := 2 ** ADDR_WIDTH;
 
     type lut_type_t is array (0 to LUT_SIZE - 1) of std_logic_vector(DATA_WIDTH - 1 downto 0);

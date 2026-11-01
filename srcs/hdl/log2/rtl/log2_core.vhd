@@ -28,7 +28,7 @@ architecture core of log2_core is
 begin
 
     log2_lut: if STRATEGY = "LUT" generate
-        log2_lut: entity work.log2_fp_lut_core
+        log2_lut: entity work.log2_lut_core
             generic map(
                 INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
                 INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
@@ -48,8 +48,8 @@ begin
             );
         end generate;
 
-    log2_lut_lintrpl: if STRATEGY = "LUT_LINEAR_INTRPL" generate
-        log2_lut_lintrpl: entity work.log2_fp_lut_lintrpl_core(rtl_dsp)
+    log2_lut_lintrpl: if STRATEGY = "LINEAR_INTRPL" generate
+        log2_lut_lintrpl: entity work.log2_linear_intrpl_core(rtl_dsp)
             generic map(
                 INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
                 INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
@@ -69,27 +69,25 @@ begin
             );
         end generate;
 
-            log2_lut_lintrpl_lut: if USE_DSP = false generate
-                log2_lut_lintrpl: entity work.log2_fp_lut_lintrpl_core(rtl_lut)
-                    generic map(
-                        INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
-                        INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
-                        OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
-                        OUTPUT_FRACTION_WIDTH => OUTPUT_FRACTION_WIDTH,
-                        LUT_ADDR_SIZE => LUT_ADDR_SIZE,
-                        USE_CLOCK_EN => USE_CLOCK_EN
-                    )
-                    port map(
-                        clk => clk,
-                        rst_n => rst_n,
-                        ce => ce,
-                        data_i => data_i,
-                        data_o => data_o,
-                        valid_i => valid_i,
-                        valid_o => valid_o
-                    );
-                end generate;
-
+    log2_quad_poly: if STRATEGY = "QUADRATIC_POLYNOMIAL_INTRPL" generate
+        log2_quad_poly: entity work.log2_quad_poly_intrpl_core
+            generic map(
+                INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
+                INPUT_FRACTION_WIDTH => INPUT_FRACTION_WIDTH,
+                OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH,
+                OUTPUT_FRACTION_WIDTH => OUTPUT_FRACTION_WIDTH,
+                LUT_ADDR_SIZE => LUT_ADDR_SIZE,
+                USE_CLOCK_EN => USE_CLOCK_EN
+            )
+            port map(
+                clk => clk,
+                rst_n => rst_n,
+                ce => ce,
+                data_i => data_i,
+                data_o => data_o,
+                valid_i => valid_i,
+                valid_o => valid_o
+            );
         end generate;
 
 end core;

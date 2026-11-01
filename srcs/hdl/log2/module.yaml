@@ -18,10 +18,12 @@ package:
 
 rtl:
   - rtl/log2_pkg_utils.vhd
-  - rtl/log2_fp_lut_gen.vhd
-  - rtl/log2_fp_lut_gen_dual_port.vhd
-  - rtl/log2_fp_lut_core.vhd
-  - rtl/log2_fp_lut_lintrpl_core.vhd
+  - rtl/log2_lut_gen_lut.vhd
+  - rtl/log2_linear_intrpl_gen_lut.vhd
+  - rtl/log2_quad_poly_intrpl_gen_lut.vhd
+  - rtl/log2_lut_core.vhd
+  - rtl/log2_linear_intrpl_core.vhd
+  - rtl/log2_quad_poly_intrpl_core.vhd
   - rtl/log2_core.vhd
   - rtl/log2_bus_axi4stream.vhd
   - rtl/log2_w.vhd
@@ -70,7 +72,7 @@ simulation:
       module:
     timescale: 1ns/1ps
     tclbatch: gui/gui_sim.tcl
-    waveform: gui/log2_axis_gui.wcfg #gui/log2_native_gui.wcfg #gui/log2_axis_gui.wcfg
+    waveform: gui/log2_native_gui.wcfg #gui/log2_native_gui.wcfg #gui/log2_axis_gui.wcfg
     xvlog_opts:
     xelab_opts:
     xsim_opts:
@@ -82,30 +84,39 @@ variants:
     parameters:
       CONFIG.INTERFACE_TYPE: "NATIVE"
       CONFIG.STRATEGY: "LUT"
-      CONFIG.USE_DSP: false
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
       CONFIG.LUT_ADDR_SIZE: 7
 
   log2_iq16_8_of8_lintrpl:
     name: log2_iq16_8_of8_lintrpl
-    display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, 6-bit LUT Address, and Linear Interpolation
+    display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, 4-bit LUT Address, and Linear Interpolation
     parameters:
       CONFIG.INTERFACE_TYPE: "NATIVE"
-      CONFIG.STRATEGY: "LUT_LINEAR_INTRPL"
+      CONFIG.STRATEGY: "LINEAR_INTRPL"
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
-      CONFIG.LUT_ADDR_SIZE: 7
+      CONFIG.LUT_ADDR_SIZE: 4
 
   axi_log2_iq16_8_of8_lintrpl:
     name: axi_log2_iq16_8_of8_lintrpl
-    display_name: AXI-Stream Log2 IP with Input Q16_8, 8-bit Out Fraction, 6-bit LUT Address, and Linear Interpolation
+    display_name: AXI-Stream Log2 IP with Input Q16_8, 8-bit Out Fraction, 4-bit LUT Address, and Linear Interpolation
     parameters:
       CONFIG.INTERFACE_TYPE: "AXI4_STREAM"
-      CONFIG.STRATEGY: "LUT_LINEAR_INTRPL"
+      CONFIG.STRATEGY: "LINEAR_INTRPL"
       CONFIG.INPUT_DATA_WIDTH: 16
       CONFIG.INPUT_FRACTION_WIDTH: 8
-      CONFIG.LUT_ADDR_SIZE: 7
+      CONFIG.LUT_ADDR_SIZE: 4
+
+  log2_iq16_8_of8_qpintrpl:
+    name: log2_iq16_8_of8_qpintrpl
+    display_name: Log2 IP with Input Q16_8, 8-bit Out Fraction, 4-bit LUT Address, and Quadratic Polynomial Interpolation
+    parameters:
+      CONFIG.INTERFACE_TYPE: "NATIVE"
+      CONFIG.STRATEGY: "QUADRATIC_POLYNOMIAL_INTRPL"
+      CONFIG.INPUT_DATA_WIDTH: 16
+      CONFIG.INPUT_FRACTION_WIDTH: 8
+      CONFIG.LUT_ADDR_SIZE: 4
 
 interfaces:
   clk:
@@ -200,7 +211,8 @@ parameters:
       type: list
       values:
         - LUT
-        - LUT_LINEAR_INTRPL
+        - LINEAR_INTRPL
+        - QUADRATIC_POLYNOMIAL_INTRPL
     gui:
       display_name: Strategy
       widget: dropdown

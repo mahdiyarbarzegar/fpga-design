@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use ieee.std_logic_misc.all;
 
-entity log2_fp_lut_lintrpl_core is
+entity log2_linear_intrpl_core is
     generic(
         INPUT_DATA_WIDTH: positive;
         INPUT_FRACTION_WIDTH: positive;
@@ -32,7 +32,7 @@ use UNISIM.vcomponents.all;
 Library UNIMACRO;
 use UNIMACRO.vcomponents.all;
 
-architecture rtl_dsp of log2_fp_lut_lintrpl_core is
+architecture rtl_dsp of log2_linear_intrpl_core is
 
     constant INPUT_INTEGER_WIDTH: positive := INPUT_DATA_WIDTH - INPUT_FRACTION_WIDTH;
     constant OUTPUT_INTEGER_WIDTH: positive := OUTPUT_DATA_WIDTH - OUTPUT_FRACTION_WIDTH;
@@ -106,7 +106,7 @@ begin
             z_o => data_lop_zflag_s2
         );
 
-    lut_gen: entity work.log2_fp_lut_gen_dual_port
+    lut_gen: entity work.log2_linear_intrpl_gen_lut
         generic map(
             ADDR_WIDTH => LUT_ADDR_SIZE,
             DATA_WIDTH => COEFFICIENT_WIDTH,
@@ -224,7 +224,7 @@ begin
 
 end rtl_dsp;
 
-architecture rtl_lut of log2_fp_lut_lintrpl_core is
+architecture rtl_lut of log2_linear_intrpl_core is
 
     constant INPUT_INTEGER_WIDTH: positive := INPUT_DATA_WIDTH - INPUT_FRACTION_WIDTH;
     constant OUTPUT_INTEGER_WIDTH: positive := OUTPUT_DATA_WIDTH - OUTPUT_FRACTION_WIDTH;
@@ -298,7 +298,7 @@ begin
             z_o => data_lop_zflag_s2
         );
 
-    lut_gen: entity work.log2_fp_lut_gen_dual_port
+    lut_gen: entity work.log2_linear_intrpl_gen_lut
         generic map(
             ADDR_WIDTH => LUT_ADDR_SIZE,
             DATA_WIDTH => COEFFICIENT_WIDTH,

@@ -14,13 +14,13 @@ end entity;
 architecture sim of tb_log2_axis is
 
     constant INTERFACE_TYPE: string := "AXI4_STREAM";
-    constant STRATEGY: string := "LUT_LINEAR_INTRPL"; --"LUT_LINEAR_INTRPL"
+    constant STRATEGY: string := "QUADRATIC_POLYNOMIAL_INTRPL"; --"LINEAR_INTRPL" "QUADRATIC_POLYNOMIAL_INTRPL"
     constant INPUT_DATA_WIDTH: positive := 16;
     constant INPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_DATA_WIDTH: positive := calc_out_data_width(INPUT_DATA_WIDTH,
         INPUT_FRACTION_WIDTH, OUTPUT_FRACTION_WIDTH);
-    constant LUT_ADDR_SIZE: positive := 6;
+    constant LUT_ADDR_SIZE: positive := 4;
     constant AXIS_DATA_WIDTH: positive := 16;
 
     constant INPUT_DATA_TKEEP_HIGH_WIDTH: positive := (INPUT_DATA_WIDTH + 7) / 8;
@@ -30,7 +30,7 @@ architecture sim of tb_log2_axis is
         std_logic_vector(AXIS_DATA_WIDTH / 8 - 1 downto 0) :=
         make_expected_axis_tkeep(AXIS_DATA_WIDTH / 8, OUTPUT_DATA_TKEEP_HIGH_WIDTH);
 
-    constant FIXED_TOLERANCE_LSB: natural := 3;
+    constant FIXED_TOLERANCE_LSB: natural := 2;
 
     constant CLOCK_PERIOD: time := 10 ns;
 
@@ -57,6 +57,18 @@ architecture sim of tb_log2_axis is
         end loop;
 
         return dataset;
+    end function;
+
+    function calc_error (data_in: integer; data_out:integer) return real is
+        variable log_in, ip_log, ref_log: real;
+    begin
+
+        log_in := real(data_in) / (2**INPUT_FRACTION_WIDTH);
+        ip_log := real(data_out) / (2**OUTPUT_FRACTION_WIDTH);
+        ref_log := log2(real(log_in));
+
+        return ip_log - ref_log;
+
     end function;
 
     signal dataset: dataset_t := init_dataset;
@@ -132,7 +144,9 @@ begin
         variable received_keep: std_logic_vector(AXIS_DATA_WIDTH / 8 - 1 downto 0);
         variable test_passed_counter: natural := 0;
         variable test_failed_counter: natural := 0;
-        variable actual_raw, expected_raw, error_raw: integer;
+        variable actual_raw, expected_raw, input_raw, error_raw: integer;
+        variable error_acc, error_acc_abs, error_squared_acc, error_real: real :=0.0;
+        variable mean_error, mean_abs_error, max_abs_error, rms_error, mean_squared_error: real :=0.0;
     begin
         wait until rst_n = '1';
 
@@ -144,7 +158,14 @@ begin
             if received_keep = EXPECTED_OUTPUT_TKEEP then
                 actual_raw := to_integer(signed(received_data(OUTPUT_DATA_WIDTH - 1 downto 0)));
                 expected_raw := to_integer(dataset(i).data_out);
+                input_raw := to_integer(dataset(i).data_in);
+                error_real := calc_error(input_raw, actual_raw);
+
                 error_raw := abs(actual_raw - expected_raw);
+                error_acc := error_acc + error_real;
+                error_acc_abs := error_acc_abs + abs(error_real);
+                error_squared_acc := error_squared_acc + (error_real ** 2);
+                max_abs_error := abs(error_real) when abs(error_real) > max_abs_error else max_abs_error;
 
                 if error_raw <= FIXED_TOLERANCE_LSB then
                     test_passed_counter := test_passed_counter + 1;
@@ -164,6 +185,11 @@ begin
                     severity error;
             end if;
         end loop;
+
+        mean_error := 1000000 * (error_acc / dataset'length);
+        mean_abs_error := 1000000 * (error_acc_abs / dataset'length);
+        rms_error := 1000000 * sqrt(error_squared_acc / dataset'length);
+        mean_squared_error := 1000000 * (error_squared_acc / dataset'length);
 
 
         -- Test Summary
@@ -186,6 +212,14 @@ begin
 
         assert test_failed_counter /= 0
             report "LOG2 IP PASSED"
+            severity note;
+
+        report "Error Status:" & character'val(10) &
+            "Mean Error - ME(ppm) = " & to_string(mean_error, "%.2f") & character'val(10) &
+            "Mean Squared Error - MSE(ppm) = " & to_string(mean_squared_error, "%.2f") & character'val(10) &
+            "Mean Absolute Error - MAE(ppm) = " & to_string(mean_abs_error, "%.2f") & character'val(10) &
+            "RMS Error - RMSE(ppm) = " & to_string(rms_error, "%.2f") & character'val(10) &
+            "Max Absolute Error = " & to_string(max_abs_error, "%.4f") & character'val(10)
             severity note;
 
         report "Testbench completed";
