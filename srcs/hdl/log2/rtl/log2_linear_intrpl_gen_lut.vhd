@@ -7,7 +7,7 @@ use ieee.std_logic_misc.all;
 entity log2_linear_intrpl_gen_lut is
     generic (
         ADDR_WIDTH: positive := 7;
-        DATA_WIDTH: positive := 8;
+        COEFF_WIDTH: positive := 8;
         USE_CLOCK_EN: boolean := false
     );
     port(
@@ -15,54 +15,61 @@ entity log2_linear_intrpl_gen_lut is
         rst_n: in std_logic;
         ce: in std_logic;
         addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
-        data_o: out std_logic_vector(2 * DATA_WIDTH + 1 downto 0)
+        a_o: out std_logic_vector(COEFF_WIDTH - 1 downto 0);
+        b_o: out std_logic_vector(COEFF_WIDTH - 1 downto 0)
     );
 end entity;
 
 architecture rtl of log2_linear_intrpl_gen_lut is
     constant LUT_SIZE: integer := 2 ** ADDR_WIDTH;
 
-    type lut_type_t is array (0 to LUT_SIZE - 1) of std_logic_vector(DATA_WIDTH - 1 downto 0);
+    type lut_field_t is record
+        a_coeff: std_logic_vector(COEFF_WIDTH - 1 downto 0);
+        b_coeff: std_logic_vector(COEFF_WIDTH - 1 downto 0);
+    end record;
 
-    impure function init_lut_fp return lut_type_t is
-        variable lut: lut_type_t;
+    type lut_t is array (0 to LUT_SIZE - 1) of lut_field_t;
+
+    impure function init_lut_fp return lut_t is
+        variable lut: lut_t;
+        variable mi, y0, y1: real;
+        variable a, b: integer;
     begin
-        for i in lut_type_t'range loop
-            lut(i) := std_logic_vector(to_unsigned(
-                integer(trunc(log2(1.0 + real(i) / LUT_SIZE) * real(2 ** DATA_WIDTH))),
-                lut(i)'length));
+        for i in lut_t'range loop
+            mi := 1.0 + (real(i) / LUT_SIZE);
+            y0 := log2(mi) * real(2 ** COEFF_WIDTH);
+            y1 := log2(mi + (1.0 / LUT_SIZE)) * real(2 ** COEFF_WIDTH);
+
+            a := integer(trunc(y0));
+            b := integer(trunc(y1 - y0));
+
+            lut(i).a_coeff := std_logic_vector(to_unsigned(a, COEFF_WIDTH));
+            lut(i).b_coeff := std_logic_vector(to_unsigned(b, COEFF_WIDTH));
         end loop;
 
         return lut;
     end function;
 
-    signal LUT: lut_type_t := init_lut_fp;
+    signal LUT: lut_t := init_lut_fp;
 
     attribute ram_style: string;
     attribute ram_style of LUT: signal is "block";
 begin
 
     process(clk)
-        variable i: unsigned(addr_i'range);
-        variable data, data_next: std_logic_vector(DATA_WIDTH downto 0);
+        variable field: lut_field_t;
     begin
         if rising_edge(clk) then
             if (not USE_CLOCK_EN) or ce = '1' then
-                i := unsigned(addr_i);
+                field := LUT(to_integer(unsigned(addr_i)));
 
-                data := '0' & LUT(to_integer(i));
-
-                if and_reduce(addr_i) = '0' then
-                    data_next := '0' & LUT(to_integer(i) + 1);
-                else
-                    data_next := ('1', others => '0');
-                end if;
-
-                data_o <= data_next & data;
+                a_o <= field.a_coeff;
+                b_o <= field.b_coeff;
             end if;
 
             if (rst_n = '0') then
-                data_o <= (others => '0');
+                a_o <= (others => '0');
+                b_o <= (others => '0');
             end if;
         end if;
     end process;

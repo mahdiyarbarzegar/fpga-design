@@ -38,9 +38,8 @@ architecture rtl_dsp of log2_linear_intrpl_core is
     constant OUTPUT_INTEGER_WIDTH: positive := OUTPUT_DATA_WIDTH - OUTPUT_FRACTION_WIDTH;
     constant REMAIN_MANTISSA_WIDTH: positive := INPUT_DATA_WIDTH - LUT_ADDR_SIZE - 1;
     constant COEFFICIENT_WIDTH: positive := OUTPUT_FRACTION_WIDTH + 2;
-    constant MUL_RESULT_WIDTH: positive := REMAIN_MANTISSA_WIDTH + COEFFICIENT_WIDTH;
 
-    constant DSPMACRO_A_PORT_WIDTH: positive := COEFFICIENT_WIDTH + 2;
+    constant DSPMACRO_A_PORT_WIDTH: positive := COEFFICIENT_WIDTH + 1;
     constant DSPMACRO_B_PORT_WIDTH: positive := REMAIN_MANTISSA_WIDTH + 1;
     constant DSPMACRO_P_PORT_WIDTH: positive := DSPMACRO_A_PORT_WIDTH + DSPMACRO_B_PORT_WIDTH + 1;
 
@@ -65,24 +64,16 @@ architecture rtl_dsp of log2_linear_intrpl_core is
     signal valid_s4: std_logic;
     signal exponent_k_s4: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
     signal mantissa_remain_s4: std_logic_vector(REMAIN_MANTISSA_WIDTH - 1 downto 0);
-    signal lut_data_s4: std_logic_vector(2 * COEFFICIENT_WIDTH + 1 downto 0);
-    signal mantissa_log_s4: std_logic_vector(COEFFICIENT_WIDTH downto 0);
-    signal mantissa_log_n_s4: std_logic_vector(COEFFICIENT_WIDTH downto 0);
-    signal mantissa_log_diff_s4: unsigned(COEFFICIENT_WIDTH downto 0);
+    signal a_coeff_s4, b_coeff_s4: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
 
     -- Stage 5 Signals
     signal valid_s5: std_logic;
     signal exponent_k_s5: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
-    signal mantissa_log_s5: std_logic_vector(COEFFICIENT_WIDTH downto 0);
 
     -- Stage 6 Signals
     signal valid_s6: std_logic;
     signal exponent_k_s6: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
-
-    -- Stage 7 Signals
-    signal valid_s7: std_logic;
-    signal exponent_k_s7: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
-    signal dsp_slice_result_s7: std_logic_vector(DSPMACRO_P_PORT_WIDTH - 1 downto 0);
+    signal dsp_slice_result_s6: std_logic_vector(DSPMACRO_P_PORT_WIDTH - 1 downto 0);
 
     -- Wires
     signal position: integer;
@@ -109,7 +100,7 @@ begin
     lut_gen: entity work.log2_linear_intrpl_gen_lut
         generic map(
             ADDR_WIDTH => LUT_ADDR_SIZE,
-            DATA_WIDTH => COEFFICIENT_WIDTH,
+            COEFF_WIDTH => COEFFICIENT_WIDTH,
             USE_CLOCK_EN => USE_CLOCK_EN
         )
         port map(
@@ -117,13 +108,14 @@ begin
             rst_n => rst_n,
             ce => ce,
             addr_i => mantissa_index_s3,
-            data_o => lut_data_s4
+            a_o => a_coeff_s4,
+            b_o => b_coeff_s4
         );
 
     mac_macro_0: MACC_MACRO
         generic map (
             DEVICE => "7SERIES",
-            LATENCY => 3,
+            LATENCY => 2,
             WIDTH_A => DSPMACRO_A_PORT_WIDTH,
             WIDTH_B => DSPMACRO_B_PORT_WIDTH,
             WIDTH_P => DSPMACRO_P_PORT_WIDTH
@@ -135,24 +127,19 @@ begin
             ADDSUB => '1',
             CARRYIN => '0',
             LOAD => '1',
-            A => std_logic_vector(resize(unsigned(mantissa_log_diff_s4), DSPMACRO_A_PORT_WIDTH)),
+            A => std_logic_vector(resize(unsigned(b_coeff_s4), DSPMACRO_A_PORT_WIDTH)),
             B => std_logic_vector(resize(unsigned(mantissa_remain_s4), DSPMACRO_B_PORT_WIDTH)),
             LOAD_DATA => std_logic_vector(
-                resize(unsigned(mantissa_log_s5), DSPMACRO_P_PORT_WIDTH) sll REMAIN_MANTISSA_WIDTH),
-            P => dsp_slice_result_s7
+                resize(unsigned(a_coeff_s4), DSPMACRO_P_PORT_WIDTH) sll REMAIN_MANTISSA_WIDTH),
+            P => dsp_slice_result_s6
         );
 
     position <= to_integer(unsigned(data_lop_s2));
     norm_mantissa <= std_logic_vector(shift_left(unsigned(data_s2), data_s2'length - position - 1));
 
-    mantissa_log_s4 <= lut_data_s4(COEFFICIENT_WIDTH downto 0);
-    mantissa_log_n_s4 <= lut_data_s4(
-        2 * COEFFICIENT_WIDTH + 1 downto COEFFICIENT_WIDTH + 1);
-    mantissa_log_diff_s4 <= unsigned(mantissa_log_n_s4) - unsigned(mantissa_log_s4);
-
-    data_o <= std_logic_vector(exponent_k_s7) & dsp_slice_result_s7(
-        MUL_RESULT_WIDTH - 1 downto MUL_RESULT_WIDTH - OUTPUT_FRACTION_WIDTH);
-    valid_o <= valid_s7;
+    data_o <= std_logic_vector(exponent_k_s6) & dsp_slice_result_s6(
+        dsp_slice_result_s6'high - 3 downto dsp_slice_result_s6'high - OUTPUT_FRACTION_WIDTH - 2);
+    valid_o <= valid_s6;
 
     process(clk)
     begin
@@ -186,15 +173,10 @@ begin
                 ----------------------------------- Stage 5
                 valid_s5 <= valid_s4;
                 exponent_k_s5 <= exponent_k_s4;
-                mantissa_log_s5 <= mantissa_log_s4;
 
                 ----------------------------------- Stage 6
                 valid_s6 <= valid_s5;
                 exponent_k_s6 <= exponent_k_s5;
-
-                ----------------------------------- Stage 7
-                valid_s7 <= valid_s6;
-                exponent_k_s7 <= exponent_k_s6;
 
             end if;
 
@@ -205,18 +187,15 @@ begin
                 valid_s4 <= '0';
                 valid_s5 <= '0';
                 valid_s6 <= '0';
-                valid_s7 <= '0';
                 data_s1 <= (others => '0');
                 data_s2 <= (others => '0');
                 exponent_k_s3 <= (others => '0');
                 exponent_k_s4 <= (others => '0');
                 exponent_k_s5 <= (others => '0');
                 exponent_k_s6 <= (others => '0');
-                exponent_k_s7 <= (others => '0');
                 mantissa_index_s3 <= (others => '0');
                 mantissa_remain_s3 <= (others => '0');
                 mantissa_remain_s4 <= (others => '0');
-                mantissa_log_s5 <= (others => '0');
             end if;
 
         end if;
@@ -253,28 +232,20 @@ architecture rtl_lut of log2_linear_intrpl_core is
     signal valid_s4: std_logic;
     signal exponent_k_s4: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
     signal mantissa_remain_s4: std_logic_vector(REMAIN_MANTISSA_WIDTH - 1 downto 0);
-    signal lut_data_s4: std_logic_vector(2 * COEFFICIENT_WIDTH + 1 downto 0);
-    signal mantissa_log_s4: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
-    signal mantissa_diff_s4: std_logic_vector(COEFFICIENT_WIDTH downto 0);
+    signal a_coeff_s4, b_coeff_s4: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
+    signal mul_result_s4: unsigned(MUL_RESULT_WIDTH - 1 downto 0);
 
     -- Stage 5 Signals
     signal valid_s5: std_logic;
     signal exponent_k_s5: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
-    signal mantissa_remain_s5: std_logic_vector(REMAIN_MANTISSA_WIDTH - 1 downto 0);
-    signal mantissa_log_s5, mantissa_diff_s5: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
-    signal mul_result_s5: unsigned(MUL_RESULT_WIDTH - 1 downto 0);
+    signal a_coeff_s5: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
+    signal mul_result_s5: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
+    signal mantissa_add_result_s5: std_logic_vector(COEFFICIENT_WIDTH downto 0);
 
     -- Stage 6 Signals
     signal valid_s6: std_logic;
     signal exponent_k_s6: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
-    signal mantissa_log_s6: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
-    signal mul_result_s6: std_logic_vector(COEFFICIENT_WIDTH - 1 downto 0);
-    signal mantissa_add_result_s6: std_logic_vector(COEFFICIENT_WIDTH downto 0);
-
-    -- Stage 7 Signals
-    signal valid_s7: std_logic;
-    signal exponent_k_s7: signed(OUTPUT_INTEGER_WIDTH - 1 downto 0);
-    signal mantissa_add_result_s7: std_logic_vector(OUTPUT_FRACTION_WIDTH - 1 downto 0);
+    signal mantissa_add_result_s6: std_logic_vector(OUTPUT_FRACTION_WIDTH - 1 downto 0);
 
     -- Wires
     signal position: integer;
@@ -301,7 +272,7 @@ begin
     lut_gen: entity work.log2_linear_intrpl_gen_lut
         generic map(
             ADDR_WIDTH => LUT_ADDR_SIZE,
-            DATA_WIDTH => COEFFICIENT_WIDTH,
+            COEFF_WIDTH => COEFFICIENT_WIDTH,
             USE_CLOCK_EN => USE_CLOCK_EN
         )
         port map(
@@ -309,25 +280,20 @@ begin
             rst_n => rst_n,
             ce => ce,
             addr_i => mantissa_index_s3,
-            data_o => lut_data_s4
+            a_o => a_coeff_s4,
+            b_o => b_coeff_S4
         );
 
     position <= to_integer(unsigned(data_lop_s2));
     norm_mantissa <= std_logic_vector(shift_left(unsigned(data_s2), data_s2'length - position - 1));
 
-    mantissa_log_s4 <= lut_data_s4(COEFFICIENT_WIDTH - 1 downto 0);
+    mul_result_s4 <= unsigned(mantissa_remain_s4) * unsigned(b_coeff_s4);
 
-    mantissa_diff_s4 <= std_logic_vector(
-        unsigned(lut_data_s4(2 * COEFFICIENT_WIDTH + 1 downto COEFFICIENT_WIDTH + 1)) -
-            unsigned(lut_data_s4(COEFFICIENT_WIDTH downto 0)));
+    mantissa_add_result_s5 <= std_logic_vector(
+        ('0' & unsigned(mul_result_s5)) + ('0' & unsigned(a_coeff_s5)));
 
-    mul_result_s5 <= unsigned(mantissa_remain_s5) * unsigned(mantissa_diff_s5);
-
-    mantissa_add_result_s6 <= std_logic_vector(
-        ('0' & unsigned(mul_result_s6)) + ('0' & unsigned(mantissa_log_s6)));
-
-    data_o <= std_logic_vector(exponent_k_s7) & mantissa_add_result_s7;
-    valid_o <= valid_s7;
+    data_o <= std_logic_vector(exponent_k_s6) & mantissa_add_result_s6;
+    valid_o <= valid_s6;
 
     process(clk)
     begin
@@ -360,22 +326,15 @@ begin
                 ----------------------------------- Stage 5
                 valid_s5 <= valid_s4;
                 exponent_k_s5 <= exponent_k_s4;
-                mantissa_remain_s5 <= mantissa_remain_s4;
-                mantissa_log_s5 <= mantissa_log_s4;
-                mantissa_diff_s5 <= mantissa_diff_s4(COEFFICIENT_WIDTH - 1 downto 0);
+                a_coeff_s5 <= a_coeff_s4;
+                mul_result_s5 <= std_logic_vector(
+                    mul_result_s4(MUL_RESULT_WIDTH - 1 downto REMAIN_MANTISSA_WIDTH));
 
                 ----------------------------------- Stage 6
                 valid_s6 <= valid_s5;
                 exponent_k_s6 <= exponent_k_s5;
-                mantissa_log_s6 <= mantissa_log_s5;
-                mul_result_s6 <= std_logic_vector(
-                    mul_result_s5(MUL_RESULT_WIDTH - 1 downto REMAIN_MANTISSA_WIDTH));
-
-                ----------------------------------- Stage 7
-                valid_s7 <= valid_s6;
-                exponent_k_s7 <= exponent_k_s6;
-                mantissa_add_result_s7 <= mantissa_add_result_s6(
-                    mantissa_add_result_s6'high - 1 downto mantissa_add_result_s6'high - OUTPUT_FRACTION_WIDTH);
+                mantissa_add_result_s6 <= mantissa_add_result_s5(
+                    mantissa_add_result_s5'high - 1 downto mantissa_add_result_s5'high - OUTPUT_FRACTION_WIDTH);
 
             end if;
 
@@ -386,24 +345,18 @@ begin
                 valid_s4 <= '0';
                 valid_s5 <= '0';
                 valid_s6 <= '0';
-                valid_s7 <= '0';
                 data_s1 <= (others => '0');
                 data_s2 <= (others => '0');
                 exponent_k_s3 <= (others => '0');
                 exponent_k_s4 <= (others => '0');
                 exponent_k_s5 <= (others => '0');
                 exponent_k_s6 <= (others => '0');
-                exponent_k_s7 <= (others => '0');
                 mantissa_index_s3 <= (others => '0');
                 mantissa_remain_s3 <= (others => '0');
                 mantissa_remain_s4 <= (others => '0');
-                mantissa_remain_s5 <= (others => '0');
-                mantissa_log_s5 <= (others => '0');
-                mantissa_diff_s5 <= (others => '0');
-                mantissa_remain_s5 <= (others => '0');
-                mantissa_log_s6 <= (others => '0');
-                mul_result_s6 <= (others => '0');
-                mantissa_add_result_s7 <= (others => '0');
+                a_coeff_s5 <= (others => '0');
+                mul_result_s5 <= (others => '0');
+                mantissa_add_result_s6 <= (others => '0');
             end if;
 
         end if;
