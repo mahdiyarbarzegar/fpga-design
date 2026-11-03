@@ -9,23 +9,23 @@ use work.log2_pkg_utils.all;
 use work.axi4stream_model.all;
 
 entity tb_log2_axis is
+    generic(
+        STRATEGY: string := "QUADRATIC_POLYNOMIAL_INTRPL";
+        INPUT_DATA_WIDTH: positive := 16;
+        INPUT_FRACTION_WIDTH: positive := 8;
+        OUTPUT_FRACTION_WIDTH: positive := 8;
+        LUT_ADDR_SIZE: positive := 4
+    );
 end entity;
 
 architecture sim of tb_log2_axis is
 
     constant INTERFACE_TYPE: string := "AXI4_STREAM";
-    constant STRATEGY: string := "QUADRATIC_POLYNOMIAL_INTRPL"; --"LINEAR_INTRPL" "QUADRATIC_POLYNOMIAL_INTRPL"
-    constant INPUT_DATA_WIDTH: positive := 16;
-    constant INPUT_FRACTION_WIDTH: positive := 8;
-    constant OUTPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_DATA_WIDTH: positive := calc_out_data_width(INPUT_DATA_WIDTH,
         INPUT_FRACTION_WIDTH, OUTPUT_FRACTION_WIDTH);
-    constant LUT_ADDR_SIZE: positive := 4;
-    constant AXIS_DATA_WIDTH: positive := 16;
-
+    constant AXIS_DATA_WIDTH: positive := ((INPUT_DATA_WIDTH + 15) / 16 ) * 16;
     constant INPUT_DATA_TKEEP_HIGH_WIDTH: positive := (INPUT_DATA_WIDTH + 7) / 8;
     constant OUTPUT_DATA_TKEEP_HIGH_WIDTH: positive := (OUTPUT_DATA_WIDTH + 7) / 8;
-
     constant EXPECTED_OUTPUT_TKEEP :
         std_logic_vector(AXIS_DATA_WIDTH / 8 - 1 downto 0) :=
         make_expected_axis_tkeep(AXIS_DATA_WIDTH / 8, OUTPUT_DATA_TKEEP_HIGH_WIDTH);

@@ -1,6 +1,6 @@
-module gui_restoring_divider;
-
-    parameter BUS_WIDTH = 8;
+module gui_restoring_divider #(
+    parameter BUS_WIDTH = 8
+);
 
     reg clk;
     reg rst_n;

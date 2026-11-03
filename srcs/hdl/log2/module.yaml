@@ -41,41 +41,217 @@ dependencies:
       variant:
 
 simulation:
-  batch:
-    top: tb_log2_axis #tb_log2_native #tb_log2_axis
-    snapshot: log2_axis_batch #log2_native_batch #log2_axis_batch
+  log2_lut_batch:
+    top: tb_log2_native
     consume: rtl
     variant:
     files:
-#      - sim/tb_log2_native.vhd
-      - sim/tb_log2_axis.vhd
+      - sim/tb_log2_native.vhd
     dependencies:
       lib:
       module:
+    parameters:
+      - STRATEGY: LUT
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 7
+      - FIXED_TOLERANCE_LSB: 3
     timescale: 1ns/1ps
+    type: batch
     tclbatch:
     waveform:
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
-    xsim_opts:
-  gui:
-    top: gui_log2_axis #gui_log2_axis #gui_log2_native
-    snapshot: log2_axis_gui #log2_axis_gui #log2_native_gui
+    xsim_opts: [ ]
+  log2_linear_intrpl_batch:
+    top: tb_log2_native
     consume: rtl
     variant:
     files:
-      - sim/gui_log2_axis.vhd
-#      - sim/gui_log2_native.vhd
+      - sim/tb_log2_native.vhd
+    dependencies:
+      lib:
+      module:
+    parameters:
+      - STRATEGY: LINEAR_INTRPL
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 4
+    timescale: 1ns/1ps
+    type: batch
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  log2_qp_intrpl_batch:
+    top: tb_log2_native
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_log2_native.vhd
+    dependencies:
+      lib:
+      module:
+    parameters:
+      - STRATEGY: QUADRATIC_POLYNOMIAL_INTRPL
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 4
+    timescale: 1ns/1ps
+    type: batch
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  log2_lut_axis_batch:
+    top: tb_log2_axis
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_log2_axis.vhd
     dependencies:
       lib:
         - axi4stream_model
       module:
+    parameters:
+      - STRATEGY: LUT
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 7
     timescale: 1ns/1ps
+    type: batch
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  log2_linear_intrpl_axis_batch:
+    top: tb_log2_axis
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_log2_axis.vhd
+    dependencies:
+      lib:
+        - axi4stream_model
+      module:
+    parameters:
+      - STRATEGY: LINEAR_INTRPL
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 4
+    timescale: 1ns/1ps
+    type: batch
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  log2_qp_intrpl_axis_batch:
+    top: tb_log2_axis
+    consume: rtl
+    variant:
+    files:
+      - sim/tb_log2_axis.vhd
+    dependencies:
+      lib:
+        - axi4stream_model
+      module:
+    parameters:
+      - STRATEGY: QUADRATIC_POLYNOMIAL_INTRPL
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 4
+    timescale: 1ns/1ps
+    type: batch
+    tclbatch:
+    waveform:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  log2_lut_gui:
+    top: gui_log2_native
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_log2_native.vhd
+    dependencies:
+      lib:
+      module:
+    parameters:
+      - STRATEGY: LUT
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 7
+    timescale: 1ns/1ps
+    type: gui
     tclbatch: gui/gui_sim.tcl
-    waveform: gui/log2_native_gui.wcfg #gui/log2_native_gui.wcfg #gui/log2_axis_gui.wcfg
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
+    waveform: gui/log2_lut_gui.wcfg
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  log2_linear_intrpl_gui:
+    top: gui_log2_native
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_log2_native.vhd
+    dependencies:
+      lib:
+      module:
+    parameters:
+      - STRATEGY: LINEAR_INTRPL
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 4
+    timescale: 1ns/1ps
+    type: gui
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/log2_linear_intrpl_gui.wcfg
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
+  log2_qp_intrpl_gui:
+    top: gui_log2_native
+    consume: rtl
+    variant:
+    files:
+      - sim/gui_log2_native.vhd
+    dependencies:
+      lib:
+      module:
+    parameters:
+      - STRATEGY: QUADRATIC_POLYNOMIAL_INTRPL
+      - INPUT_DATA_WIDTH: 16
+      - INPUT_FRACTION_WIDTH: 8
+      - OUTPUT_FRACTION_WIDTH: 8
+      - LUT_ADDR_SIZE: 4
+    timescale: 1ns/1ps
+    type: gui
+    tclbatch: gui/gui_sim.tcl
+    waveform: gui/log2_qp_intrpl_gui.wcfg
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
 
 variants:
   log2_iq16_8_of8:

@@ -8,18 +8,20 @@ library work;
 use work.log2_pkg_utils.all;
 
 entity gui_log2_native is
+    generic(
+        STRATEGY: string := "QUADRATIC_POLYNOMIAL_INTRPL";
+        INPUT_DATA_WIDTH: positive := 16;
+        INPUT_FRACTION_WIDTH: positive := 8;
+        OUTPUT_FRACTION_WIDTH: positive := 8;
+        LUT_ADDR_SIZE: positive := 4
+    );
 end entity;
 
 architecture sim of gui_log2_native is
 
     constant INTERFACE_TYPE: string := "NATIVE";
-    constant STRATEGY: string := "QUADRATIC_POLYNOMIAL_INTRPL"; --"LINEAR_INTRPL"
-    constant INPUT_DATA_WIDTH: positive := 16;
-    constant INPUT_FRACTION_WIDTH: positive := 8;
-    constant OUTPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_DATA_WIDTH: positive := calc_out_data_width(INPUT_DATA_WIDTH,
         INPUT_FRACTION_WIDTH, OUTPUT_FRACTION_WIDTH);
-    constant LUT_ADDR_SIZE: positive := 4;
 
     constant CLOCK_PERIOD: time := 10 ns;
 

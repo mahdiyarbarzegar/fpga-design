@@ -17,8 +17,8 @@ package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/vhdl/restoring_divider.vhd
-  - rtl/vhdl/restoring_divider_w.vhd
+  - rtl/verilog/restoring_divider.v
+  - rtl/verilog/restoring_divider_w.v
 
 include:
 
@@ -33,9 +33,8 @@ dependencies:
       variant:
 
 simulation:
-  batch:
+  restoring_divider_batch:
     top: tb_restoring_divider
-    snapshot: restoring_divider_batch
     consume: rtl
     variant:
     files:
@@ -43,15 +42,18 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - BUS_WIDTH: 8
     timescale: 1ns/1ps
+    type: batch
     tclbatch:
     waveform:
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
     xsim_opts: [ ]
-  gui:
+  restoring_divider_gui:
     top: gui_restoring_divider
-    snapshot: restoring_divider_gui
     consume: rtl
     variant:
     files:
@@ -59,12 +61,16 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - BUS_WIDTH: 8
     timescale: 1ns/1ps
+    type: gui
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.wcfg
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
 
 variants:
   restoring_div_32b:

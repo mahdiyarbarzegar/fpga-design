@@ -28,9 +28,8 @@ constraints:
 dependencies: { }
 
 simulation:
-  batch:
+  shift_add_mul_batch:
     top: tb_shift_add_multiplier
-    snapshot: shift_add_multiplier_batch
     consume: rtl
     variant:
     files:
@@ -38,15 +37,18 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - MUL_SIZE: 4
     timescale: 1ns/1ps
+    type: batch
     tclbatch:
     waveform:
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
     xsim_opts: [ ]
-  gui:
+  shift_add_mul_gui:
     top: gui_shift_add_multiplier
-    snapshot: shift_add_multiplier_gui
     consume: rtl
     variant:
     files:
@@ -54,12 +56,16 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - MUL_SIZE: 4
     timescale: 1ns/1ps
+    type: gui
     tclbatch: gui/gui_sim.tcl
-    waveform: gui/gui_sim.tcl
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
+    waveform: gui/gui_sim.wcfg
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
 
 variants:
   shift_add_mul_32b:

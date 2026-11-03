@@ -33,9 +33,8 @@ dependencies:
       variant:
 
 simulation:
-  batch:
+  array_mul_batch:
     top: tb_array_multiplier
-    snapshot: array_multiplier_batch
     consume: rtl
     variant:
     files:
@@ -43,27 +42,15 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
     timescale: 1ns/1ps
+    type: batch
     tclbatch:
     waveform:
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
     xsim_opts: [ ]
-  gui:
-    top:
-    snapshot:
-    consume:
-    variant:
-    files:
-    dependencies:
-      lib:
-      module:
-    timescale:
-    tclbatch:
-    waveform:
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
 
 variants:
   array_mul_32b:

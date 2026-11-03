@@ -1,6 +1,6 @@
-module tb_booth_multiplier;
-
-    parameter MUL_SIZE = 4;
+module tb_booth_multiplier #(
+    parameter MUL_SIZE = 4
+);
 
     reg                          clk;
     reg                          rst_n;

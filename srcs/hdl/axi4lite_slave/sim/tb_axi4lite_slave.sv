@@ -1,9 +1,10 @@
 `include "axi4lite_master_model.svh"
 
-module tb_axi4lite_slave ();
+module tb_axi4lite_slave #(
+    parameter int AXI_ADDR_WIDTH = 5,
+    parameter int AXI_DATA_WIDTH = 32
+);
 
-    localparam int AXI_ADDR_WIDTH = 5;
-    localparam int AXI_DATA_WIDTH = 32;
     localparam int STRB_WIDTH = AXI_DATA_WIDTH / 8;
     localparam int ADDR_LSB = (AXI_DATA_WIDTH / 32) + 1;
     localparam int REG_AXI_ADDR_WIDTH = AXI_ADDR_WIDTH - ADDR_LSB;

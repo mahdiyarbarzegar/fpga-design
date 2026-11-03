@@ -8,24 +8,25 @@ library work;
 use work.log2_pkg_utils.all;
 
 entity tb_log2_native is
+    generic(
+        STRATEGY: string := "QUADRATIC_POLYNOMIAL_INTRPL";
+        INPUT_DATA_WIDTH: positive := 16;
+        INPUT_FRACTION_WIDTH: positive := 8;
+        OUTPUT_FRACTION_WIDTH: positive := 8;
+        LUT_ADDR_SIZE: positive := 4;
+        FIXED_TOLERANCE_LSB: positive := 3
+    );
 end entity;
 
 architecture sim of tb_log2_native is
 
     constant INTERFACE_TYPE: string := "NATIVE";
-    constant STRATEGY: string := "LINEAR_INTRPL"; -- "LUT" "LINEAR_INTRPL"
-    constant INPUT_DATA_WIDTH: positive := 16;
-    constant INPUT_FRACTION_WIDTH: positive := 8;
-    constant OUTPUT_FRACTION_WIDTH: positive := 8;
     constant OUTPUT_DATA_WIDTH: positive := calc_out_data_width(INPUT_DATA_WIDTH,
         INPUT_FRACTION_WIDTH, OUTPUT_FRACTION_WIDTH);
-    constant LUT_ADDR_SIZE: positive := 6;
 
     constant CLOCK_PERIOD: time := 10 ns;
 
-    constant FIXED_TOLERANCE_LSB: natural := 2;
     constant PIPELINE_LATENCY: positive := get_pipeline_stage_count(STRATEGY);
-
 
     type dataset_field_t is record
         data_in: unsigned(INPUT_DATA_WIDTH - 1 downto 0);

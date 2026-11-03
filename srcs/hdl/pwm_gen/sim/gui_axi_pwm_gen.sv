@@ -2,11 +2,12 @@
 
 import pwm_gen_reg_pkg::*;
 
-module gui_axi_pwm_gen;
+module gui_axi_pwm_gen #(
+    parameter TIMER_RESOLUTION = 32,
+    parameter CHANNELS         = 2
+);
 
     localparam INTERFACE_TYPE = "AXI4LITE_SLAVE";
-    localparam TIMER_RESOLUTION = 32;
-    localparam CHANNELS = 2;
 
     logic clk, rst_n;
     wire [CHANNELS-1:0] pwm;

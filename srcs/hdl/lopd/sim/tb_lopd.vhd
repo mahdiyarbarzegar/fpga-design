@@ -5,12 +5,14 @@ use ieee.math_real.all;
 use std.env.all;
 
 entity tb_lopd is
+    generic(
+        INPUT_DATA_WIDTH: positive := 16;
+        LOPD_SLICE_DATA_WIDTH: positive := 4
+    );
 end entity;
 
 architecture sim of tb_lopd is
 
-    constant INPUT_DATA_WIDTH: positive := 16;
-    constant LOPD_SLICE_DATA_WIDTH: positive := 4;
     constant OUTPUT_DATA_WIDTH: positive := integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))));
 
     component lopd is

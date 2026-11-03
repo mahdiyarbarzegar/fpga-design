@@ -17,8 +17,8 @@ package:
   append: ip/package_append.tcl
 
 rtl:
-  - rtl/ripple_carry_adder.vhd
-  - rtl/ripple_carry_adder_w.vhd
+  - rtl/vhdl/ripple_carry_adder.vhd
+  - rtl/vhdl/ripple_carry_adder_w.vhd
 
 include:
 
@@ -32,25 +32,27 @@ dependencies:
       variant:
 
 simulation:
-  batch:
+  rca_batch:
     top: tb_ripple_carry_adder
-    snapshot: ripple_carry_adder_batch
     consume: rtl
     variant:
     files:
-      - sim/tb_ripple_carry_adder.v
+      - sim/tb_ripple_carry_adder.vhd
     dependencies:
       lib:
       module:
+    parameters:
+      - BUS_WIDTH: 8
     timescale: 1ns/1ps
+    type: batch
     tclbatch:
     waveform:
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
     xsim_opts: [ ]
-  gui:
+  rca_gui:
     top: gui_ripple_carry_adder
-    snapshot: ripple_carry_adder_gui
     consume: rtl
     variant:
     files:
@@ -58,12 +60,16 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - BUS_WIDTH: 32
     timescale: 1ns/1ps
+    type: gui
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.wcfg
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
 
 variants:
   rca_32b:

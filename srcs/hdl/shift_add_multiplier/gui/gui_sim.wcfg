@@ -3,7 +3,7 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="shift_add_multiplier_gui.wdb" id="1">
+      <db_ref path="shift_add_mul_gui.wdb" id="1">
          <top_modules>
             <top_module name="gui_shift_add_multiplier" />
          </top_modules>
@@ -16,9 +16,9 @@
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="108"></ValueColumnWidth>
+      <ValueColumnWidth column_width="104"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="8" />
+   <WVObjectSize size="28" />
    <wvobject type="logic" fp_name="/gui_shift_add_multiplier/clk">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -53,5 +53,85 @@
       <obj_property name="ElementShortName">y[7:0]</obj_property>
       <obj_property name="ObjectShortName">y[7:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/rst_n">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/sign">
+      <obj_property name="ElementShortName">sign</obj_property>
+      <obj_property name="ObjectShortName">sign</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/data_in1">
+      <obj_property name="ElementShortName">data_in1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in1[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/data_in2">
+      <obj_property name="ElementShortName">data_in2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in2[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/data_out">
+      <obj_property name="ElementShortName">data_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/ready">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/multiplicand">
+      <obj_property name="ElementShortName">multiplicand[3:0]</obj_property>
+      <obj_property name="ObjectShortName">multiplicand[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/product">
+      <obj_property name="ElementShortName">product[7:0]</obj_property>
+      <obj_property name="ObjectShortName">product[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/running">
+      <obj_property name="ElementShortName">running</obj_property>
+      <obj_property name="ObjectShortName">running</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/counter">
+      <obj_property name="ElementShortName">counter[3:0]</obj_property>
+      <obj_property name="ObjectShortName">counter[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/shift_right">
+      <obj_property name="ElementShortName">shift_right</obj_property>
+      <obj_property name="ObjectShortName">shift_right</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/in1_sign_bit">
+      <obj_property name="ElementShortName">in1_sign_bit</obj_property>
+      <obj_property name="ObjectShortName">in1_sign_bit</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/in2_sign_bit">
+      <obj_property name="ElementShortName">in2_sign_bit</obj_property>
+      <obj_property name="ObjectShortName">in2_sign_bit</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/gui_shift_add_multiplier/mul/samul/product_sign_bit">
+      <obj_property name="ElementShortName">product_sign_bit</obj_property>
+      <obj_property name="ObjectShortName">product_sign_bit</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/in1">
+      <obj_property name="ElementShortName">in1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">in1[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/in2">
+      <obj_property name="ElementShortName">in2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">in2[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/sum_result">
+      <obj_property name="ElementShortName">sum_result[3:0]</obj_property>
+      <obj_property name="ObjectShortName">sum_result[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/gui_shift_add_multiplier/mul/samul/MUL_WIDTH">
+      <obj_property name="ElementShortName">MUL_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MUL_WIDTH[31:0]</obj_property>
    </wvobject>
 </wave_config>

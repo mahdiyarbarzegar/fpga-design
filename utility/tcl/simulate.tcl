@@ -28,7 +28,7 @@ proc ::simulate::compile {module_path sim_mode} {
     }
 }
 
-proc ::simulate::internal::compile {module_path sim_mode} {
+proc ::simulate::internal::compile {module_path sim_profile} {
     variable compile_db
     variable SIM_PATH
 
@@ -42,22 +42,26 @@ proc ::simulate::internal::compile {module_path sim_mode} {
         error "No module loaded."
     }
 
-    set top [dict get [::module::simulation $sim_mode] top]
+    set top [dict get [::module::simulation $sim_profile] top]
     if {$top eq "null"} {
-        error "The simulation mode $sim_mode does not have any top module"
+        error "The simulation mode $sim_profile does not have any top module"
     }
 
-    set consume [dict get [::module::simulation $sim_mode] consume]
-    set variant [dict get [::module::simulation $sim_mode] variant]
-    set opts [dict get [::module::simulation $sim_mode] xvlog_opts]
-    if {$opts eq "null"} {
-        set opts ""
+    set consume [dict get [::module::simulation $sim_profile] consume]
+    set variant [dict get [::module::simulation $sim_profile] variant]
+    set xvlog_opts [dict get [::module::simulation $sim_profile] xvlog_opts]
+    set xvhdl_opts [dict get [::module::simulation $sim_profile] xvhdl_opts]
+    if {$xvlog_opts eq "null"} {
+        set xvlog_opts ""
+    }
+    if {$xvhdl_opts eq "null"} {
+        set xvhdl_opts ""
     }
 
-    set sim_files [::simulate::internal::get_sim_files $module_path $sim_mode]
+    set sim_files [::simulate::internal::get_sim_files $module_path $sim_profile]
 
     set deps [::dependency::resolve $module_path $consume $variant]
-    set sim_deps [::dependency::resolve $module_path $consume $variant "true" $sim_mode]
+    set sim_deps [::dependency::resolve $module_path $consume $variant "true" $sim_profile]
 
     set all_deps [concat $deps $sim_deps]
 
@@ -72,17 +76,17 @@ proc ::simulate::internal::compile {module_path sim_mode} {
 
     dict lappend compile_db files $sim_files
 
-    ::simulate::internal::compile_all $opts
+    ::simulate::internal::compile_all $xvlog_opts $xvhdl_opts
 }
 
-proc ::simulate::elaborate {module_path sim_mode} {
+proc ::simulate::elaborate {module_path sim_profile} {
     variable internal::SIM_PATH
 
     set module_path [file normalize $module_path]
 
     try {
         set init_path [::common::set_working_dir $SIM_PATH]
-        ::simulate::internal::elaborate $module_path $sim_mode
+        ::simulate::internal::elaborate $module_path $sim_profile
     } on error {result options} {
         ::simulate::internal::close_prj
         puts stderr "Operation failed:"
@@ -93,7 +97,7 @@ proc ::simulate::elaborate {module_path sim_mode} {
     }
 }
 
-proc ::simulate::internal::elaborate {module_path sim_mode} {
+proc ::simulate::internal::elaborate {module_path sim_profile} {
     variable project_root_path
     variable SIM_PATH
     variable LIB_NAME
@@ -105,13 +109,14 @@ proc ::simulate::internal::elaborate {module_path sim_mode} {
         error "No module loaded."
     }
 
-    set elab_dir [file join $ELAB_PATH [::module::name] $sim_mode]
+    set elab_dir [file join $ELAB_PATH [::module::name] $sim_profile]
     file mkdir $elab_dir
 
-    set sim_cfg [::module::simulation $sim_mode]
+    set sim_cfg [::module::simulation $sim_profile]
     set top [dict get $sim_cfg top]
-    set snapshot [dict get $sim_cfg snapshot]
+    set snapshot $sim_profile
     set timescale [dict get $sim_cfg timescale]
+    set parameters [dict get $sim_cfg parameters]
 
     set opts [dict get $sim_cfg xelab_opts]
     if {$opts eq "null"} {
@@ -126,26 +131,35 @@ proc ::simulate::internal::elaborate {module_path sim_mode} {
         }
     }
 
+    set generic_top ""
+    foreach pair $parameters {
+        if {$pair ne "null"} {
+            lassign $pair param value
+            lappend generic_top -generic_top "${param}=${value}"
+        }
+    }
+
     set cmd [list xelab \
         -L ${LIB_NAME}=${LIB_PATH} \
         {*}$includes \
         -timescale $timescale \
         -s $snapshot \
         --debug all \
+        {*}$generic_top \
         {*}$opts \
         $LIB_NAME.$top]
 
     common::run $cmd $elab_dir
 }
 
-proc ::simulate::simulate {module_path sim_mode} {
+proc ::simulate::simulate {module_path sim_profile} {
     variable internal::SIM_PATH
 
     set module_path [file normalize $module_path]
 
     try {
         set init_path [::common::set_working_dir $SIM_PATH]
-        ::simulate::internal::simulate $module_path $sim_mode
+        ::simulate::internal::simulate $module_path $sim_profile
     } on error {result options} {
         ::simulate::internal::close_prj
         puts stderr "Operation failed:"
@@ -156,7 +170,7 @@ proc ::simulate::simulate {module_path sim_mode} {
     }
 }
 
-proc ::simulate::internal::simulate {module_path sim_mode} {
+proc ::simulate::internal::simulate {module_path sim_profile} {
     variable project_root_path
     variable ELAB_PATH
     variable SIM_PATH
@@ -167,9 +181,10 @@ proc ::simulate::internal::simulate {module_path sim_mode} {
         error "No module loaded."
     }
 
-    set sim_cfg [::module::simulation $sim_mode]
+    set sim_cfg [::module::simulation $sim_profile]
 
-    set snapshot [dict get $sim_cfg snapshot]
+    set snapshot $sim_profile
+    set sim_mode [dict get $sim_cfg type]
     set tclbatch [dict get $sim_cfg tclbatch]
     set waveform [dict get $sim_cfg waveform]
     set opts [dict get $sim_cfg xsim_opts]
@@ -178,7 +193,7 @@ proc ::simulate::internal::simulate {module_path sim_mode} {
         set opts {}
     }
 
-    set elab_dir [file join $ELAB_PATH [::module::name] $sim_mode]
+    set elab_dir [file join $ELAB_PATH [::module::name] $sim_profile]
 
     if {![file isdirectory $elab_dir]} {
         error "Elaboration directory does not exist: $elab_dir"
@@ -297,12 +312,12 @@ proc ::simulate::internal::compile_collect {node} {
     }
 }
 
-proc ::simulate::internal::get_sim_files {module_path sim_mode} {
+proc ::simulate::internal::get_sim_files {module_path sim_profile} {
     variable project_root_path
 
     set sim_files {}
 
-    set sim_cfg [::module::simulation $sim_mode]
+    set sim_cfg [::module::simulation $sim_profile]
 
     foreach f [dict get $sim_cfg files] {
         lappend sim_files [file join $project_root_path $module_path $f]
@@ -311,7 +326,7 @@ proc ::simulate::internal::get_sim_files {module_path sim_mode} {
     return $sim_files
 }
 
-proc ::simulate::internal::compile_all {{opts ""}} {
+proc ::simulate::internal::compile_all {xvlog_opts xvhdl_opts} {
     variable LIB_NAME
     variable LIB_PATH
     variable compile_db
@@ -352,7 +367,7 @@ proc ::simulate::internal::compile_all {{opts ""}} {
     }
 
     if {$enable_sv} {
-        lappend opts -sv
+        lappend xvlog_opts -sv
     }
 
     if {$enable_vlog} {
@@ -360,7 +375,7 @@ proc ::simulate::internal::compile_all {{opts ""}} {
             -L ${LIB_NAME}=${LIB_PATH} \
             -work ${LIB_NAME}=${LIB_PATH} \
             {*}$includes \
-            {*}$opts \
+            {*}$xvlog_opts \
             {*}$verilog_files]
 
         common::run $cmd
@@ -371,7 +386,7 @@ proc ::simulate::internal::compile_all {{opts ""}} {
             -L ${LIB_NAME}=${LIB_PATH} \
             -work ${LIB_NAME}=${LIB_PATH} \
             -2019 \
-            {*}$opts \
+            {*}$xvhdl_opts \
             {*}$vhdl_files]
 
         common::run $cmd

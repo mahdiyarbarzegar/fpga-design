@@ -33,24 +33,8 @@ dependencies:
       variant:
 
 simulation:
-  batch:
-    top:
-    snapshot:
-    consume:
-    variant:
-    files:
-    dependencies:
-      lib:
-      module:
-    timescale: 1ns/1ps
-    tclbatch:
-    waveform:
-    xvlog_opts: [ ]
-    xelab_opts: [ ]
-    xsim_opts:
-  gui:
+  lopd_gui:
     top: tb_lopd
-    snapshot: lopd_gui
     consume: rtl
     variant:
     files:
@@ -58,12 +42,17 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - INPUT_DATA_WIDTH: 16
+      - LOPD_SLICE_DATA_WIDTH: 4
     timescale: 1ns/1ps
+    type: gui
     tclbatch: gui/gui_sim.tcl
     waveform: gui/lopd_gui.wcfg
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
-    xsim_opts:
+    xsim_opts: [ ]
 
 variants:
   lopd_16b:

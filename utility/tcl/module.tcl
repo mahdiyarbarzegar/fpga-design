@@ -212,8 +212,14 @@ proc ::module::display_name {} {
     return [::module::get ip.display_name]
 }
 
-proc ::module::simulation {sim_mode} {
-    return [::module::get simulation.$sim_mode]
+proc ::module::simulation {sim_profile} {
+    variable internal::cfg
+
+    if {![dict exists $cfg simulation $sim_profile]} {
+        error "Simulation profile $sim_profile not found!"
+    }
+
+    return [::module::get simulation.$sim_profile]
 }
 
 proc ::module::dump {} {

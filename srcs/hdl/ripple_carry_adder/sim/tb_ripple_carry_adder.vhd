@@ -3,10 +3,12 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity tb_ripple_carry_adder is
+    generic(
+        BUS_WIDTH: positive := 8
+    );
 end entity;
 
 architecture sim of tb_ripple_carry_adder is
-    constant BUS_WIDTH: positive := 8;
 
     signal add_sub_b, sign, z, n, c, v: std_logic;
     signal a, b, y: unsigned(BUS_WIDTH - 1 downto 0);

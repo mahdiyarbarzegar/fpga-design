@@ -25,36 +25,23 @@ constraints:
 dependencies: { }
 
 simulation:
-  batch:
+  fa_batch:
     top: tb_full_adder
-    snapshot: full_adder_batch
     consume: rtl
     variant:
     files:
-      - sim/tb_full_adder.v
+      - sim/tb_full_adder.vhd
     dependencies:
       lib:
       module:
+    parameters:
     timescale: 1ns/1ps
+    type: batch
     tclbatch:
     waveform:
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
     xsim_opts: [ ]
-  gui:
-    top:
-    snapshot:
-    consume:
-    variant:
-    files:
-    dependencies:
-      lib:
-      module:
-    timescale:
-    tclbatch:
-    waveform:
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
 
 variants: { }

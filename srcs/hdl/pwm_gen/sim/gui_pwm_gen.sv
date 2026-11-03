@@ -1,10 +1,11 @@
 `include "pwm_gen.vh"
 
-module gui_pwm_gen;
+module gui_pwm_gen #(
+    parameter TIMER_RESOLUTION = 32,
+    parameter CHANNELS         = 2
+);
 
     localparam INTERFACE_TYPE = "SIMPLE";
-    localparam TIMER_RESOLUTION = 32;
-    localparam CHANNELS = 2;
 
     reg clk, rst_n, start, stop;
     reg [1:0] mode;

@@ -28,9 +28,8 @@ constraints:
 dependencies: { }
 
 simulation:
-  batch:
+  booth_mul_batch:
     top: tb_booth_multiplier
-    snapshot: booth_multiplier_batch
     consume: rtl
     variant:
     files:
@@ -38,15 +37,18 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - MUL_SIZE: 4
     timescale: 1ns/1ps
+    type: batch
     tclbatch:
     waveform:
     xvlog_opts: [ ]
+    xvhdl_opts: [ ]
     xelab_opts: [ ]
     xsim_opts: [ ]
-  gui:
+  booth_mul_gui:
     top: gui_booth_multiplier
-    snapshot: booth_multiplier_gui
     consume: rtl
     variant:
     files:
@@ -54,12 +56,16 @@ simulation:
     dependencies:
       lib:
       module:
+    parameters:
+      - MUL_SIZE: 4
     timescale: 1ns/1ps
+    type: gui
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.wcfg
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
 
 variants:
   booth_mul_32b:
