@@ -52,8 +52,8 @@ architecture rtl of log2_linear_intrpl_gen_lut is
 
     signal LUT: lut_t := init_lut_fp;
 
-    attribute ram_style: string;
-    attribute ram_style of LUT: signal is "block";
+    attribute rom_style: string;
+    attribute rom_style of LUT: signal is "block";
 begin
 
     process(clk)

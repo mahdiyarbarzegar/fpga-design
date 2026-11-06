@@ -37,8 +37,8 @@ architecture rtl of log2_fp_lut_gen is
 
     signal LUT: lut_type_t := init_lut_fp;
 
-    attribute ram_style: string;
-    attribute ram_style of LUT: signal is "block";
+    attribute rom_style: string;
+    attribute rom_style of LUT: signal is "block";
 begin
 
     process(clk)
