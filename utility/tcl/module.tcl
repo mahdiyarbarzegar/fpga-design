@@ -16,7 +16,7 @@ proc ::module::scan {} {
 
     set database {}
 
-    foreach type {hdl venip lib} {
+    foreach type {hdl ipcore lib} {
         set root [file join $project_root_path srcs $type]
 
         if {![file exists $root]} {

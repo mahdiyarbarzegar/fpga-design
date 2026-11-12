@@ -1,5 +1,7 @@
 name: fifo_generator
 
+type: ipcore
+
 ip:
   vlnv: xilinx.com:ip:fifo_generator:13.2
   vendor: xilinx.com
@@ -11,8 +13,6 @@ ip:
   description:
   top_module:
 
-type: venip
-
 constraints:
 
 include:
@@ -20,34 +20,26 @@ include:
 dependencies: { }
 
 simulation:
-  batch:
-    top:
-    snapshot:
-    consume:
-    variant:
-    files:
-    timescale:
-    tclbatch:
-    waveform:
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
-  gui:
+  gui_xil_fifo:
     top: gui_demo_xil_fifo
-    snapshot: demo_xil_fifo_gui
     consume: ip
     variant: fifo_simple_xil
     files:
       - sim/gui_demo_xil_fifo.v
+    dependencies:
+      lib:
+      module:
+    parameters:
     timescale: 1ns/1ps
+    type: gui
     tclbatch: gui/gui_sim.tcl
     waveform: gui/gui_sim.wcfg
-    xvlog_opts:
-    xelab_opts:
-    xsim_opts:
+    xvlog_opts: [ ]
+    xvhdl_opts: [ ]
+    xelab_opts: [ ]
+    xsim_opts: [ ]
 
 variants:
-
   fifo_simple_xil:
     name: fifo_simple_xil
     display_name: Simple FiFo
