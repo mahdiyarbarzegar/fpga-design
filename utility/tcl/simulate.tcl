@@ -10,14 +10,14 @@ namespace eval ::simulate::internal {
     variable compile_db {}
 }
 
-proc ::simulate::compile {module_path sim_mode} {
+proc ::simulate::compile {module_path sim_profile} {
     variable internal::SIM_PATH
 
     set module_path [file normalize $module_path]
 
     try {
         set init_path [::common::set_working_dir $SIM_PATH]
-        ::simulate::internal::compile $module_path $sim_mode
+        ::simulate::internal::compile $module_path $sim_profile
     } on error {result options} {
         ::simulate::internal::close_prj
         puts stderr "Operation failed:"
@@ -184,7 +184,7 @@ proc ::simulate::internal::simulate {module_path sim_profile} {
     set sim_cfg [::module::simulation $sim_profile]
 
     set snapshot $sim_profile
-    set sim_mode [dict get $sim_cfg type]
+    set sim_type [dict get $sim_cfg type]
     set tclbatch [dict get $sim_cfg tclbatch]
     set waveform [dict get $sim_cfg waveform]
     set opts [dict get $sim_cfg xsim_opts]
@@ -199,7 +199,7 @@ proc ::simulate::internal::simulate {module_path sim_profile} {
         error "Elaboration directory does not exist: $elab_dir"
     }
 
-    switch -- $sim_mode {
+    switch -- $sim_type {
         batch {
             lappend opts --runall
         }
@@ -229,7 +229,7 @@ proc ::simulate::internal::simulate {module_path sim_profile} {
         }
 
         default {
-            error "Unsupported simulation mode: $sim_mode"
+            error "Unsupported simulation mode: $sim_type"
         }
     }
 
@@ -243,7 +243,7 @@ proc ::simulate::internal::simulate {module_path sim_profile} {
     puts "Simulation"
     puts "  Module:    [::module::name]"
     puts "  Snapshot:  $snapshot"
-    puts "  Mode:      $sim_mode"
+    puts "  Type:      $sim_type"
     puts "  Tcl Batch: $tclbatch"
     puts "  Waveform:  $waveform"
     puts ""
