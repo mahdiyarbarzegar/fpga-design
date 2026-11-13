@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="sync_fifo_tb.wdb" id="1">
+         <top_modules>
+            <top_module name="env" />
+            <top_module name="numeric_std" />
+            <top_module name="standard" />
+            <top_module name="std_logic_1164" />
+            <top_module name="tb_sync_fifo" />
+            <top_module name="textio" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="665.001 ns"></ZoomEndTime>
+      <Cursor1Time time="319.764 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="108"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="28" />
+   <wvobject type="logic" fp_name="/tb_sync_fifo/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/wr_en">
+      <obj_property name="ElementShortName">wr_en</obj_property>
+      <obj_property name="ObjectShortName">wr_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/rd_en">
+      <obj_property name="ElementShortName">rd_en</obj_property>
+      <obj_property name="ObjectShortName">rd_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_sync_fifo/wr_data">
+      <obj_property name="ElementShortName">wr_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_sync_fifo/rd_data">
+      <obj_property name="ElementShortName">rd_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/WIDTH">
+      <obj_property name="ElementShortName">WIDTH</obj_property>
+      <obj_property name="ObjectShortName">WIDTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/DEPTH">
+      <obj_property name="ElementShortName">DEPTH</obj_property>
+      <obj_property name="ObjectShortName">DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/CLK_PERIOD">
+      <obj_property name="ElementShortName">CLK_PERIOD</obj_property>
+      <obj_property name="ObjectShortName">CLK_PERIOD</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/wr_en_i">
+      <obj_property name="ElementShortName">wr_en_i</obj_property>
+      <obj_property name="ObjectShortName">wr_en_i</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/wr_data_i">
+      <obj_property name="ElementShortName">wr_data_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_data_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/rd_en_i">
+      <obj_property name="ElementShortName">rd_en_i</obj_property>
+      <obj_property name="ObjectShortName">rd_en_i</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/rd_data_o">
+      <obj_property name="ElementShortName">rd_data_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_data_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/full_o">
+      <obj_property name="ElementShortName">full_o</obj_property>
+      <obj_property name="ObjectShortName">full_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/empty_o">
+      <obj_property name="ElementShortName">empty_o</obj_property>
+      <obj_property name="ObjectShortName">empty_o</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/mem">
+      <obj_property name="ElementShortName">mem[0:15][15:0]</obj_property>
+      <obj_property name="ObjectShortName">mem[0:15][15:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/counter">
+      <obj_property name="ElementShortName">counter</obj_property>
+      <obj_property name="ObjectShortName">counter</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/wr_ptr">
+      <obj_property name="ElementShortName">wr_ptr</obj_property>
+      <obj_property name="ObjectShortName">wr_ptr</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/rd_ptr">
+      <obj_property name="ElementShortName">rd_ptr</obj_property>
+      <obj_property name="ObjectShortName">rd_ptr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/full">
+      <obj_property name="ElementShortName">full</obj_property>
+      <obj_property name="ObjectShortName">full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/empty">
+      <obj_property name="ElementShortName">empty</obj_property>
+      <obj_property name="ObjectShortName">empty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/rd_data_r">
+      <obj_property name="ElementShortName">rd_data_r[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_data_r[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/DEPTH">
+      <obj_property name="ElementShortName">DEPTH</obj_property>
+      <obj_property name="ObjectShortName">DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_sync_fifo/sync_fifo_16w16d_ins/U0/sync_fifo_ins/WIDTH">
+      <obj_property name="ElementShortName">WIDTH</obj_property>
+      <obj_property name="ObjectShortName">WIDTH</obj_property>
+   </wvobject>
+</wave_config>
