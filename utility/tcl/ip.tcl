@@ -1069,8 +1069,15 @@ proc ::ip::get_xml_field {field} {
         }
 
         simulation.wrapper {
-            return [::ip::internal::get_xml_fileset \
+            set list_verilog [::ip::internal::get_xml_fileset \
                 xilinx_verilogsimulationwrapper_view_fileset]
+
+            set list_vhdl [::ip::internal::get_xml_fileset \
+                xilinx_vhdlsimulationwrapper_view_fileset]
+
+            set list [concat $list_verilog $list_vhdl]
+
+            return $list
         }
 
         default {

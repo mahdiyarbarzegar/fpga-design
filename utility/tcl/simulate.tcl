@@ -298,13 +298,11 @@ proc ::simulate::internal::compile_collect {node} {
             ::ip::load_xml_fileset $xml_fileset
 
             foreach f [::ip::get_xml_field simulation.behavioral] {
-                puts "$f"
                 dict lappend compile_db files \
                     [file join $IP_PATH $ip_dir $variant_name $f]
             }
 
             foreach f [::ip::get_xml_field simulation.wrapper] {
-                puts "$f"
                 dict lappend compile_db files \
                     [file join $IP_PATH $ip_dir $variant_name $f]
             }
