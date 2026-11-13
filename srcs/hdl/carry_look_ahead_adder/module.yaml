@@ -13,9 +13,6 @@ ip:
   description: Carry Look Ahead Adder
   top_module: carry_look_ahead_adder_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/vhdl/carry_predictor.vhd
   - rtl/vhdl/cla_block.vhd

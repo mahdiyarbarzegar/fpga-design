@@ -13,9 +13,6 @@ ip:
   description: Restoring Divider
   top_module: restoring_divider_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/verilog/restoring_divider.v
   - rtl/verilog/restoring_divider_w.v

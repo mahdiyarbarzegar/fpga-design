@@ -13,9 +13,6 @@ ip:
   description: A booth sequential multiplier
   top_module: booth_multiplier_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/vhdl/booth_multiplier.vhd
   - rtl/vhdl/booth_multiplier_w.vhd

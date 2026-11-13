@@ -13,8 +13,6 @@ ip:
   description: A Simple Full Adder IP
   top_module: full_adder
 
-package: { }
-
 rtl:
   - rtl/full_adder.vhd
 

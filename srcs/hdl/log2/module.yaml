@@ -13,9 +13,6 @@ ip:
   description: Logarithm 2 Calculator IP
   top_module: log2_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/log2_pkg_utils.vhd
   - rtl/log2_lut_gen_lut.vhd

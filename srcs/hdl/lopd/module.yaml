@@ -13,9 +13,6 @@ ip:
   description: Leading One Position Detector
   top_module: lopd
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/lopd_slice.vhd
   - rtl/lopd.vhd

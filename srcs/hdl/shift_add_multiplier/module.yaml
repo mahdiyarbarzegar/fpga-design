@@ -13,9 +13,6 @@ ip:
   description: Shift-Add Multiplier
   top_module: shift_add_multiplier_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/shift_add_multiplier_w.v
   - rtl/shift_add_multiplier.v

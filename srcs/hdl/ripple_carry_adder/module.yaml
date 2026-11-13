@@ -13,9 +13,6 @@ ip:
   description: Ripple Carry Adder
   top_module: ripple_carry_adder_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/vhdl/ripple_carry_adder.vhd
   - rtl/vhdl/ripple_carry_adder_w.vhd

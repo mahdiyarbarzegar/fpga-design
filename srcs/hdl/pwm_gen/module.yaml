@@ -13,9 +13,6 @@ ip:
   description: A PWM generator with duty-cycle and frequency control.
   top_module: pwm_gen_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/pwm_gen_reg_pkg.sv
   - rtl/pwm_gen_regmap.sv

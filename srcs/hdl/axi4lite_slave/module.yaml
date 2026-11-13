@@ -13,8 +13,6 @@ ip:
   description: AXI4-Lite Slave Bus Interface
   top_module: axi4lite_slave
 
-package: { }
-
 rtl:
   - rtl/axi4lite_slave.sv
 

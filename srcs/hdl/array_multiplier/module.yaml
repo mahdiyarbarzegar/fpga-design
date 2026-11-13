@@ -13,9 +13,6 @@ ip:
   description: An array like combinational multiplier
   top_module: array_multiplier_w
 
-package:
-  append: ip/package_append.tcl
-
 rtl:
   - rtl/vhdl/mul_slice.vhd
   - rtl/vhdl/array_multiplier.vhd
