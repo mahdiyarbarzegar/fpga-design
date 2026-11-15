@@ -46,19 +46,19 @@ proc ::ip::generate_ip {part_number module_path variant {log_mode "quiet"}} {
     }
 }
 
-proc ::ip::synth_impl_ip {part_number module_path variant {log_mode "quiet"}} {
+proc ::ip::synthesis_ip {part_number module_path variant {log_mode "quiet"}} {
     variable internal::IP_PATH
 
     set module_path [file normalize $module_path]
 
     try {
         set init_path [::common::set_working_dir $IP_PATH]
-        ::ip::internal::synth_impl_ip $part_number $module_path $variant $log_mode
+        ::ip::internal::synthesis_ip $part_number $module_path $variant $log_mode
     } on error {result options} {
         ::ip::internal::close_prj
         puts stderr "Operation failed:"
         puts stderr $result
-        puts "Error occured during synthesis & implementation."
+        puts "Error occured during synthesis."
     } finally {
         ::common::set_working_dir $init_path
     }
@@ -872,7 +872,7 @@ proc ::ip::internal::generate_ip {part_number module_path variant {log_mode "qui
     ::close_project {*}$log_opts
 }
 
-proc ::ip::internal::synth_impl_ip {part_number module_path variant {log_mode "quiet"}} {
+proc ::ip::internal::synthesis_ip {part_number module_path variant {log_mode "quiet"}} {
     variable PACKAGE_PATH
     variable IP_PATH
 
@@ -926,15 +926,23 @@ proc ::ip::internal::synth_impl_ip {part_number module_path variant {log_mode "q
 
     ::open_checkpoint {*}$log_opts $dcp_path
 
-    # Implement the IP
-    puts "Routing $variant_name ..."
-    ::opt_design {*}$log_opts
-    ::power_opt_design {*}$log_opts
-    ::place_design {*}$log_opts
-    ::power_opt_design {*}$log_opts
-    ::phys_opt_design {*}$log_opts
-    ::route_design {*}$log_opts
-    ::phys_opt_design {*}$log_opts
+    put "Generate Verilog Timing Simulation Netlist..."
+    set filename "${variant_name}_timesim_netlist.v"
+    set path_file_name [file join $variant_dir_path $filename]
+    set sdf_filename "${variant_name}.sdf"
+    set path_sdf_file [file join $variant_dir_path $sdf_filename]
+    ::write_verilog -force \
+        -mode timesim \
+        -nolib \
+        -sdf_anno true \
+        -sdf_file $path_sdf_file \
+        -file $path_file_name
+
+    puts "Generate Timing Delay SDF File..."
+    ::write_sdf -force \
+        -mode timesim \
+        -process_corner slow \
+        -file $path_sdf_file
 
     puts "Generate Reports..."
     # Report Methodology
@@ -1043,7 +1051,7 @@ proc ::ip::internal::synth_impl_ip {part_number module_path variant {log_mode "q
 
     puts ""
     puts "---------------------------------------"
-    puts "IP synthesized & implemented."
+    puts "IP synthesized."
     puts "VLNV:"
     puts "    $ip_vlnv"
     puts "Variant:"
