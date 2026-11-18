@@ -23,7 +23,7 @@ architecture sim of tb_lopd is
         );
         port(
             clk: in std_logic;
-            rst_n: in std_logic;
+            rst: in std_logic;
             ce: in std_logic;
             d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
             d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
@@ -32,7 +32,7 @@ architecture sim of tb_lopd is
     end component;
 
     signal clk: std_logic := '0';
-    signal rst_n: std_logic := '1';
+    signal rst: std_logic := '1';
     signal data: unsigned(INPUT_DATA_WIDTH - 1 downto 0) := (others => '0');
     signal position: integer range 0 to INPUT_DATA_WIDTH := 0;
     signal lopd_index: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
@@ -46,9 +46,9 @@ begin
             OUTPUT_DATA_WIDTH => OUTPUT_DATA_WIDTH
         )
         port map(
-            rst_n => rst_n,
+            rst => rst,
             clk => clk,
-            ce => '0',
+            ce => '1',
             d_i => std_logic_vector(data),
             d_o => lopd_index,
             z_o => zero_flag
@@ -60,9 +60,9 @@ begin
 
     process
     begin
-        rst_n <= '0';
+        rst <= '1';
         wait for 20 ns;
-        rst_n <= '1';
+        rst <= '0';
 
         wait until falling_edge(clk);
 

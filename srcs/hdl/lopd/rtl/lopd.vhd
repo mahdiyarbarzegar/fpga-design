@@ -8,12 +8,11 @@ entity lopd is
     generic(
         INPUT_DATA_WIDTH: integer := 32;
         LOPD_SLICE_DATA_WIDTH: integer := 4;
-        OUTPUT_DATA_WIDTH: integer := 5;
-        USE_CLOCK_EN: boolean := false
+        OUTPUT_DATA_WIDTH: integer := 5
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
         ce: in std_logic;
         d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
         d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
@@ -31,12 +30,8 @@ architecture rtl of lopd is
     ATTRIBUTE X_INTERFACE_PARAMETER of clk: SIGNAL is "ASSOCIATED_RESET rst_n, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0";
 
     -- Declare the rst_n attributes
-    ATTRIBUTE X_INTERFACE_INFO of rst_n: SIGNAL is "xilinx.com:signal:reset:1.0 rst_n RST";
-    ATTRIBUTE X_INTERFACE_PARAMETER of rst_n: SIGNAL is "POLARITY ACTIVE_LOW";
-
-    -- Declare the ce attributes
-    ATTRIBUTE X_INTERFACE_INFO of ce: SIGNAL is "xilinx.com:signal:clockenable:1.0 ce CE";
-    ATTRIBUTE X_INTERFACE_PARAMETER of ce: SIGNAL is "POLARITY ACTIVE_HIGH";
+    ATTRIBUTE X_INTERFACE_INFO of rst: SIGNAL is "xilinx.com:signal:reset:1.0 rst RST";
+    ATTRIBUTE X_INTERFACE_PARAMETER of rst: SIGNAL is "POLARITY ACTIVE_HIGH";
 
     constant LOPD_SLICE_INDEX_WIDTH: positive := integer(
         ceil(log2(real(LOPD_SLICE_DATA_WIDTH - 1))));
@@ -84,14 +79,14 @@ begin
             process(clk)
             begin
                 if rising_edge(clk) then
-                    if (not USE_CLOCK_EN) or ce = '1' then
+                    if ce then
                         lopd_slice_index_ofsset_reg(i) <= std_logic_vector(
                             unsigned(lopd_slice_index(i)) + to_unsigned(
                                 i * LOPD_SLICE_DATA_WIDTH, lopd_slice_index_ofsset_reg(i)'length));
                         lopd_slice_zflag_reg(i) <= lopd_slice_zflag(i);
                     end if;
 
-                    if rst_n = '0' then
+                    if rst then
                         lopd_slice_index_ofsset_reg(i) <= (others => '0');
                         lopd_slice_zflag_reg(i) <= '1';
                     end if;
@@ -102,7 +97,7 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            if (not USE_CLOCK_EN) or ce = '1' then
+            if ce then
                 d_o <= (others => '0');
 
                 for i in NUMBER_OF_LOPD_SLICES - 1 downto 0 loop
@@ -115,7 +110,7 @@ begin
                 z_o <= and_reduce(lopd_slice_zflag_reg);
             end if;
 
-            if rst_n = '0' then
+            if rst then
                 d_o <= (others => '0');
                 z_o <= '1';
             end if;

@@ -67,11 +67,11 @@ interfaces:
     port:
       clk: clk
 
-  rst_n:
+  rst:
     type: reset
-    polarity: active_low
+    polarity: active_high
     port:
-      rst_n: rst_n
+      rst: rst
 
   ce:
     type: input
@@ -129,13 +129,3 @@ parameters:
     expression: 'expr { ceil(log($INPUT_DATA_WIDTH - 1)/log(2)) }'
     gui:
       hidden: true
-
-  USE_CLOCK_EN:
-    type: boolean
-    resolve: user
-    default: false
-    gui:
-      display_name: Use Clock Enable
-      page: General
-      group: LOPD
-
