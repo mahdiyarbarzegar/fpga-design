@@ -165,13 +165,6 @@ begin
                 valid_s3 <= '0';
                 valid_s4 <= '0';
                 valid_s5 <= '0';
-                data_s1 <= (others => '0');
-                data_s2 <= (others => '0');
-                exponent_k_s3 <= (others => '0');
-                mantissa_index_s3 <= (others => '0');
-                exponent_k_s3 <= (others => '0');
-                exponent_k_s4 <= (others => '0');
-                calc_result_s5 <= (others => '0');
             end if;
 
         end if;

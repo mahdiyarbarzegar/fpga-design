@@ -186,15 +186,6 @@ begin
                 valid_s4 <= '0';
                 valid_s5 <= '0';
                 valid_s6 <= '0';
-                data_s1 <= (others => '0');
-                data_s2 <= (others => '0');
-                exponent_k_s3 <= (others => '0');
-                exponent_k_s4 <= (others => '0');
-                exponent_k_s5 <= (others => '0');
-                exponent_k_s6 <= (others => '0');
-                mantissa_index_s3 <= (others => '0');
-                mantissa_remain_s3 <= (others => '0');
-                mantissa_remain_s4 <= (others => '0');
             end if;
 
         end if;
@@ -343,18 +334,6 @@ begin
                 valid_s4 <= '0';
                 valid_s5 <= '0';
                 valid_s6 <= '0';
-                data_s1 <= (others => '0');
-                data_s2 <= (others => '0');
-                exponent_k_s3 <= (others => '0');
-                exponent_k_s4 <= (others => '0');
-                exponent_k_s5 <= (others => '0');
-                exponent_k_s6 <= (others => '0');
-                mantissa_index_s3 <= (others => '0');
-                mantissa_remain_s3 <= (others => '0');
-                mantissa_remain_s4 <= (others => '0');
-                a_coeff_s5 <= (others => '0');
-                mul_result_s5 <= (others => '0');
-                mantissa_add_result_s6 <= (others => '0');
             end if;
 
         end if;
