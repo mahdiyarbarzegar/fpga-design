@@ -19,7 +19,7 @@ entity log2_bus_axi4stream is
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
 
         s_axis_tdata: in std_logic_vector(AXIS_DATA_WIDTH - 1 downto 0);
         s_axis_tkeep: in std_logic_vector(AXIS_DATA_WIDTH / 8 - 1 downto 0);
@@ -59,7 +59,7 @@ begin
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             ce => core_clock_en,
             data_i => core_data_in,
             data_o => core_data_out,
@@ -67,7 +67,7 @@ begin
             valid_o => core_valid_out
         );
 
-    s_axis_tready <= m_axis_tready when rst_n = '1' else '0';
+    s_axis_tready <= m_axis_tready when rst = '0' else '0';
 
     m_axis_tvalid <= core_valid_out;
     m_axis_tdata <= std_logic_vector(resize(signed(core_data_out), m_axis_tdata'length));

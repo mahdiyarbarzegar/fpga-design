@@ -13,7 +13,7 @@ entity log2_core is
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
         ce: in std_logic;
 
         data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
@@ -39,7 +39,7 @@ begin
             )
             port map(
                 clk => clk,
-                rst_n => rst_n,
+                rst => rst,
                 ce => ce,
                 data_i => data_i,
                 data_o => data_o,
@@ -60,7 +60,7 @@ begin
             )
             port map(
                 clk => clk,
-                rst_n => rst_n,
+                rst => rst,
                 ce => ce,
                 data_i => data_i,
                 data_o => data_o,
@@ -81,7 +81,7 @@ begin
             )
             port map(
                 clk => clk,
-                rst_n => rst_n,
+                rst => rst,
                 ce => ce,
                 data_i => data_i,
                 data_o => data_o,

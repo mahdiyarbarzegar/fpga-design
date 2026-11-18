@@ -74,7 +74,7 @@ architecture sim of tb_log2_axis is
     signal dataset: dataset_t := init_dataset;
 
     signal clk: std_logic := '0';
-    signal rst_n: std_logic := '0';
+    signal rst: std_logic := '1';
 
     signal s_axis_tdata: std_logic_vector(AXIS_DATA_WIDTH - 1 downto 0) := (others => '0');
     signal s_axis_tkeep: std_logic_vector(AXIS_DATA_WIDTH / 8 - 1 downto 0) := (others => '0');
@@ -101,7 +101,7 @@ begin
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             data_i => (others => '0'),
             valid_i => '0',
             s_axis_tdata => s_axis_tdata,
@@ -120,11 +120,11 @@ begin
         variable send_data: std_logic_vector(AXIS_DATA_WIDTH - 1 downto 0);
         variable send_keep: std_logic_vector(AXIS_DATA_WIDTH / 8 - 1 downto 0);
     begin
-        rst_n <= '0';
+        rst <= '1';
 
         wait for 2 * CLOCK_PERIOD;
 
-        rst_n <= '1';
+        rst <= '0';
 
         wait for 2 * CLOCK_PERIOD;
 
@@ -148,7 +148,7 @@ begin
         variable error_acc, error_acc_abs, error_squared_acc, error_real: real :=0.0;
         variable mean_error, mean_abs_error, max_abs_error, rms_error, mean_squared_error: real :=0.0;
     begin
-        wait until rst_n = '1';
+        wait until rst = '0';
 
         for i in dataset'range loop
             axis_receive(clk, m_axis_tvalid, m_axis_tready, m_axis_tdata, m_axis_tkeep,

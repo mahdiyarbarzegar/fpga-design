@@ -60,7 +60,7 @@ architecture sim of tb_log2_native is
 
     signal dataset : dataset_t := init_dataset;
 
-    signal clk, rst_n : std_logic := '0';
+    signal clk, rst : std_logic := '1';
     signal valid_i, valid_o: std_logic;
     signal data_input: std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
     signal data_output: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
@@ -78,7 +78,7 @@ begin
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             data_i => data_input,
             data_o => data_output,
             valid_i => valid_i,
@@ -108,12 +108,12 @@ begin
 
         -- Restet the IP
 
-        rst_n <= '0';
+        rst <= '1';
 
         wait for 5 * CLOCK_PERIOD;
         wait until falling_edge(clk);
 
-        rst_n <= '1';
+        rst <= '0';
 
         wait until rising_edge(clk);
         wait until falling_edge(clk);

@@ -15,7 +15,7 @@ entity log2_lut_core is
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
         ce: in std_logic;
 
         data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
@@ -39,7 +39,7 @@ architecture rtl of log2_lut_core is
         );
         port(
             clk: in std_logic;
-            rst_n: in std_logic;
+            rst: in std_logic;
             ce: in std_logic;
             addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
             data_o: out std_logic_vector(DATA_WIDTH - 1 downto 0)
@@ -50,12 +50,11 @@ architecture rtl of log2_lut_core is
         generic(
             INPUT_DATA_WIDTH: integer := 32;
             LOPD_SLICE_DATA_WIDTH: integer := 4;
-            OUTPUT_DATA_WIDTH: integer := 5;
-            USE_CLOCK_EN: boolean := false
+            OUTPUT_DATA_WIDTH: integer := 5
         );
         port(
             clk: in std_logic;
-            rst_n: in std_logic;
+            rst: in std_logic;
             ce: in std_logic;
             d_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
             d_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
@@ -102,7 +101,7 @@ begin
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             ce => ce,
             addr_i => mantissa_index_s3,
             data_o => mantissa_log_s4
@@ -112,12 +111,11 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             LOPD_SLICE_DATA_WIDTH => 4,
-            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1)))),
-            USE_CLOCK_EN => USE_CLOCK_EN
+            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))))
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             ce => ce,
             d_i => data_i,
             d_o => data_lop_s2,
@@ -161,7 +159,7 @@ begin
                 calc_result_s5 <= std_logic_vector(exponent_k_s4) & mantissa_log_s4;
             end if;
 
-            if rst_n = '0' then
+            if rst then
                 valid_s1 <= '0';
                 valid_s2 <= '0';
                 valid_s3 <= '0';

@@ -17,7 +17,7 @@ entity log2_w is
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
 
         data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
         data_o: out std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
@@ -43,11 +43,11 @@ architecture lut_based of log2_w is
 
     -- Declare the clk attributes
     ATTRIBUTE X_INTERFACE_INFO of clk: SIGNAL is "xilinx.com:signal:clock:1.0 clk CLK";
-    ATTRIBUTE X_INTERFACE_PARAMETER of clk: SIGNAL is "ASSOCIATED_RESET rst_n, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 100";
+    ATTRIBUTE X_INTERFACE_PARAMETER of clk: SIGNAL is "ASSOCIATED_RESET rst, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 100";
 
-    -- Declare the rst_n attributes
-    ATTRIBUTE X_INTERFACE_INFO of rst_n: SIGNAL is "xilinx.com:signal:reset:1.0 rst_n RST";
-    ATTRIBUTE X_INTERFACE_PARAMETER of rst_n: SIGNAL is "POLARITY ACTIVE_LOW";
+    -- Declare the rst attributes
+    ATTRIBUTE X_INTERFACE_INFO of rst: SIGNAL is "xilinx.com:signal:reset:1.0 rst RST";
+    ATTRIBUTE X_INTERFACE_PARAMETER of rst: SIGNAL is "POLARITY ACTIVE_HIGH";
 
     -- Declare the s-axis, m-axis attributes
     ATTRIBUTE X_INTERFACE_INFO of s_axis_tdata: SIGNAL is "xilinx.com:interface:axis:1.0 S_AXIS TDATA";
@@ -76,7 +76,7 @@ begin
             )
             port map(
                 clk => clk,
-                rst_n => rst_n,
+                rst => rst,
                 ce => '1',
                 data_i => data_i,
                 data_o => data_o,
@@ -98,7 +98,7 @@ begin
             )
             port map(
                 clk => clk,
-                rst_n => rst_n,
+                rst => rst,
                 s_axis_tdata => s_axis_tdata,
                 s_axis_tkeep => s_axis_tkeep,
                 s_axis_tready => s_axis_tready,

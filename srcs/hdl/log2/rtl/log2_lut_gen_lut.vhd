@@ -11,7 +11,7 @@ entity log2_fp_lut_gen is
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
         ce: in std_logic;
         addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
         data_o: out std_logic_vector(DATA_WIDTH - 1 downto 0)
@@ -48,7 +48,7 @@ begin
                 data_o <= LUT(to_integer(unsigned(addr_i)));
             end if;
 
-            if (rst_n = '0') then
+            if rst then
                 data_o <= (others => '0');
             end if;
         end if;

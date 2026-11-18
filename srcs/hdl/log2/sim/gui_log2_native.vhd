@@ -26,7 +26,7 @@ architecture sim of gui_log2_native is
     constant CLOCK_PERIOD: time := 10 ns;
 
     signal clk: std_logic := '0';
-    signal rst_n: std_logic := '0';
+    signal rst: std_logic := '0';
     signal input_value: unsigned(INPUT_DATA_WIDTH - 1 downto 0) := (others => '0');
     signal output_value: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
     signal log_result: signed(OUTPUT_DATA_WIDTH - 1 downto 0) := (others => '0');
@@ -45,7 +45,7 @@ begin
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             data_i => std_logic_vector(input_value),
             data_o => output_value,
             valid_i => valid_i,
@@ -62,7 +62,7 @@ begin
 
     process
     begin
-        rst_n <= '0';
+        rst <= '1';
         valid_i <= '0';
 
         input_value <= to_unsigned(1664, input_value'length); -- log2(6.5) = 2.7 -- 691
@@ -73,7 +73,7 @@ begin
 
         wait until falling_edge(clk);
         wait until rising_edge(clk);
-        rst_n <= '1';
+        rst <= '0';
 
         wait until falling_edge(clk);
         valid_i <= '1';

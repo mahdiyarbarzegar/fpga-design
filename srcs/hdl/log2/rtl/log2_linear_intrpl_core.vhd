@@ -15,7 +15,7 @@ entity log2_linear_intrpl_core is
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
         ce: in std_logic;
 
         data_i: in std_logic_vector(INPUT_DATA_WIDTH - 1 downto 0);
@@ -85,12 +85,11 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             LOPD_SLICE_DATA_WIDTH => 4,
-            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1)))),
-            USE_CLOCK_EN => USE_CLOCK_EN
+            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))))
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             ce => ce,
             d_i => data_i,
             d_o => data_lop_s2,
@@ -105,7 +104,7 @@ begin
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             ce => ce,
             addr_i => mantissa_index_s3,
             a_o => a_coeff_s4,
@@ -122,7 +121,7 @@ begin
         )
         port map (
             CLK => clk,
-            RST => not rst_n,
+            RST => rst,
             CE => ce,
             ADDSUB => '1',
             CARRYIN => '0',
@@ -180,7 +179,7 @@ begin
 
             end if;
 
-            if rst_n = '0' then
+            if rst then
                 valid_s1 <= '0';
                 valid_s2 <= '0';
                 valid_s3 <= '0';
@@ -257,12 +256,11 @@ begin
         generic map(
             INPUT_DATA_WIDTH => INPUT_DATA_WIDTH,
             LOPD_SLICE_DATA_WIDTH => 4,
-            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1)))),
-            USE_CLOCK_EN => USE_CLOCK_EN
+            OUTPUT_DATA_WIDTH => integer(ceil(log2(real(INPUT_DATA_WIDTH - 1))))
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             ce => ce,
             d_i => data_i,
             d_o => data_lop_s2,
@@ -277,7 +275,7 @@ begin
         )
         port map(
             clk => clk,
-            rst_n => rst_n,
+            rst => rst,
             ce => ce,
             addr_i => mantissa_index_s3,
             a_o => a_coeff_s4,
@@ -338,7 +336,7 @@ begin
 
             end if;
 
-            if rst_n = '0' then
+            if rst then
                 valid_s1 <= '0';
                 valid_s2 <= '0';
                 valid_s3 <= '0';

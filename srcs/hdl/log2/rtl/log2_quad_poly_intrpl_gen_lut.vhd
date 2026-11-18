@@ -11,7 +11,7 @@ entity log2_quad_poly_intrpl_gen_lut is
     );
     port(
         clk: in std_logic;
-        rst_n: in std_logic;
+        rst: in std_logic;
         ce: in std_logic;
         addr_i: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
         a_o: out std_logic_vector(COEFF_WIDTH - 1 downto 0);
@@ -72,7 +72,7 @@ begin
                 c_o <= field.c_coeff;
             end if;
 
-            if (rst_n = '0') then
+            if rst then
                 a_o <= (others => '0');
                 b_o <= (others => '0');
                 c_o <= (others => '0');

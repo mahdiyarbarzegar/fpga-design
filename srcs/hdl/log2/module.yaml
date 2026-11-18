@@ -298,11 +298,11 @@ interfaces:
     port:
       clk: clk
 
-  rst_n:
+  rst:
     type: reset
-    polarity: active_low
+    polarity: active_high
     port:
-      rst_n: rst_n
+      rst: rst
 
   data_i:
     type: input
